@@ -10,7 +10,9 @@
       </div>
     </div>
     <v-button title='注册' :isActive='isActive' topNum='0.6667rem' @toNext='toNext'></v-button>
-    <div class="agreement">点击“注册”，即表示同意<span class="tips" @click="showTips">《用户服务协议》</span></div>
+    <div class="agreement">点击“注册”，即表示同意
+      <span class="tips" @click="showTips">《用户服务协议》</span>
+    </div>
   </div>
 </template>
 
@@ -32,54 +34,45 @@ export default {
     'v-button': Button
   },
   methods: {
-    isPhoneClean() {
-      if (this.phone != '') {
-        this.isphone = true
+    isCleanShow() {
+      if (this.password != '') {
+        this.passShow = true
       } else {
-        this.isphone = false
+        this.passShow = false
       }
     },
-    isCleanShow() {
-			if (this.mobile != '') {
-				this.iconShow = true
-			} else {
-				this.iconShow = false
-			}
-			if (this.password != '') {
-				this.passShow = true
-			} else {
-				this.passShow = false
-			}
-		},
     cleanPhone() {
       this.phone = ''
       this.isphone = false
     },
     isPassWrodClean() {
-			if (this.password != '') {
-				this.password = ''
-				this.passShow = false
-				return 
-			}
-		},
+      if (this.password != '') {
+        this.password = ''
+        this.passShow = false
+        return
+      }
+    },
     checkTpye() {
-			this.ispassword = !this.ispassword;
-			if (!this.ispassword) {
-				this.passwordSrc = require('../../assets/icon_show_pwd.png')
-			} else {
-				this.passwordSrc = require('../../assets/icon_hide_pwd.png')
-			}
-		},
+      this.ispassword = !this.ispassword;
+      if (!this.ispassword) {
+        this.passwordSrc = require('../../assets/icon_show_pwd.png')
+      } else {
+        this.passwordSrc = require('../../assets/icon_hide_pwd.png')
+      }
+    },
     toNext() {
       if (isPassWord(this.password)) {
         console.log('register')
+        let encrypt = new JSEncrypt();
+        encrypt.setPublicKey(this.$store.state.pubkey);
         let sendData = {
-          phone: this.phone,
-          phoneCode: this.phoneCode
+          password: encrypt.encrypt(this.password),
+          regCode: this.$store.state.regCode,
+          token: this.$store.state.token
         }
-        login.userCheckRegistCode(sendData).then(data => {
+        login.userRegister(sendData).then(data => {
           if (data.data.code == 200) {
-            this.$store.dispatch('saveRegisterPhone', this.phone)
+            toast('注册成功，请登录')
             this.$router.push({ path: '/' })
           } else {
             toast(data.data.message)
@@ -87,7 +80,7 @@ export default {
         })
       }
     },
-    showTips(){
+    showTips() {
       console.log('showTips')
     }
   }
@@ -147,13 +140,13 @@ export default {
       color: @placeColor;
     }
   }
-  .agreement{
-    margin-top:0.2667rem;
-    color:@color;
+  .agreement {
+    margin-top: 0.2667rem;
+    color: @color;
     text-align: center;
     font-size: @p30;
-    .tips{
-      color:#f8cc00;
+    .tips {
+      color: #f8cc00;
     }
   }
 }

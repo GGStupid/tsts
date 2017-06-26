@@ -2,20 +2,25 @@
     <div class="userSetting">
         <div class="headIcon">
             <span>我的头像</span>
-            <div class="right">
-                <img src="../../../assets/mine_avatar_default.png" alt="">
-                <img class="arrow" src="../../../assets/arrow_right.png" alt="">
-            </div>
+            <label for="avatarImg">
+                <div class="right">
+                    <span class="icon">
+                        <img :src="avatarImg" alt="">
+                    </span>
+                    <img class="arrow" src="../../../assets/arrow_right.png" alt="">
+                </div>
+            </label>
+            <input ref="avatarImg" id="avatarImg" type="file" accept="*.jpg,*.gif,*.png" @change="uploadHandler" />
         </div>
         <div class="list">
             <div class="wrap" @click="nickname">
                 <span>昵称</span>
                 <div class="right">
-                    <span>尼克</span>
+                    <span>{{nickName}}</span>
                     <img class="arrow" src="../../../assets/arrow_right.png" alt="">
                 </div>
             </div>
-            <div class="wrap">
+            <div class="wrap" @click="loginpw">
                 <span>登录密码</span>
                 <div class="right">
                     <span style="color:#999">修改</span>
@@ -25,14 +30,17 @@
             <div class="wrap" @click="paypassword">
                 <span>支付密码</span>
                 <div class="right">
-                    <span style="color:#F8CC00">重置</span>
+                    <span style="color:#F8CC00" v-show="isPaypassword">重置</span>
+                    <span style="color:#999" v-show="!isPaypassword">设置</span>
                     <img class="arrow" src="../../../assets/arrow_right.png" alt="">
                 </div>
             </div>
             <div class="wrap" @click="authentication">
                 <span>实名认证</span>
                 <div class="right">
-                    <span>毛*(34********48)</span>
+                    <span v-show="isAuthentication">{{authenticationTitle}}</span>
+                    <span style="color:#999" v-show="!isAuthentication">去认证</span>
+                    <img v-show="!isAuthentication" class="arrow" src="../../../assets/arrow_right.png" alt="">
                 </div>
             </div>
         </div>
@@ -42,24 +50,81 @@
     </div>
 </template>
 <script>
+import mine from '@/api/mine/index'
+import { toast } from '@/util/index'
 export default {
-    methods:{
-        nickname(){
+    data() {
+        return {
+            isPaypassword: true,
+            isAuthentication: true,
+            authenticationTitle: '',
+            avatarImg: require('../../../assets/mine_avatar_default.png')
+        }
+    },
+    computed: {
+        avatarUrl() {
+            return this.$store.state.userInfor.avatarUrl ? this.$store.state.userInfor.avatarUrl : require('../../../assets/mine_avatar_default.png')
+        },
+        nickName() {
+            return this.$store.state.userInfor.nickName ? this.$store.state.userInfor.nickName : '用户昵称'
+        }
+    },
+    methods: {
+        uploadHandler(e) {
+            var that = this;
+            var file = e.target.files[0];
+            var formdata = new FormData();
+            formdata.append("file", file)
+            if (file) {
+                if (file.size > 1024 * 1024 * 10) {
+                    console.log("图片大小最大不能超过10M")
+                }
+                else {
+                    lrz(file, { width: 512, quality: 0.9 }, function (rst) {
+                        that.avatarImg = rst.base64;
+                        let sendData = {
+                            picBase64Str:that.avatarImg
+                        }
+                        mine.upload(sendData).then(data => {
+                            if (data.data.code == 200) {
+                                toast(data.data.message)
+                            } else {
+                                toast(data.data.message)
+                            }
+                        })
+                    });
+                }
+            }
+        },
+        nickname() {
             console.log('nickname----')
             this.$router.push('/nickname')
         },
-        paypassword(){
+        loginpw() {
+            console.log('loginpw')
+            this.$router.push('/loginpw')
+        },
+        paypassword() {
             console.log('paypassword')
             this.$router.push('/paypassword')
         },
-        authentication(){
+        authentication() {
             console.log('authentication')
             this.$router.push('/authentication')
         },
-        logout(){
+        logout() {
             console.log('logout')
             this.$router.push('/')
         }
+    },
+    mounted() {
+        mine.getUserInforPost().then((data) => {
+            if (data.data.data.userIdentify != 3) {
+                this.isAuthentication = false
+            }
+            this.$store.dispatch('userInfor', data.data.data)
+            this.avatarImg = this.$store.state.userInfor.avatarUrl ? this.$store.state.userInfor.avatarUrl : require('../../../assets/mine_avatar_default.png')
+        })
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '设置'
@@ -89,14 +154,28 @@ export default {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            img {
+            .icon {
+                display: inline-block;
                 width: @imgWidth;
+                height: @imgWidth;
+                text-align: center;
+                line-height: @imgWidth;
+                overflow: hidden;
+                border-radius: 50%;
+                img {
+                    width: @imgWidth;
+                    height: @imgWidth;
+                }
             }
             .arrow {
                 width: @rightImgWidth;
                 height: @rightImgHeight;
                 margin-left: 0.26667rem;
             }
+        }
+        #avatarImg {
+            position: absolute;
+            left: -9999px;
         }
     }
     .list {

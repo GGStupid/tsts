@@ -46,13 +46,6 @@ export default {
 		'v-button': Button
 	},
 	methods: {
-		isPhone() {
-			if (!(/^1[34578]\d{9}$/.test(phone)) || phone.length != 11) {
-				return false
-			} else if (/^1[34578]\d{9}$/.test(phone) && phone.length == 11) {
-				return true;
-			}
-		},
 		isCleanShow() {
 			if (this.mobile != '') {
 				this.iconShow = true
@@ -93,12 +86,12 @@ export default {
 			encrypt.setPublicKey(this.$store.state.pubkey);
 			let senddata = {
 				mobilePhone: this.mobile,
-				password: encrypt.encrypt(this.password)
+				password: encrypt.encrypt(this.password),
+				token: this.$store.state.token
 			}
-			if (this.isActive) {
+			if (isPhone(this.mobile) && isPassWord(this.password)) {
 				login.userLogin(senddata).then((data) => {
 					if (data.data.code == 200) {
-						this.$store.dispatch('saveToken',data.data.data)
 						this.$router.push({ path: '/home' })
 					} else {
 						toast(data.data.message)

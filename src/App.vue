@@ -5,8 +5,14 @@
 </template>
 
 <script>
+import login from '@/api/login/index'
 export default {
-  name: 'app'
+  name: 'app',
+  mounted() {
+    login.getToken().then((data) => {
+      this.$store.dispatch('saveToken', data.data.data)
+    })
+  }
 }
 </script>
 

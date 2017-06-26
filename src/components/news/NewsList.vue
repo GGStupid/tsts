@@ -1,7 +1,7 @@
 <template>
-    <div class="newList">
+    <div class="newList" @click="toNewDetail">
         <span>{{title}}</span>
-        <img :src="src" alt="">
+        <img :src="picPath" alt="">
     </div>
 </template>
 <script>
@@ -10,8 +10,17 @@ export default {
         title:{
             type:String
         },
-        src:{
+        picPath:{
             type:String
+        },
+        id:{
+            type:Number
+        }
+    },
+    methods:{
+        toNewDetail(){
+            console.log('list')
+            this.$emit('toNewDetail')
         }
     }
 }
@@ -37,7 +46,7 @@ export default {
     padding: 0 @p30;
     border-bottom:1px solid @bordercolor;
     span {
-        flex:0 0 6.1333rem;
+        flex:0 0 6.3733rem;
         line-height: 1.5;
         overflow: hidden;
         text-overflow: ellipsis;

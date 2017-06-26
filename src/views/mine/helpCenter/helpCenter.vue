@@ -8,7 +8,7 @@
 
 <script>
 import TextArrow from '@/components/mine/TextArrow'
-
+import mine from '@/api/mine/index'
 export default {
     data() {
         return {
@@ -29,6 +29,11 @@ export default {
     },
     components: {
         'v-TextArrow': TextArrow
+    },
+    mounted(){
+        mine.classes().then(data=>{
+            console.log(data.data)
+        })
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '帮助中心';

@@ -25,9 +25,11 @@ export default {
     methods:{
         toRecharge(){
             console.log('Recharge')
+            this.$router.push('/Recharge')
         },
         toWithdrawals(){
             console.log('Withdrawals')
+            this.$router.push('/Withdrawals')
         }
     },
     components: {

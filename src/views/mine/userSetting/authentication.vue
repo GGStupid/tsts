@@ -1,6 +1,6 @@
 <template>
     <div class="authentication">
-        <v-WhiteToastButton1 :isShow="isShow"  @toastConfirm="toastConfirm"></v-WhiteToastButton1>
+        <v-WhiteToastButton1 :isShow="isShow" :msg="msg" @toastConfirm="toastConfirm"></v-WhiteToastButton1>
         <div class="from">
             <div class="list">
                 <span>真实姓名</span>
@@ -21,7 +21,7 @@
 
 import Button from '@/components/buttons/Button690'
 import WhiteToastButton1 from '@/components/WhiteToastButton1'
-
+import mine from '@/api/mine/index'
 import { toast, isRealName, isIdCard } from '@/util/index'
 
 export default {
@@ -32,7 +32,8 @@ export default {
             cardId: '',
             isCardId: false,
             isActive: true,
-            isShow:false,
+            isShow: false,
+            msg: ''
         }
     },
     methods: {
@@ -60,16 +61,35 @@ export default {
         },
         toConfirm() {
             console.log('toConfirm')
-            this.isShow=true
+            if (isRealName(this.name) && isIdCard(this.cardId)) {
+                let senddata = {
+                    realName: this.name,
+                    idCard: this.cardId
+                }
+                mine.userVerified(senddata).then((data) => {
+                    if (data.data.code == 200) {
+                        this.isShow = true
+                        this.msg = data.data.message
+                    } else {
+                        this.isShow = true
+                        this.msg = data.data.message
+                        // toast(data.data.message)
+                    }
+                })
+            }
         },
-        toastConfirm(){
+        toastConfirm() {
             console.log('toastConfirm')
-            this.isShow=false
+            this.isShow = false
         }
+    },
+    beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = '实名认证'
+        next()
     },
     components: {
         'v-Button': Button,
-        'v-WhiteToastButton1':WhiteToastButton1
+        'v-WhiteToastButton1': WhiteToastButton1
     }
 }
 </script>

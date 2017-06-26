@@ -1,9 +1,6 @@
 <template>
   <div>
-    <v-Content>
       <v-MsgList v-for="list in lists" :src="list.src" :count="list.count" :title="list.title" :subtitle="list.subtitle" :time="list.time" :key="list.index" @toNext="toNext(list.path)"></v-MsgList>
-    </v-Content>
-    <v-Footer></v-Footer>
   </div>
 </template>
 

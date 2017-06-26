@@ -68,6 +68,7 @@ export default {
             }
         },
         toNext() {
+            this.$router.push({ path: '/paypassword1' })
             if (isPhone(this.phone) && this.phoneCode.length == 6) {
                 console.log('tonext')
                 let sendData = {
@@ -77,7 +78,7 @@ export default {
                 login.userCheckRegistCode(sendData).then(data => {
                     if (data.data.code == 200) {
                         this.$store.dispatch('saveRegisterPhone', this.phone)
-                        this.$router.push({ path: '/register2' })
+                        this.$router.push({ path: '/paypassword1' })
                     } else {
                         toast(data.data.message)
                     }

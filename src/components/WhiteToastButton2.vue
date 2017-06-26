@@ -9,8 +9,8 @@
                 </span>
             </div>
             <div class="buttons">
-                <span @click="toastCancel">取消</span>
-                <span class="confirm" @click="toastConfirm">确认</span>
+                <span @click="toastLeft" v-text="leftText">取消</span>
+                <span class="confirm" @click="toastRight" v-text="rightText">确认</span>
             </div>
         </div>
     </div>
@@ -24,14 +24,20 @@ export default {
         },
         msg:{
             type:String
+        },
+        leftText:{
+            type:String
+        },
+        rightText:{
+            type:String
         }
     },
     methods:{
-        toastCancel(){
-            this.$emit('toastCancel')
+        toastLeft(){
+            this.$emit('toastLeft')
         },
-        toastConfirm(){
-            this.$emit('toastConfirm')
+        toastRight(){
+            this.$emit('toastRight')
         }
     }
 }

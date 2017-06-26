@@ -1,7 +1,9 @@
 <template>
     <div class="headSetting" @click="toNext">
         <div class="left">
-            <img :src="icon" alt="">
+            <span class="icon">
+                <img :src="icon" alt="">
+            </span>
             <span>{{title}}</span>
         </div>
         <img src="../../assets/arrow_right.png" class="right" alt="">
@@ -49,9 +51,18 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        img {
+        .icon {
+            display: inline-block;
             width: @imgWidth;
+            height: @imgWidth;
+            text-align: center;
+            line-height: @imgWidth;
             margin-right: 0.26667rem;
+            overflow: hidden;
+            border-radius: 50%;
+            img {
+                width: @imgWidth;
+            }
         }
     }
     .right {

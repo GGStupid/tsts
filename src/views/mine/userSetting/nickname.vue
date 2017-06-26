@@ -1,7 +1,7 @@
 <template>
     <div class="wrapnickname">
         <div class="nickname">
-            <input type="text" v-model="nickname" @keyup='showClean'>
+            <input type="text" v-model="nickname" @keyup='showClean' placeholder="请输入10位以内的中文昵称">
             <img src="../../../assets/icon_clean.png" @click="cleanNickName" v-show="isShow" alt="">
         </div>
         <div class="buttonWrap">
@@ -12,6 +12,8 @@
 
 <script>
 import Button from '@/components/buttons/Button690'
+import mine from '@/api/mine/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
@@ -32,12 +34,29 @@ export default {
             this.nickname = ''
             this.isShow = false
         },
-        toSave(){
+        toSave() {
             console.log('toSave')
+            let senddata = {
+                nickName: this.nickname
+            }
+            mine.nickName(senddata).then((data) => {
+                if (data.data.code == 200) {
+                     toast('昵称修改成功')
+                      this.$router.go(-1)
+                } else {
+                    toast(data.data.message)
+                }
+            })
         }
     },
-    beforeRouteEnter(to,from,next){
-        document.querySelector('title').innerText='昵称'
+    mounted() {
+        mine.getUserInforPost().then((data) => {
+            this.$store.dispatch('userInfor', data.data.data)
+            this.nickname = this.$store.state.userInfor.nickName
+        })
+    },
+    beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = '昵称'
         next()
     },
     components: {
@@ -71,7 +90,8 @@ export default {
         top: 0.45rem;
     }
 }
-.buttonWrap{
+
+.buttonWrap {
     padding: 0 @p30;
 }
 </style>

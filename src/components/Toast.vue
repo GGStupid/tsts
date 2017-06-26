@@ -17,7 +17,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @width:5.70667rem;
 @color:#999;
 @fontSize:0.37333rem;

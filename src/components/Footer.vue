@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <router-link @click='test' v-for="item in list" :to="item.path" :key="item.index" exact>
+    <router-link  v-for="item in list" :to="item.path" :key="item.index" exact>
       <span>
         <img :src="item.path==$route.path?item.src:item.unsrc" alt="">
       </span>
@@ -12,34 +12,34 @@
 export default {
   data() {
     return {
-      list: [
+       list: [
         {
           title: '资讯',
-          path: '/news',
+          path: '/home/news',
           src: require('../assets/tab_news_s.png'),
           unsrc: require('../assets/tab_news_n.png')
         },
         {
           title: '行情',
-          path: '/market',
+          path: '/home/market',
           src: require('../assets/tab_quotes_s.png'),
           unsrc: require('../assets/tab_quotes_n.png')
         },
         {
           title: '买卖',
-          path: '/deal',
+          path: '/home/deal',
           src: require('../assets/tab_trading_s.png'),
           unsrc: require('../assets/tab_trading_n.png')
         },
         {
           title: '消息',
-          path: '/messages',
+          path: '/home/messages',
           src: require('../assets/tab_message_s.png'),
           unsrc: require('../assets/tab_message_n.png')
         },
         {
           title: '我的',
-          path: '/mine',
+          path: '/home/mine',
           src: require('../assets/tab_mine_s.png'),
           unsrc: require('../assets/tab_mine_n.png')
         }

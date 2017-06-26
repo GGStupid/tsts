@@ -76,13 +76,13 @@ export default {
       if (isPhone(this.phone) && this.phoneCode.length==6) {
          console.log('tonext')
         let sendData = {
-          phone: this.phone,
+          mobilePhone: this.phone,
           phoneCode: this.phoneCode
         }
         login.userCheckRegistCode(sendData).then(data => {
           if (data.data.code == 200) {
             this.$store.dispatch('saveRegisterPhone', this.phone)
-            this.$router.push({ path: '/register2' })
+            this.$router.push({ path: '/forget2' })
           } else {
             toast(data.data.message)
           }
