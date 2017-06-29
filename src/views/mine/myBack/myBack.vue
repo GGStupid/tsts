@@ -1,26 +1,26 @@
 <template>
     <div class="myBackWrap">
         <div class="listWrap">
-            <div class="list" v-for="(bank,index) in bankLists" :key="index" :style="{backgroundColor:bank.state?'#578cce':'#ef6d74'}">
+            <div class="list" v-for="(bank,index) in bankLists" :key="index" :style="{backgroundColor:bank.status==2?'#578cce':'#ef6d74'}">
                 <div class="bankInfor">
-                    <img class="icon" :src="bank.bankSrc" alt="">
+                    <img class="icon" :src="baseImgUrl+bank.bankPicUrl" alt="">
                     <div class="bankDetails">
-                        <div class="name">{{bank.name}}</div>
-                        <div class="type">{{bank.type}}</div>
+                        <div class="name">{{bank.bankName}}</div>
+                        <div class="type"></div>
                         <div class="code">
-                            <span>{{bank.start}}</span>
+                            <span>{{bank.bankNo | bankStart}}</span>
                             <span>****</span>
                             <span>****</span>
-                            <span>{{bank.end}}</span>
+                            <span>{{bank.bankNo | bankEnd}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="bankState">
-                    <span class="stateButton" :class="{'review':!bank.state}" @click="deleteBank(bank)" v-text="bank.state?'删除':'审核中'"></span>
+                    <span class="stateButton" :class="{'review':!bank.status==2}" @click="deleteBank(bank)">{{bank.status==2?'删除':'审核中'}}</span>
                 </div>
             </div>
         </div>
-        <div class="addBack"  @click="addBack">
+        <div class="addBack" v-show="add" @click="addBack">
             <label for="addBack">
                 <img src="../../../assets/bank card_add.png" alt="">
                 <br>
@@ -31,48 +31,76 @@
 </template>
 
 <script>
+import mine from '@/api/mine/index'
 export default {
     data() {
         return {
-            bankLists:[
-                {
-                    bankSrc:require('../../../assets/bank card_logo_CCB.png'),
-                    name:'中国建设银行',
-                    type:'储蓄卡',
-                    start:'6222',
-                    end:'3278',
-                    state:true
-                },
-                 {
-                    bankSrc:require('../../../assets/bank card_logo_MB.png'),
-                    name:'招商银行',
-                    type:'储蓄卡',
-                    start:'6222',
-                    end:'3278',
-                    state:false
-                },
-                
+            baseImgUrl: this.$store.state.baseImgUrl,
+            add: '',
+            bankFailCount: '',
+            auto: '',
+            bankLists: [
+                // {
+                //     bankSrc:require('../../../assets/bank card_logo_CCB.png'),
+                //     name:'中国建设银行',
+                //     type:'储蓄卡',
+                //     start:'6222',
+                //     end:'3278',
+                //     state:true
+                // },
+                //  {
+                //     bankSrc:require('../../../assets/bank card_logo_MB.png'),
+                //     name:'招商银行',
+                //     type:'储蓄卡',
+                //     start:'6222',
+                //     end:'3278',
+                //     state:false
+                // },  
             ]
         }
     },
     methods: {
-        deleteBank(bank){
+        deleteBank(bank) {
             console.log('deleteBank')
             console.log(bank)
-            if(bank.state){
+            if (bank.states==2) {
                 console.log('删除')
-            }else{
+            } else {
                 console.log('审核中---------')
-            }    
-
+            }
         },
         addBack() {
             console.log('addBack')
+            if (this.auto == 1) {
+                this.$router.push('/addBackByPerson')
+                return
+            }
             this.$router.push('/addBack')
         }
     },
-    beforeRouteEnter(to,from,next){
-        document.querySelector('title').innerText='我的银行卡'
+    filters: {
+        bankStart(el) {
+            return el.substr(0, 4)
+        },
+        bankEnd(el) {
+            return el.substr(-4)
+        },
+    },
+    mounted() {
+        mine.userBank().then(data => {
+            console.log(data.data)
+            data.data.data.forEach(function (element) {
+                this.bankLists.push(element)
+            }, this);
+        })
+        mine.verifyBank().then((data) => {
+            this.add = data.data.data.add
+            this.bankFailCount = data.data.data.bankFailCount
+            this.auto = data.data.data.auto
+        })
+    },
+    beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = '我的银行卡'
         next()
     }
 }
@@ -124,7 +152,7 @@ export default {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                 }
-                .review{
+                .review {
                     background-color: #f8cc00;
                     border: none;
                     color: #a98b10;

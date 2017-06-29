@@ -35,6 +35,7 @@ export default {
 <style lang="less" scoped>
 @import '../../less/config.less';
 .detailedWrap {
+    padding-top: 0.2667rem;
     .day{
         margin-bottom: 0.2667rem;
     }

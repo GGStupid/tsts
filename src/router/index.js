@@ -11,13 +11,15 @@ const forget2 = resolve => require(['@/views/login/forget2'], resolve)
 const home = resolve => require(['@/views/home/home'], resolve)
 //news
 const news = resolve => require(['@/views/news/news'], resolve)
-const newDetail=resolve=>require(['@/views/news/newDetail'],resolve)
+const newDetail = resolve => require(['@/views/news/newDetail'], resolve)
 //market
 const market = resolve => require(['@/views/market/market'], resolve)
+const toSearch = resolve => require(['@/views/market/toSearch'], resolve)
 const hot = resolve => require(['@/views/market/hot'], resolve)
 const personList = resolve => require(['@/views/market/personList'], resolve)
-const pricePersonDetail=resolve => require(['@/views/market/pricePersonDetail'], resolve)
-const detailsTribune=resolve=>require(['@/views/market/detailsTribune'], resolve)
+const pricePersonDetail = resolve => require(['@/views/market/pricePersonDetail'], resolve)
+const marketNewsDeatil =resolve=> require(['@/views/market/marketNewsDeatil'], resolve)
+const detailsTribune = resolve => require(['@/views/market/detailsTribune'], resolve)
 //deal
 const deal = resolve => require(['@/views/deal/deal'], resolve)
 
@@ -31,12 +33,13 @@ const mine = resolve => require(['@/views/mine/mine'], resolve)
 //充值
 const Recharge = resolve => require(['@/views/mine/Recharge/Recharge'], resolve)
 const quickPay = resolve => require(['@/views/mine/Recharge/quickPay'], resolve)
-const BankPay=resolve => require(['@/views/mine/Recharge/BankPay'], resolve)
+const BankPay = resolve => require(['@/views/mine/Recharge/BankPay'], resolve)
 const Withdrawals = resolve => require(['@/views/mine/Withdrawals/Withdrawals'], resolve)
 //用户设置
 const userSetting = resolve => require(['@/views/mine/userSetting/userSetting'], resolve)
 const loginpw = resolve => require(['@/views/mine/userSetting/loginpw'], resolve)
 const nickname = resolve => require(['@/views/mine/userSetting/nickname'], resolve)
+const oldpaypassword = resolve => require(['@/views/mine/userSetting/oldpaypassword'], resolve)
 const paypassword = resolve => require(['@/views/mine/userSetting/paypassword'], resolve)
 const paypassword1 = resolve => require(['@/views/mine/userSetting/paypassword1'], resolve)
 const authentication = resolve => require(['@/views/mine/userSetting/authentication'], resolve)
@@ -55,7 +58,7 @@ const addBackByPerson = resolve => require(['@/views/mine/myBack/addBackByPerson
 const selectBank = resolve => require(['@/views/mine/myBack/selectBank'], resolve)
 //邀请好友
 const invitingFriends = resolve => require(['@/views/mine/invitingFriends'], resolve)
-const moreFriends=resolve=>require(['@/views/mine/moreFriends'],resolve)
+const moreFriends = resolve => require(['@/views/mine/moreFriends'], resolve)
 //帮助中心
 const helpCenter = resolve => require(['@/views/mine/helpCenter/helpCenter'], resolve)
 const aboutExercise = resolve => require(['@/views/mine/helpCenter/aboutExercise'], resolve)
@@ -93,8 +96,8 @@ const router = new Router({
     },
     //news
     {
-      path:'/newDetail/:id',
-      component:newDetail
+      path: '/newDetail/:id',
+      component: newDetail
     },
     //messages
     {
@@ -151,12 +154,24 @@ const router = new Router({
     },
     //market
     {
-      path:'/pricePersonDetail',
-      component:pricePersonDetail
+      path: '/toSearch',
+      component: toSearch
     },
     {
-      path:'/detailsTribune',
-      component:detailsTribune
+      path: '/pricePersonDetail/:product_id',
+      component: pricePersonDetail
+    },
+    {
+      path: '/marketNewsDeatil/:product_id',
+      component: marketNewsDeatil
+    },
+    // {
+    //   path: '/pricePersonDetail/:product_id',
+    //   component: pricePersonDetail
+    // },
+    {
+      path: '/detailsTribune',
+      component: detailsTribune
     },
     //mine
     {
@@ -169,8 +184,8 @@ const router = new Router({
       component: quickPay
     },
     {
-      path:'/BankPay',
-      component:BankPay
+      path: '/BankPay',
+      component: BankPay
     },
     {
       path: '/Withdrawals',
@@ -217,6 +232,10 @@ const router = new Router({
       component: loginpw
     },
     {
+      path: '/oldpaypassword',
+      component: oldpaypassword
+    },
+    {
       path: '/paypassword',
       name: 'paypassword',
       component: paypassword
@@ -261,8 +280,8 @@ const router = new Router({
       component: invitingFriends
     },
     {
-      path:'/moreFriends',
-      component:moreFriends
+      path: '/moreFriends',
+      component: moreFriends
     },
     {
       path: '/helpCenter',

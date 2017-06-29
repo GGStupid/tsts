@@ -1,12 +1,14 @@
 <template>
   <div class="newsWrap">
-    <div class="newsList" v-for="(newItem,index) in newsList" :key="index">
-      <img :src="newItem.newSrc" alt="">
-      <div class="right">
-        <div class="title">{{newItem.newTitle}}</div>
-        <div class="times">
-          <span>{{newItem.newTime}}</span>
-          <span>{{newItem.newReporter}}</span>
+    <div class="newListWrap">
+      <div class="newsList" v-for="(newItem,index) in newsList" :key="index" @click="toDetailsNews(newItem.id)">
+        <img :src="baseImgUrl+newItem.picPath" alt="">
+        <div class="right">
+          <div class="title">{{newItem.title}}</div>
+          <div class="times">
+            <span>{{newItem.updateTime}}</span>
+            <span>{{newItem.creator}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -14,24 +16,54 @@
 </template>
 
 <script>
+import market from '@/api/market/index'
 export default {
-  data(){
+  data() {
     return {
-      newsList:[
-        {
-          newSrc:require('../../assets/quotes_hot_notice_avatar.png'),
-          newTitle:'蒙牛:行业功过区域进口料件离开家刻录机家刻录机家刻录机家刻录机离开家',
-          newTime:'今天08：39',
-          newReporter:'制动才今晚'
-        },
-        {
-          newSrc:require('../../assets/quotes_hot_notice_avatar.png'),
-          newTitle:'蒙牛:行业功过区域进口料件离开家刻录机家刻录机家刻录机家刻录机离开家',
-          newTime:'今天08：39',
-          newReporter:'制动才今晚'
-        },
-        
+      baseImgUrl: this.$store.state.baseImgUrl,
+      page: 1,
+      rows: 10,
+      newsList: [
       ]
+    }
+  },
+  methods: {
+    loadNews() {
+      var that = this
+      let sendData = {
+        publisherId: this.$store.state.publisherId,
+        page: this.page,
+        rows: this.rows
+      }
+      console.log(sendData)
+      market.news(sendData).then(data => {
+        data.data.data.rows.forEach(function (element) {
+          this.newsList.push(element)
+        }, this);
+        if (data.data.data.rows.length == 0) {
+          document.querySelector('.newsWrap').removeEventListener('scroll', that.handleScroll)
+        }
+        this.page++
+      })
+    },
+    handleScroll() {
+      let scrollTop = document.querySelector('.newsWrap').scrollTop;
+      let pageHeight = document.querySelector('.newsWrap').offsetHeight;
+      let allHeight = document.querySelector('.newListWrap').offsetHeight;
+      if (scrollTop + pageHeight == allHeight) {
+        this.loadNews();
+      }
+    },
+    toDetailsNews(id) {
+      console.log('toDetailsNews')
+      this.$router.push('/marketNewsDeatil/' + id)
+    }
+  },
+  mounted() {
+    let that = this;
+    if (that.page === 1) {
+      that.loadNews();
+      document.querySelector('.newsWrap').addEventListener('scroll', that.handleScroll);
     }
   }
 }
@@ -53,7 +85,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     img {
-      flex:0 0 2.1333rem;
+      flex: 0 0 2.1333rem;
       width: 2.1333rem;
       height: 1.70667rem;
       margin-right: 0.69333rem;

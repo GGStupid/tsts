@@ -12,6 +12,6 @@ export default {
     },
     // 资讯详情
     informationId(data){
-        return instance.get(wrapUrl+'/informations/'+data)
+        return instance.get(wrapUrl+'/informations/detail?'+qs.stringify(data))
     },
 }

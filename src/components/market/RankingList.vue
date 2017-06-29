@@ -1,7 +1,7 @@
 <template>
     <div class="RankList">
         <div class="title">{{title}}</div>
-        <div class="list" v-for="(list,index) in lists">
+        <div class="list" v-for="(list,index) in lists" :key='index' @click="toDetails(list)">
             <div class="left">
                 <span class="count" v-if="index<3">
                     <img v-show="index==0" src="../../assets/quotes_hot_icon_NO1.png" alt="">
@@ -10,12 +10,12 @@
                 </span>
                 <span class="count" v-else>{{index+1}}</span>
                 <span class="headImg">
-                    <img :src="list.headImg" alt="">
+                    <img :src="baseImgUrl+list.avatarPath" alt="">
                 </span>
                 {{list.name}}
             </div>
             <div class="right">
-                {{list.sub}}
+                {{list.dataStr}}
             </div>
         </div>
     </div>
@@ -23,12 +23,22 @@
 
 <script>
 export default {
+    data(){
+        return {
+            baseImgUrl:this.$store.state.baseImgUrl,
+        }
+    },
     props: {
         title: {
             type: String
         },
         lists: {
             type: Array
+        }
+    },
+    methods:{
+        toDetails(data){
+            this.$emit('toDetails',data)
         }
     }
 }

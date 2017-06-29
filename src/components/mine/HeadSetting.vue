@@ -62,6 +62,7 @@ export default {
             border-radius: 50%;
             img {
                 width: @imgWidth;
+                height: @imgWidth;
             }
         }
     }

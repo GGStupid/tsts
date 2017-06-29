@@ -1,7 +1,7 @@
 <template>
     <div class="paypassword1">
         <div class="title" v-text="title"></div>
-        <label for="paywordinput" v-show="isAgain">
+        <label for="paywordinput" v-show="!isAgain">
             <div class="pwWrap">
                 <div class="payWord">
                     <span v-show="payword.length>=1"></span>
@@ -24,7 +24,7 @@
                 <input type="tel" id="paywordinput" maxlength="6" v-model="payword">
             </div>
         </label>
-        <label for="repatpaywordinput" v-show="!isAgain">
+        <label for="repatpaywordinput" v-show="isAgain">
             <div class="repatWrap">
                 <div class="repatpayword">
                     <span v-show="repatpayword.length>=1"></span>
@@ -52,14 +52,15 @@
 </template>
 
 <script>
-import login from '@/api/login/index'
+import mine from '@/api/mine/index'
 import Button from '@/components/buttons/Button690'
 import Toast from '@/components/Toast'
-import { isPhone, isPassWord } from '@/util/index'
+import { toast, isPhone, isPassWord } from '@/util/index'
 export default {
     data() {
         return {
-            isAgain:true,
+            isOldPayType: false,
+            isAgain: false,
             // title: '请输入6位支付密码',
             payword: '',
             repatpayword: '',
@@ -67,27 +68,70 @@ export default {
             isActive: true
         }
     },
-    computed:{
-        title(){
-            return this.isAgain?'请输入6位支付密码':'请再次输入支付密码'
+    computed: {
+        title() {
+            return this.isAgain ? '请再次输入支付密码' : '请输入6位支付密码'
         }
     },
-    components: {
-        'v-Button': Button,
-        'v-Toast': Toast
+    watch: {
+        payword: `change`
     },
     methods: {
+        change() {
+            if (this.payword.length == 6) {
+                this.isAgain = true
+            }
+        },
         toNext() {
             console.log('paypassword1')
-            if (this.payword.length == 6) {
-               this.isAgain=false
+            if (this.repatpayword.length == 6 && this.repatpayword == this.payword) {
+                let encrypt = new JSEncrypt();
+                encrypt.setPublicKey(this.$store.state.pubkey);
+                let sendData;
+                if (this.isOldPayType) {
+                    sendData = {
+                        newPayPassword: encrypt.encrypt(this.repatpayword),
+                        payPassword: this.$store.state.payPassword,
+                    }
+                    mine.oldPayPassword(sendData).then(data => {
+                        if (data.data.code == 200) {
+                            toast('支付密码设置成功')
+                            this.$router.push('/userSetting')
+                        } else {
+                            toast(data.data.message)
+                        }
+                    })
+                } else {
+                    sendData = {
+                        phoneCode: this.$store.state.phoneCode,
+                        payPassword: encrypt.encrypt(this.repatpayword),
+                    }
+                    mine.payPassword(sendData).then(data => {
+                        if (data.data.code == 200) {
+                            toast('支付密码设置成功')
+                            this.$router.push('/userSetting')
+                        } else {
+                            toast(data.data.message)
+                        }
+                    })
+                }
             }
         }
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '设置支付密码'
-        next()
-    }
+        next(vm => {
+            if (from.path == '/oldpaypassword') {
+                vm.isOldPayType = true
+            } else {
+                vm.isOldPayType = false
+            }
+        })
+    },
+    components: {
+        'v-Button': Button,
+        'v-Toast': Toast
+    },
 }
 </script>
 

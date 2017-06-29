@@ -2,11 +2,11 @@
   <div>
     <div class="newsWrap">
       <v-Swiper swipeid="swipe" ref="swiper" :autoplay="3000" effect="slide">
-      <a @click="toNewDetail(top.id)" v-for="(top,index) in tops" :key="index" class="swiper-slide" slot="swiper-con">
-        <img :src="top.picPath">
-      </a>
-    </v-Swiper>
-    <v-NewsList v-for="list in lists" :title="list.title" :picPath="list.picPath" :id="list.id" @toNewDetail="toNewDetail(list.id)" :key="list.index"></v-NewsList>
+        <div @click="toNewDetail(top.id)" v-for="(top,index) in tops" :key="index" class="swiper-slide" slot="swiper-con">
+          <img :src="baseImgUrl+top.picPath">
+        </div>
+      </v-Swiper>
+      <v-NewsList v-for="list in lists" :title="list.title" :picPath="baseImgUrl+list.picPath" :id="list.id" @toNewDetail="toNewDetail(list.id)" :key="list.index"></v-NewsList>
     </div>
   </div>
 </template>
@@ -21,14 +21,15 @@ import news from '@/api/news/index'
 export default {
   data() {
     return {
+      baseImgUrl:this.$store.state.baseImgUrl,
       page: 1,
       rows: 10,
       swiper: '',
       tops: [
-        { image: require('@/assets/zixun_banner.png'), href: 'https://www.baidu.com/' },
-        { image: require('@/assets/zixun_banner.png'), href: 'https://www.baidu.com/' },
-        { image: require('@/assets/zixun_banner.png'), href: 'http://localhost:8080/#/' },
-        { image: require('@/assets/zixun_banner.png'), href: 'http://localhost:8080/#/' }
+        // { image: require('@/assets/zixun_banner.png'), href: 'https://www.baidu.com/' },
+        // { image: require('@/assets/zixun_banner.png'), href: 'https://www.baidu.com/' },
+        // { image: require('@/assets/zixun_banner.png'), href: 'http://localhost:8080/#/' },
+        // { image: require('@/assets/zixun_banner.png'), href: 'http://localhost:8080/#/' }
       ],
       lists: [
         // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 3 },
@@ -47,30 +48,30 @@ export default {
     }
   },
   methods: {
-     loadNews() {
-            var that = this
-            let sendData = {
-                page: this.page,
-                rows: this.rows
-            }
-            news.informations(sendData).then(data => {
-                data.data.data.rows.forEach(function (element) {
-                    that.lists.push(element)
-                }, this);
-                if (data.data.data.rows.length == 0) {
-                   document.querySelector('.homeWrap').removeEventListener('scroll', that.handleScroll)
-                }
-                this.page++
-            })
-        },
-        handleScroll() {
-            let scrollTop = document.querySelector('.homeWrap').scrollTop;   
-            let pageHeight = document.querySelector('.homeWrap').offsetHeight;
-            let allHeight = document.querySelector('.newsWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
-                this.loadNews();
-            }
-        },
+    loadNews() {
+      var that = this
+      let sendData = {
+        page: this.page,
+        rows: this.rows
+      }
+      news.informations(sendData).then(data => {
+        data.data.data.rows.forEach(function (element) {
+          that.lists.push(element)
+        }, this);
+        if (data.data.data.rows.length == 0) {
+          document.querySelector('.homeWrap').removeEventListener('scroll', that.handleScroll)
+        }
+        this.page++
+      })
+    },
+    handleScroll() {
+      let scrollTop = document.querySelector('.homeWrap').scrollTop;
+      let pageHeight = document.querySelector('.homeWrap').offsetHeight;
+      let allHeight = document.querySelector('.newsWrap').offsetHeight;
+      if (scrollTop + pageHeight == allHeight) {
+        this.loadNews();
+      }
+    },
     toNewDetail(id) {
       console.log('toNewDetail')
       this.$router.push('/newDetail/' + id)
@@ -85,16 +86,17 @@ export default {
     })
   },
   mounted() {
-     let that = this;
-        if (that.page === 1) {
-            that.loadNews();
-            document.querySelector('.homeWrap').addEventListener('scroll', that.handleScroll);
-        }
+    let that = this;
+    if (that.page === 1) {
+      that.loadNews();
+      document.querySelector('.homeWrap').addEventListener('scroll', that.handleScroll);
+    }
     let swiper = this.$refs.swiper
     if (swiper.dom) {
       this.swiper = swiper.dom;
     }
-  }, components: {
+  },
+  components: {
     'v-Content': Content,
     'v-Footer': Footer,
     'v-Swiper': Swiper,
@@ -104,9 +106,10 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.newsWrap{
-  position:relative;
+.newsWrap {
+  position: relative;
 }
+
 .swiper-slide img {
   width: 100%;
   height: 5.0667rem;

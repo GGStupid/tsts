@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-WhiteToastButton2 :isShow="isShow" msg="为了保障您的账户安全，请先进行实名正经" leftText="去认证" @toastLeft="toastLeft" rightText="取消" @toastRight="toastRight"></v-WhiteToastButton2>
-    <v-HeadSetting :icon="headSetting.icon" :title="nickName" @toNext="userSetting()"></v-HeadSetting>
+    <v-HeadSetting :icon="avatarUrl" :title="nickName" @toNext="userSetting()"></v-HeadSetting>
     <v-AccountInformation></v-AccountInformation>
     <div class="listWrap">
       <v-IconTextArrow :icon="myIssuerIcon" title="我投资的发行人" @toNext="myIssuer"></v-IconTextArrow>
@@ -24,6 +24,7 @@ import AccountInformation from '@/components/mine/AccountInformation'
 import IconTextArrow from '@/components/mine/IconTextArrow'
 import WhiteToastButton2 from '@/components/WhiteToastButton2'
 import mine from '@/api/mine/index'
+import { toast } from '@/util/index'
 export default {
   data() {
     return {
@@ -72,6 +73,10 @@ export default {
     },
     myBack() {
       console.log('myBack')
+      if(this.userIdentify.realnameStatus==2){
+        toast('您的实名认证正在审核中')
+        return
+      }
       this.$router.push('/myBack')
     },
     invitingFriends() {
@@ -97,8 +102,8 @@ export default {
   mounted() {
     mine.getUserInforPost().then((data) => {
       this.$store.dispatch('userInfor',data.data.data)
-      // this.userIdentify.realnameStatus !=3 ? true : false
-    if(data.data.data.userIdentify!=3){
+      this.userIdentify=data.data.data.userIdentify
+    if(data.data.data.userIdentify.realnameStatus!=3 && data.data.data.userIdentify.realnameStatus!=2){
       this.isShow=true
     }
     })

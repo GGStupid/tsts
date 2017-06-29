@@ -48,24 +48,24 @@ export default {
     },
     getphoneCode() {
       if (isPhone(this.phone)) {
-        if (this.count != 60) {
-          return false
-        }
-        let timer = setInterval(() => {
-          this.count--
-          this.phoneCodetitle = `${this.count}秒`
-          if (this.count == 0) {
-            clearInterval(timer)
-            this.phoneCodetitle = '重新获取验证码'
-            this.count = 60
-          }
-        }, 1000)
         let sendData = {
-          phone: this.phone
+          mobilePhone: this.phone
         }
-        login.userGetRegistCode(sendData).then(data => {
+        login.resetPwdMsg(sendData).then(data => {
           if (data.data.code == 200) {
-
+            toast('手机验证码已发送请注意查收')
+            if (this.count != 60) {
+              return false
+            }
+            let timer = setInterval(() => {
+              this.count--
+              this.phoneCodetitle = `${this.count}秒`
+              if (this.count == 0) {
+                clearInterval(timer)
+                this.phoneCodetitle = '重新获取验证码'
+                this.count = 60
+              }
+            }, 1000)
           } else {
             toast(data.data.message)
           }
@@ -73,15 +73,16 @@ export default {
       }
     },
     toNext() {
-      if (isPhone(this.phone) && this.phoneCode.length==6) {
-         console.log('tonext')
+      if (isPhone(this.phone) && this.phoneCode.length == 6) {
+        console.log('tonext')
         let sendData = {
           mobilePhone: this.phone,
           phoneCode: this.phoneCode
         }
-        login.userCheckRegistCode(sendData).then(data => {
+        login.checkResetPwdMsg(sendData).then(data => {
           if (data.data.code == 200) {
-            this.$store.dispatch('saveRegisterPhone', this.phone)
+            this.$store.dispatch('savePhone', this.phone)
+             this.$store.dispatch('phoneCode', this.phoneCode)
             this.$router.push({ path: '/forget2' })
           } else {
             toast(data.data.message)

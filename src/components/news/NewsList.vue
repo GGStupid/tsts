@@ -55,6 +55,7 @@ export default {
         -webkit-box-orient: vertical;
     }
     img {
+        width: 2.1333rem;
         height: @imgSize;
     }
 }

@@ -22,12 +22,16 @@ export default {
     userRegister(data){
         return instance.post(wrapUrl+'/userRegist',qs.stringify(data))
     },
-    //忘记密码验证码
-    userGetForgotCode(data){
-        return instance.post(wrapUrl+'/forgotPwd/getForgotCode',qs.stringify(data))
+    //忘记密码发送验证码
+    resetPwdMsg(data){
+        return instance.post(wrapUrl+'/resetPwdMsg',qs.stringify(data))
     },
-    //忘记密码确定
-    userForgot(data){
-        return instance.post(wrapUrl+'/forgotPwd/doForgotPwd',qs.stringify(data))
+    //忘记密码1
+    checkResetPwdMsg(data){
+        return instance.post(wrapUrl+'/checkResetPwdMsg',qs.stringify(data))
+    },
+    //忘记密码2
+    resetPwd(data){
+        return instance.post(wrapUrl+'/resetPwd',qs.stringify(data))
     }
 }

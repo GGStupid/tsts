@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import market from '@/api/market/index'
 export default {
   data() {
     return {
@@ -84,7 +85,18 @@ export default {
     },
     moreComments() {
       console.log('moreComments')
+      this.$router.push('/detailsTribune')
     }
+  },
+  mounted(){
+    let sendData = {
+      productId: this.$route.params.product_id,
+      page:1,
+      rows:2
+    }
+    market.getforums(sendData).then(data => {
+      console.log(data)
+    })
   }
 }
 </script>

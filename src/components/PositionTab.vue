@@ -1,7 +1,7 @@
 <template>
     <div class="PositionTab">
-        <div class="tabWrap" v-for="(item,index) in tabTitles" @click='toActive(index,item)'>
-            <span :class="{'active':flag==index}">{{item.title}}</span>
+        <div class="tabWrap" v-for="(item,index) in tabTitles" :key="index" @click='toActive(index,item)'>
+            <span :class="{'active':flag==index}">{{item.name}}</span>
         </div>
     </div>
 </template>

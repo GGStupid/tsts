@@ -92,7 +92,7 @@ export default {
 			if (isPhone(this.mobile) && isPassWord(this.password)) {
 				login.userLogin(senddata).then((data) => {
 					if (data.data.code == 200) {
-						this.$router.push({ path: '/home' })
+						this.$router.push({ path: '/home/news' })
 					} else {
 						toast(data.data.message)
 					}

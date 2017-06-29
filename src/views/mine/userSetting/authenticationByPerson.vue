@@ -1,6 +1,6 @@
 <template>
     <div class="authentication">
-        <v-WhiteToastButton1 :isShow="isShow" msg='撒旦发大水法啊'  @toastConfirm="toastConfirm"></v-WhiteToastButton1>
+        <v-WhiteToastButton1 :isShow="isShow" :msg="msg" @toastConfirm="toastConfirm"></v-WhiteToastButton1>
         <div class="from">
             <div class="list">
                 <span>真实姓名</span>
@@ -13,21 +13,21 @@
                 <img class="rIcon" v-show="isCardId" src="../../../assets/icon_clean.png" alt="" @click="cleanCardId">
             </div>
         </div>
-         <div class="from">
+        <div class="from" v-show="above3">
             <div class="upimg">
                 <img src="../../../assets/bank card_add_pic.png" alt="">
                 <br>
                 <span>上传身份证正面（图片大小不大于10M）</span>
             </div>
         </div>
-         <div class="from">
+        <div class="from" v-show="above3">
             <div class="upimg">
                 <img src="../../../assets/bank card_add_pic.png" alt="">
                 <br>
                 <span>上传身份证反面（图片大小不大于10M）</span>
             </div>
         </div>
-        <v-Button title='提交审核' :isActive='isActive' topNum='0.6667rem' @toNext='toConfirm'></v-Button>
+        <v-Button :title='buttonTitle' :isActive='isActive' topNum='0.6667rem' @toNext='toConfirm'></v-Button>
     </div>
 </template>
 
@@ -35,18 +35,21 @@
 
 import Button from '@/components/buttons/Button690'
 import WhiteToastButton1 from '@/components/WhiteToastButton1'
-
+import mine from '@/api/mine/index'
 import { toast, isRealName, isIdCard } from '@/util/index'
 
 export default {
     data() {
         return {
+            isShow: false,
+            msg: '',
             name: '',
             isname: false,
             cardId: '',
             isCardId: false,
+            above3: false,
             isActive: true,
-            isShow:false,
+            buttonTitle: '确定'
         }
     },
     methods: {
@@ -74,16 +77,31 @@ export default {
         },
         toConfirm() {
             console.log('toConfirm')
-            this.isShow=true
+            if (isRealName(this.name) && isIdCard(this.cardId)) {
+                let senddata = {
+                    realName: this.name,
+                    idCard: this.cardId
+                }
+                mine.userVerified(senddata).then((data) => {
+                    if (data.data.code == 200) {
+                        this.isShow = true
+                        this.msg = data.data.message
+                    } else {
+                        this.isShow = true
+                        this.msg = data.data.message
+                        // toast(data.data.message)
+                    }
+                })
+            }
         },
-        toastConfirm(){
+        toastConfirm() {
             console.log('toastConfirm')
-            this.isShow=false
+            this.isShow = false
         }
     },
     components: {
         'v-Button': Button,
-        'v-WhiteToastButton1':WhiteToastButton1
+        'v-WhiteToastButton1': WhiteToastButton1
     }
 }
 </script>
@@ -148,12 +166,13 @@ export default {
         color: @placeColor;
     }
 }
-.upimg{
+
+.upimg {
     height: 4.4rem;
     color: @placeColor;
     text-align: center;
     font-size: 0.37333rem;
-    img{
+    img {
         margin: 0.64rem @m50;
     }
 }

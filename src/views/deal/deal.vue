@@ -43,6 +43,10 @@ export default {
       this.$router.push('/home/news')
     }
   },
+  beforeRouteEnter(to,from,next){
+    document.querySelector('title').innerText='行情'
+    next()
+  },
   components: {
     'v-Content': Content,
     'v-Footer': Footer,
@@ -65,7 +69,6 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 11;
-  padding-top: 0.2667rem;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   background-color: #191a22;

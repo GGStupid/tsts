@@ -11,11 +11,45 @@
                 <span>30.00%</span>
             </div>
             <div class="charts">
-    
+                <img src="../../assets/echats.png" alt="">
+                <div class="aboutsPrices">
+                    <div class="chartstop">
+                        <div class="box">
+                            <span style="margin-right: 0.1rem;">最&nbsp;&nbsp;高</span>
+                            <span class="num">00.00</span>
+                        </div>
+                        <div class="box" style="text-align:right">
+                            <span style="margin-right: 0.1rem;">今&nbsp;&nbsp;开</span>
+                            <span class="num">00.00</span>
+                        </div>
+                        <div class="box">
+                            <span style="margin-right: 0.1rem;">最&nbsp;&nbsp;低</span>
+                            <span class="num">00.00</span>
+                        </div>
+                        <div class="box" style="text-align:right">
+                            <span style="margin-right: 0.1rem;">换&nbsp;&nbsp;手</span>
+                            <span class="num">00.00%</span>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="box">
+                            <span>均&nbsp;&nbsp;价</span>
+                            <span class="active">0.00元/秒</span>
+                        </div>
+                        <div class="box">
+                            <span>最&nbsp;&nbsp;新</span>
+                            <span class="num">00.00元/时</span>
+                        </div>
+                        <div class="box">
+                            <span>总&nbsp;&nbsp;额</span>
+                            <span class="num">00.00万元</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="mainTabs">
                 <div class="mainToptabs">
-                    <span v-for="(mainToptab,index) in mainToptabs" :key="index" @click="currentView=mainToptab.component" :class="{'active':currentView==mainToptab.component}">
+                    <span v-for="(mainToptab,index) in mainToptabs" :key="index" @click="toCurrentView(mainToptab)" :class="{'active':currentView==mainToptab.component}">
                         {{mainToptab.title}}
                     </span>
                 </div>
@@ -29,8 +63,8 @@
                     <p>{{item.title}}</p>
                 </div>
                 <div v-else>
-                    <img :src="isCollection ? require('../../assets/quotes_tab_optional_s.png') : require('../../assets/quotes_tab_optional_n.png')" alt="">
-                    <p :class="{'active':isCollection}">{{item.title}}</p>
+                    <img :src="optional ? require('../../assets/quotes_tab_optional_s.png') : require('../../assets/quotes_tab_optional_n.png')" alt="">
+                    <p :class="{'active':optional}">{{item.title}}</p>
                 </div>
             </div>
         </div>
@@ -42,11 +76,11 @@ import Tribune from '@/components/market/Tribune'
 import BriefIntroduction from '@/components/market/BriefIntroduction'
 import News from '@/components/market/News'
 import Notice from '@/components/market/Notice'
+import market from '@/api/market/index'
 export default {
     data() {
         return {
-            title: '胡灵（500060）',
-            isCollection: false,
+            optional: false,
             list: [
                 {
                     title: '购买',
@@ -88,10 +122,11 @@ export default {
                     component: 'News'
                 },
                 {
-                    title: '公共',
+                    title: '公告',
                     component: 'Notice'
                 }
             ],
+            publisherId:'',
             currentView: 'Tribune'
         }
     },
@@ -99,24 +134,44 @@ export default {
         toBuy() {
             console.log('购买')
         },
-        toTransfer(){
+        toTransfer() {
             console.log('转让')
         },
         Collection() {
             console.log('自选')
-            this.isCollection = !this.isCollection
+            let sendData = {
+                productId: this.$route.params.product_id
+            }
+            market.optional(sendData).then(data=>{
+                console.log(data)
+            })
+            this.optional = !this.optional
         },
-        toTribune(){
+        toTribune() {
             console.log('论坛')
             this.$router.push('/detailsTribune')
         },
-        toShare(){
+        toShare() {
             console.log('分享')
             alert('该功能暂未开放')
+        },
+        toCurrentView(mainToptab){
+            this.currentView=mainToptab.component
+            this.$store.dispatch('publisherId',this.publisherId)
         }
     },
+    mounted() {
+        let sendData = {
+            productId: this.$route.params.product_id
+        }
+        market.quotation(sendData).then(data => {
+            document.querySelector('title').innerText = `${data.data.data.name} (${data.data.data.code})`
+            this.optional = data.data.data.optional
+            this.publisherId=data.data.data.publisherId
+        })
+    },
     beforeRouteEnter(to, from, next) {
-        next((vm) => document.querySelector('title').innerText = vm.title)
+        next()
     },
     components: {
         Tribune,
@@ -167,6 +222,48 @@ export default {
             height: 8.53333rem;
             background-color: #202129;
             margin-bottom: 0.26667rem;
+            img {
+                width: 100%;
+                height: 5.12rem;
+            }
+            .aboutsPrices {
+                padding: 0 @p30;
+                height: 3.28rem;
+                color: #999;
+                .chartstop {
+                    height: 1.81333rem;
+                    border-bottom: 1px solid @bordercolor;
+                    font-size: 0;
+                    .box {
+                        display: inline-block;
+                        width: 50%;
+                        height: 0.90667rem;
+                        font-size: 0.32rem;
+                        .num {
+                            display: inline-block;
+                            width: 1.5rem;
+                            color: @color;
+                        }
+                    }
+                }
+                .bottom {
+                    height: 0.77333rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    .box {
+                        span {
+                            margin-right: 0.1rem;
+                        }
+                        .active {
+                            color: @yellow;
+                        }
+                        .num {
+                            color: @color;
+                        }
+                    }
+                }
+            }
         }
         .mainTabs {
             background-color: #191a22;

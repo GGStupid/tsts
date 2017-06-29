@@ -11,7 +11,7 @@
         <div class="worth">
           <span>身价</span>
           &nbsp;
-          <span class="price">17069.64万元</span>
+          <span class="price">{{informationObj.social/10000}}万元</span>
         </div>
         <div class="rules">
           身价计算方式：
@@ -27,27 +27,27 @@
       <div class="content">
         <div class="profileList">
           <span class="filed">姓名</span>
-          <span>胡灵</span>
+          <span>{{informationObj.name}}</span>
         </div>
         <div class="profileList">
           <span class="filed">国籍</span>
-          <span>中国</span>
+          <span>{{informationObj.countrys}}</span>
         </div>
         <div class="profileList">
           <span class="filed">民族</span>
-          <span>汉族</span>
+          <span>{{informationObj.nation}}</span>
         </div>
         <div class="profileList">
           <span class="filed">出生年月</span>
-          <span>1986-06-25</span>
+          <span>{{informationObj.birthday}}</span>
         </div>
         <div class="profileList">
           <span class="filed">职业</span>
-          <span>歌手，演员，主持人</span>
+          <span>{{informationObj.profession}}</span>
         </div>
         <div class="profileList">
           <span class="filed">毕业院校</span>
-          <span>保密</span>
+          <span>{{informationObj.school}}</span>
         </div>
       </div>
     </div>
@@ -55,17 +55,43 @@
       <div class="title">
         <img src="../../assets/quotes_intro_line.png" alt=""> 主要经历
       </div>
-      <div class="content">
-        2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的
-        2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的2005年。阿朵所发生的分阿斯蒂芬阿斯蒂芬爱的色放阿飞ad散发的
+      <div class="content" v-html="informationObj.experience">
+      </div>
+    </div>
+    <div class="mainExperience">
+      <div class="title">
+        <img src="../../assets/quotes_intro_line.png" alt=""> 主要成就
+      </div>
+      <div class="content" v-html="informationObj.achievement">
+      </div>
+    </div>
+    <div class="mainExperience">
+      <div class="title">
+        <img src="../../assets/quotes_intro_line.png" alt=""> 时间使用范围
+      </div>
+      <div class="content" v-html="informationObj.useArea">
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import market from '@/api/market/index'
 export default {
-
+  data() {
+    return {
+      informationObj:{}
+    }
+  },
+  mounted() {
+    let sendData = {
+      publisherId: this.$store.state.publisherId
+    }
+    market.detail(sendData).then(data => {
+      console.log(data)
+      this.informationObj=data.data.data
+    })
+  },
 }
 </script>
 
@@ -134,24 +160,24 @@ export default {
         vertical-align: text-bottom;
       }
     }
-    .content{
-      .profileList{
+    .content {
+      .profileList {
         font-size: 0.346667rem;
         color: #eee;
         padding: 0 @p30;
-        span{
+        span {
           height: 0.8rem;
           line-height: 0.8rem;
           display: inline-block;
         }
-        .filed{
+        .filed {
           color: #999;
-           width: 1.8rem;
+          width: 1.8rem;
         }
       }
     }
   }
-  .mainExperience{
+  .mainExperience {
     background-color: @bgcolor;
     margin-bottom: 0.26667rem;
     .title {
@@ -167,7 +193,7 @@ export default {
         vertical-align: text-bottom;
       }
     }
-    .content{
+    .content {
       color: #eee;
       font-size: 0.35rem;
       line-height: 1.5;

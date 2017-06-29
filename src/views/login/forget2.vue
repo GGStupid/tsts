@@ -42,64 +42,67 @@ export default {
         'v-button': Button
     },
     methods: {
-         isCleanShow1(){
-             if (this.password1 != '') {
-				this.passShow1 = true
-                return 
-			} else {
-				this.passShow1 = false
-                return 
-			}
+        isCleanShow1() {
+            if (this.password1 != '') {
+                this.passShow1 = true
+                return
+            } else {
+                this.passShow1 = false
+                return
+            }
         },
-        isClean1(){
-             if (this.password1 != '') {
-				this.password1 = ''
-				this.passShow1 = false
-                return 
-			}
+        isClean1() {
+            if (this.password1 != '') {
+                this.password1 = ''
+                this.passShow1 = false
+                return
+            }
         },
-        checkTpye1(){
-             this.ispassword1 = !this.ispassword1;
-			if (!this.ispassword1) {
-				this.passwordSrc1 = require('../../assets/icon_show_pwd.png')
-			} else {
-				this.passwordSrc1 = require('../../assets/icon_hide_pwd.png')
-			}
+        checkTpye1() {
+            this.ispassword1 = !this.ispassword1;
+            if (!this.ispassword1) {
+                this.passwordSrc1 = require('../../assets/icon_show_pwd.png')
+            } else {
+                this.passwordSrc1 = require('../../assets/icon_hide_pwd.png')
+            }
         },
-        isCleanShow2(){
-			if (this.password2 != '') {
-				this.passShow2 = true
-                return 
-			} else {
-				this.passShow2 = false
-                return 
-			}
+        isCleanShow2() {
+            if (this.password2 != '') {
+                this.passShow2 = true
+                return
+            } else {
+                this.passShow2 = false
+                return
+            }
         },
-        isClean2(){
-			if (this.password2 != '') {
-				this.password2 = ''
-				this.passShow2 = false
-                return 
-			}
+        isClean2() {
+            if (this.password2 != '') {
+                this.password2 = ''
+                this.passShow2 = false
+                return
+            }
         },
-        checkTpye(){
-             this.ispassword2 = !this.ispassword2;
-			if (!this.ispassword2) {
-				this.passwordSrc2 = require('../../assets/icon_show_pwd.png')
-			} else {
-				this.passwordSrc2 = require('../../assets/icon_hide_pwd.png')
-			}
+        checkTpye() {
+            this.ispassword2 = !this.ispassword2;
+            if (!this.ispassword2) {
+                this.passwordSrc2 = require('../../assets/icon_show_pwd.png')
+            } else {
+                this.passwordSrc2 = require('../../assets/icon_hide_pwd.png')
+            }
         },
         confirm() {
-            if (isPassWord(this.password1) && this.password1==this.password2) {
+            if (isPassWord(this.password1) && this.password1 == this.password2) {
                 console.log('confirm')
+                let encrypt = new JSEncrypt();
+                encrypt.setPublicKey(this.$store.state.pubkey);
                 let sendData = {
-                    phone: this.phone,
-                    phoneCode: this.phoneCode
+                    mobilePhone: this.$store.state.phone,
+                    password: encrypt.encrypt(this.password2),
+                    phoneCode: this.$store.state.phoneCode,
                 }
-                login.userCheckRegistCode(sendData).then(data => {
+                login.resetPwd(sendData).then(data => {
                     if (data.data.code == 200) {
-                        this.$store.dispatch('saveRegisterPhone', this.phone)
+                         toast('密码修改成功，请重新登录')
                         this.$router.push({ path: '/' })
                     } else {
                         toast(data.data.message)

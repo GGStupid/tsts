@@ -13,7 +13,27 @@
                 <img class="rIcon" v-show="isCardId" src="../../../assets/icon_clean.png" alt="" @click="cleanCardId">
             </div>
         </div>
-        <v-Button title='确定' :isActive='isActive' topNum='0.6667rem' @toNext='toConfirm'></v-Button>
+        <div class="from" v-show="realNameFailCount">
+            <label for="cardOppositePic">
+                <div class="upimg">
+                    <img :src="cardOppositeUp" alt="">
+                    <br>
+                    <span>上传身份证正面（图片大小不大于1M）</span>
+                </div>
+            </label>
+            <input ref="cardOppositePic" id="cardOppositePic" type="file" accept="*.jpg,*.gif,*.png" @change="uploadcardOppositePicHandler" >
+        </div>
+        <div class="from" v-show="realNameFailCount">
+            <label for="cardPositivePic">
+                <div class="upimg">
+                    <img :src="cardPositiveUp" alt="">
+                    <br>
+                    <span>上传身份证反面（图片大小不大于1M）</span>
+                </div>
+            </label>
+            <input ref="cardPositivePic" id="cardPositivePic" type="file" accept="*.jpg,*.gif,*.png" @change="uploadcardPositivePicHandler" >
+        </div>
+        <v-Button :title='buttonTitle' :isActive='isActive' topNum='0.6667rem' @toNext='toConfirm'></v-Button>
     </div>
 </template>
 
@@ -27,13 +47,27 @@ import { toast, isRealName, isIdCard } from '@/util/index'
 export default {
     data() {
         return {
+            isShow: false,
+            msg: '',
             name: '',
             isname: false,
             cardId: '',
             isCardId: false,
+            realFailCount: 0,
+            isUpImg: false,
+            cardOppositePic: '',
+            cardOppositeUp: require('../../../assets/bank card_add_pic.png'),
+            cardPositivePic: '',
+            cardPositiveUp: require('../../../assets/bank card_add_pic.png'),
             isActive: true,
-            isShow: false,
-            msg: ''
+        }
+    },
+    computed: {
+        realNameFailCount() {
+            return this.realFailCount >= 3
+        },
+        buttonTitle() {
+            return this.realNameFailCount ? '提交审核' : '确定'
         }
     },
     methods: {
@@ -59,33 +93,119 @@ export default {
             this.cardId = ''
             this.isCardId = false
         },
+        uploadcardOppositePicHandler(e) {
+            var that = this;
+            var file = e.target.files[0];
+            var formdata = new FormData();
+            formdata.append("file", file)
+            if (file) {
+                if (file.size > 1024 * 1024 * 1) {
+                    toast("图片大小最大不能超过1M")
+                }
+                else {
+                    lrz(file, { width: 512, quality: 0.9 }, function (rst) {
+                        that.cardOppositeUp = rst.base64;
+                        let sendData = {
+                            picBase64Str: that.cardOppositeUp
+                        }
+                        mine.upload(sendData).then(data => {
+                            if (data.data.code == 200) {
+                                that.cardOppositePic = data.data.data
+                            } else {
+                                toast(data.data.message)
+                            }
+                        })
+                    });
+                }
+            }
+        },
+        uploadcardPositivePicHandler(e) {
+            var that = this;
+            var file = e.target.files[0];
+            var formdata = new FormData();
+            formdata.append("file", file)
+            if (file) {
+                if (file.size > 1024 * 1024 * 1) {
+                    toast("图片大小最大不能超过1M")
+                }
+                else {
+                    lrz(file, { width: 512, quality: 0.9 }, function (rst) {
+                        that.cardPositiveUp = rst.base64;
+                        let sendData = {
+                            picBase64Str: that.cardPositiveUp
+                        }
+                        mine.upload(sendData).then(data => {
+                            if (data.data.code == 200) {
+                                that.cardPositivePic = data.data.data
+                            } else {
+                                toast(data.data.message)
+                            }
+                        })
+                    });
+                }
+            }
+        },
         toConfirm() {
             console.log('toConfirm')
-            if (isRealName(this.name) && isIdCard(this.cardId)) {
-                let senddata = {
-                    realName: this.name,
-                    idCard: this.cardId
-                }
-                mine.userVerified(senddata).then((data) => {
-                    if (data.data.code == 200) {
-                        this.isShow = true
-                        this.msg = data.data.message
-                    } else {
-                        this.isShow = true
-                        this.msg = data.data.message
-                        // toast(data.data.message)
+            if (this.realFailCount >= 3) {
+                if (isRealName(this.name) && isIdCard(this.cardId) && this.cardOppositePic && this.cardPositivePic) {
+                    let senddata = {
+                        realName: this.name,
+                        idCard: this.cardId,
+                        cardOppositePic: this.cardOppositePic,
+                        cardPositivePic: this.cardPositivePic
                     }
-                })
+                    mine.userVerified(senddata).then((data) => {
+                        if (data.data.code == 200) {
+                            this.realFailCount = 4
+                            this.isShow = true
+                            this.msg = data.data.message
+                        } else {
+                            this.realFailCount = data.data.data
+                            this.isShow = true
+                            this.msg = data.data.message
+                            // toast(data.data.message)
+                        }
+                    })
+                }
+            } else {
+                if (isRealName(this.name) && isIdCard(this.cardId)) {
+                    let senddata = {
+                        realName: this.name,
+                        idCard: this.cardId,
+                        cardOppositePic: this.cardOppositePic,
+                        cardPositivePic: this.cardPositivePic
+                    }
+                    mine.userVerified(senddata).then((data) => {
+                        if (data.data.code == 200) {
+                            this.realFailCount = 4
+                            this.isShow = true
+                            this.msg = data.data.message
+                        } else {
+                            this.realFailCount = data.data.data
+                            this.isShow = true
+                            this.msg = data.data.message
+                            // toast(data.data.message)
+                        }
+                    })
+                }
             }
+
         },
         toastConfirm() {
             console.log('toastConfirm')
-            this.isShow = false
+            if (this.realFailCount <= 3) {
+                this.isShow = false
+                return
+            } else {
+                this.$router.replace('/userSetting')
+            }
         }
     },
-    beforeRouteEnter(to, from, next) {
-        document.querySelector('title').innerText = '实名认证'
-        next()
+    mounted() {
+        mine.getUserInforPost().then((data) => {
+            this.realFailCount = data.data.data.realNameFailCount
+        })
     },
     components: {
         'v-Button': Button,
@@ -103,6 +223,15 @@ export default {
 .from {
     border-radius: 0.08rem;
     background-color: #353641;
+    margin-bottom: 0.26667rem;
+    #cardOppositePic {
+        position: absolute;
+        left: -9999px;
+    }
+    #cardPositivePic {
+        position: absolute;
+        left: -9999px;
+    }
 }
 
 .list {
@@ -110,7 +239,7 @@ export default {
     padding: 0 0.32rem;
     position: relative;
     font-size: @fontsize32;
-    color: @placeColor;
+    color: @color;
     border-bottom: 1px solid #191A22;
     span {
         display: inline-block;
@@ -151,6 +280,17 @@ export default {
     input:-ms-input-placeholder {
         /* Internet Explorer 10+*/
         color: @placeColor;
+    }
+}
+
+.upimg {
+    height: 4.4rem;
+    color: @placeColor;
+    text-align: center;
+    font-size: 0.37333rem;
+    img {
+        margin: 0.64rem @m50;
+        height: 2.1333rem;
     }
 }
 </style>

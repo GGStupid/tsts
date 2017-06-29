@@ -1,12 +1,12 @@
 <template>
     <div class="AccountInformation">
         <div class="wrap">
-            <div>100.5</div>
+            <div>{{assets}}</div>
             <div class="sub">账户余额</div>
             <v-Button240 :title="Recharge" @toNext="toRecharge"></v-Button240>
         </div>
         <div class="wrap">
-            <div>120.5</div>
+            <div>{{available}}</div>
             <div class="sub">资产总额</div>
             <v-Button240 :title="Withdrawals" @toNext="toWithdrawals"></v-Button240>
         </div>
@@ -20,6 +20,14 @@ export default {
         return {
             Recharge: '充值',
             Withdrawals: '提现'
+        }
+    },
+    computed:{
+        assets(){
+            return this.$store.state.userInfor.assets
+        },
+        available(){
+            return this.$store.state.userInfor.available
         }
     },
     methods:{

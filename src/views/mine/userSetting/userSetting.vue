@@ -56,8 +56,8 @@ export default {
     data() {
         return {
             isPaypassword: true,
-            isAuthentication: true,
             authenticationTitle: '',
+            userIdentify:'',
             avatarImg: require('../../../assets/mine_avatar_default.png')
         }
     },
@@ -67,6 +67,14 @@ export default {
         },
         nickName() {
             return this.$store.state.userInfor.nickName ? this.$store.state.userInfor.nickName : '用户昵称'
+        },
+        isAuthentication(){
+            if(this.userIdentify.realnameStatus == 2){
+                return true
+            }
+            if(this.userIdentify.realnameStatus == 3){
+                return true
+            }
         }
     },
     methods: {
@@ -77,17 +85,27 @@ export default {
             formdata.append("file", file)
             if (file) {
                 if (file.size > 1024 * 1024 * 10) {
-                    console.log("图片大小最大不能超过10M")
+                    toast("图片大小最大不能超过1M")
                 }
                 else {
                     lrz(file, { width: 512, quality: 0.9 }, function (rst) {
                         that.avatarImg = rst.base64;
                         let sendData = {
-                            picBase64Str:that.avatarImg
+                            picBase64Str: that.avatarImg
                         }
                         mine.upload(sendData).then(data => {
                             if (data.data.code == 200) {
-                                toast(data.data.message)
+                                let sendData = {
+                                    avavtarUrl: data.data.data
+                                }
+                                mine.avatarUrl(sendData).then(data => {
+                                    console.log(data)
+                                    if (data.data.code == 200) {
+                                        toast('头像更新成功')
+                                    } else {
+                                        toast(data.data.message)
+                                    }
+                                })
                             } else {
                                 toast(data.data.message)
                             }
@@ -106,10 +124,20 @@ export default {
         },
         paypassword() {
             console.log('paypassword')
+            if (this.isPaypassword) {
+                this.$router.push('/oldpaypassword')
+                return
+            }
             this.$router.push('/paypassword')
         },
         authentication() {
             console.log('authentication')
+            if(this.userIdentify.realnameStatus == 2){
+                return 
+            }
+            if(this.userIdentify.realnameStatus == 3){
+                return 
+            }
             this.$router.push('/authentication')
         },
         logout() {
@@ -123,8 +151,20 @@ export default {
                 this.isAuthentication = false
             }
             this.$store.dispatch('userInfor', data.data.data)
+            this.userIdentify=data.data.data.userIdentify
+            if(this.userIdentify.realnameStatus == 2){
+                this.authenticationTitle='审核中'
+            }
+            if(this.userIdentify.realnameStatus == 3){
+                 this.authenticationTitle=`${data.data.data.realName} (${data.data.data.idCard})`
+            }
             this.avatarImg = this.$store.state.userInfor.avatarUrl ? this.$store.state.userInfor.avatarUrl : require('../../../assets/mine_avatar_default.png')
-        })
+        }),
+            mine.ispayPassword().then(data => {
+                if (data.data.code != 200) {
+                    this.isPaypassword = false
+                }
+            })
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '设置'

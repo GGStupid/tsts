@@ -2,33 +2,43 @@
     <div class="comPersonList">
         <div class="lists" v-for="(list,index) in personLists" :key="index" @click="toNext(list)">
             <div class="aboutNames">
-                <img :src="list.avatar" alt="">
+                <img :src="baseImgUrl+list.avatarPath" alt="">
                 <div class="name">
                     <div>{{list.name}}</div>
                     <div class="code">{{list.code}}</div>
                 </div>
             </div>
             <div class="aboutPrices">
-                {{list.price}}
+                {{list.lastPrice*3600 | toFixed}}
             </div>
-            <div class="aboutPercent" :class="{'isUP':list.isUP}">
-                {{list.percent}}
+            <div class="aboutPercent" :class="{'isUP':list.growthRatio>=0}">
+                {{list.growthRatio<0?'-':''}}{{list.growthRatio*100}}%
             </div>
         </div>
     </div>
- 
 </template>
 
 <script>
 export default {
-    props:{
-        personLists:{
-            type:Array
+    data() {
+        return {
+            baseImgUrl: this.$store.state.baseImgUrl,
         }
     },
-    methods:{
-        toNext(payload){
-            this.$emit('toNext',payload)
+    props: {
+        personLists: {
+            type: Array
+        }
+    },
+    methods: {
+        toNext(payload) {
+            this.$emit('toNext', payload)
+        }
+    },
+    filters: {
+        toFixed(prices) {
+            if (!prices) return
+            return prices.toFixed(0)
         }
     }
 }
@@ -46,8 +56,8 @@ export default {
     background-color: @bgcolor;
     border-bottom: 1px solid @bordercolor;
     .aboutNames {
+        flex: 0 0 4rem;
         display: flex;
-        justify-content: space-between;
         align-items: center;
         font-size: 0.4rem;
         img {
@@ -63,11 +73,12 @@ export default {
         }
     }
     .aboutPrices {
-        padding-left: 0.2rem;
+        flex: 0 0 3rem;
+        text-align: right;
         font-size: 0.426667rem;
     }
     .aboutPercent {
-        flex: 0 0 1.5rem;
+        flex: 1 1 2.2rem;
         text-align: right;
         font-size: 0.426667rem;
         color: #4affa5;

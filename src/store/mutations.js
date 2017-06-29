@@ -1,4 +1,8 @@
 export default {
+    //baseImgUrl
+    baseImgUrl(state,payload){
+        state.baseImgUrl=payload
+    },
     //SelectBank
     SelectBank(state,payload){
         state.SelectBank=payload
@@ -16,5 +20,21 @@ export default {
     userInfor(state,payload){
         localStorage.setItem('userInfor', JSON.stringify(payload))
         state.userInfor=payload
-    }
+    },
+    //savePhone
+    savePhone(state,payload){
+        state.phone=payload
+    },
+    //phoneCode
+    phoneCode(state,payload){
+        state.phoneCode=payload
+    },
+    //payPassword
+    payPassword(state,payload){
+        state.payPassword=payload
+    },
+    //publisherId
+    publisherId(state,payload){
+        state.publisherId=payload
+    },
 }

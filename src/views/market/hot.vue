@@ -1,12 +1,12 @@
 <template>
   <div class="hotWrap">
     <v-SwiperBar swipeid="swipe" ref="swiper">
-      <v-RankingList :key="rank.index" :title="rank.title" :lists="rank.lists" class="swiper-slide" slot="swiper-con" v-for="rank in ranks">
+      <v-RankingList v-for="(rank,index) of ranks" :key="index" :title="rank.title" :lists="rank.lists" class="swiper-slide" @toDetails="toDetails" slot="swiper-con">
       </v-RankingList>
     </v-SwiperBar>
     <div class="tabWrap">
       <v-FlexTab :tabTitles='tabTitles' @toNext="toCheckTab"></v-FlexTab>
-      <v-HotList :lists="lists" @toNext="toNext"></v-HotList>
+      <v-HotList :isNews="isNews"></v-HotList>
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@ import SwiperBar from '@/components/swiper/SwiperBar.vue'
 import RankingList from '@/components/market/RankingList'
 import FlexTab from '@/components/FlexTab'
 import HotList from '@/components/market/HotList'
-
+import market from '@/api/market/index'
 export default {
   data() {
     return {
@@ -25,31 +25,31 @@ export default {
         {
           title: '买卖榜',
           lists: [
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' }
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
           ],
         },
         {
           title: '换手榜',
           lists: [
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' }
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
           ],
         },
         {
           title: '身价榜',
           lists: [
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' },
-            { headImg: require('@/assets/quotes_hot_avatar.png'), name: '阿斗', sub: '33.46%' }
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
           ],
         },
       ],
@@ -57,76 +57,25 @@ export default {
         { title: '新人预告' },
         { title: '增发预告' }
       ],
-      isCheck:false,
-      lists:[
-        {
-          avatar:require('@/assets/quotes_hot_notice_avatar.png'),
-          name:'阿斯蒂芬',
-          code:'546545',
-          prices:'135.00',
-          isTimes:false,
-          isSaleShow:true,
-          isSale:true,
-        },
-        {
-          avatar:require('@/assets/quotes_hot_notice_avatar.png'),
-          name:'阿斯蒂芬',
-          code:'546545',
-          prices:'135.00',
-          isTimes:false,
-          isSaleShow:true,
-          isSale:true,
-        },
-        {
-          avatar:require('@/assets/quotes_hot_notice_avatar.png'),
-          name:'阿斯蒂芬',
-          code:'546545',
-          prices:'135.00',
-          isTimes:false,
-          isSaleShow:true,
-          isSale:false,
-        },
-        {
-          avatar:require('@/assets/quotes_hot_notice_avatar.png'),
-          name:'阿斯蒂芬',
-          code:'546545',
-          prices:'135.00',
-          isTimes:false,
-          isSaleShow:true,
-          isSale:true,
-        }
-      ],
-      addLists:[
-        {
-          avatar:require('@/assets/quotes_hot_notice_avatar.png'),
-          name:'阿斯芬',
-          code:'546545',
-          prices:'135.00',
-          isTimes:false,
-          isSaleShow:true,
-          isSale:true,
-        },
-        {
-          avatar:require('@/assets/quotes_hot_notice_avatar.png'),
-          name:'阿斯芬',
-          code:'546545',
-          prices:'135.00',
-          isTimes:false,
-          isSaleShow:true,
-          isSale:true,
-        }
-      ],
-      middle:''
+      isNews: true,
     }
   },
   methods: {
-    toCheckTab() {
-      console.log('toCheckTab')
-      this.isCheck=!this.isCheck
-      this.middle=this.lists
-      this.lists=this.isCheck ? this.addLists : this.middle
+    toDetails(data) {
+      console.log('toDetails')
+      console.log(data)
+      this.$router.push('/pricePersonDetail/' + data.product_id)
     },
-    toNext(){
+    toCheckTab(e) {
+      console.log('toCheckTab')
+      if (e.title == '新人预告') {
+        this.isNews = true
+      }
+      if (e.title == '增发预告') {
+        this.isNews = false
+      }
+    },
+    toNext() {
       console.log('toNextlit')
     }
   },
@@ -134,13 +83,16 @@ export default {
     'v-SwiperBar': SwiperBar,
     'v-RankingList': RankingList,
     'v-FlexTab': FlexTab,
-    'v-HotList':HotList
+    'v-HotList': HotList
   },
   mounted() {
-    let swiper = this.$refs.swiper
-    if (swiper.dom) {
-      this.swiper = swiper.dom;
-    }
+    market.hot().then(data => {
+      this.ranks = data.data.data
+      let swiper = this.$refs.swiper
+      if (swiper.dom) {
+        this.swiper = swiper.dom;
+      }
+    })
   }
 }
 </script>

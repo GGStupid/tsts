@@ -16,7 +16,7 @@
     </div>
 </template>
 <script>
-import news from '@/api/news/index'
+import market from '@/api/market/index'
 export default {
     data() {
         return {
@@ -37,11 +37,11 @@ export default {
     },
     mounted() {
         console.log('newDetail')
-        let id = this.$route.params.id
+        let id = this.$route.params.product_id
         let sendData = {
-            informationId: id
+            newsId: id
         }
-        news.informationId(sendData).then(data => {
+        market.newsId(sendData).then(data => {
             this.title = data.data.data.title
             this.author = data.data.data.author
             this.updateTime = data.data.data.updateTime
@@ -55,7 +55,7 @@ export default {
         });
     },
     beforeRouteEnter(to, from, next) {
-        document.querySelector('title').innerText = '资讯详情'
+        document.querySelector('title').innerText = '新闻详情'
         next(vm => {
             vm.meta = document.querySelector('meta[name="viewport"]').content
             document.querySelector('meta[name="viewport"]').content = "width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"

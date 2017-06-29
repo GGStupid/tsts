@@ -8,8 +8,13 @@
 <script>
 import Content from '@/components/Content'
 import Footer from '@/components/Footer'
-
+import mine from '@/api/mine/index'
 export default {
+    mounted() {
+        mine.getUserInforPost().then((data) => {
+            this.$store.dispatch('userInfor', data.data.data)
+        })
+    },
     components: {
         'v-Content': Content,
         'v-Footer': Footer
@@ -17,17 +22,17 @@ export default {
 }
 </script>
 <style lang="less" scoped>
- .homeWrap {
-     position: absolute;
-     top: 0;
-     left: 0;
-     right: 0;
-     bottom: 1.30667rem;
-     z-index: 10;
-     overflow: auto;
-     -webkit-overflow-scrolling: touch;
-     background-color: #191a22;
- }
+.homeWrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 1.30667rem;
+    z-index: 10;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: #191a22;
+}
 </style>
 
 

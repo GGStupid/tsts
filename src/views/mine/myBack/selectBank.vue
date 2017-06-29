@@ -1,7 +1,7 @@
 <template>
     <div class="selectBankWrap">
         <div class="list" @click="toSelect(bank)" v-for="(bank,index) in bankLists" :key="index">
-            <img class="icon" :src="bank.icon" alt="">
+            <img class="icon" :src="baseImgUrl+bank.icon" alt="">
             <span>{{bank.name}}</span>
             <img class="rIcon" v-show="SelectBank==bank.name" src="../../../assets/pay_select_s.png" alt="">
         </div>
@@ -14,6 +14,7 @@ import mine from '@/api/mine/index'
 export default {
     data(){
         return {
+            baseImgUrl:this.$store.state.baseImgUrl,
             bankLists:[]
         }
     },

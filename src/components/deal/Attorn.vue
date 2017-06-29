@@ -13,7 +13,7 @@ export default {
 <style lang="less" scoped>
 @import '../../less/config.less';
 .attornWrap{
-    
+    padding-top: 0.2667rem;
 }
 </style>
 
