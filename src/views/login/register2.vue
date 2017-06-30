@@ -72,12 +72,15 @@ export default {
         }
         login.userRegister(sendData).then(data => {
           if (data.data.code == 200) {
-            toast('注册成功，请登录')
-            this.$router.push({ path: '/' })
+            toast('注册成功')
+            this.$store.dispatch('isLogin',data.data.data)
+            this.$router.push({ path: '/home/news' })
           } else {
             toast(data.data.message)
           }
         })
+      }else{
+         toast('请输入正确的密码格式')
       }
     },
     showTips() {

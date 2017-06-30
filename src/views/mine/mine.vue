@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-WhiteToastButton2 :isShow="isShow" msg="为了保障您的账户安全，请先进行实名正经" leftText="去认证" @toastLeft="toastLeft" rightText="取消" @toastRight="toastRight"></v-WhiteToastButton2>
+    <v-WhiteToastButton2 :isShow="isShow" msg="为了保障您的账户安全，请先进行实名认证" leftText="去认证" @toastLeft="toastLeft" rightText="取消" @toastRight="toastRight"></v-WhiteToastButton2>
     <v-HeadSetting :icon="avatarUrl" :title="nickName" @toNext="userSetting()"></v-HeadSetting>
     <v-AccountInformation></v-AccountInformation>
     <div class="listWrap">
@@ -30,6 +30,7 @@ export default {
     return {
       userIdentify:{},
       isShow:false,
+      realnameStatus:'',
       headSetting: {
         icon: require('../../assets/mine_avatar_default.png'),
         title: '用户昵称'
@@ -77,6 +78,10 @@ export default {
         toast('您的实名认证正在审核中')
         return
       }
+      if(this.realnameStatus==1 || this.realnameStatus==4){
+       this.isShow=true
+       return
+      }
       this.$router.push('/myBack')
     },
     invitingFriends() {
@@ -103,6 +108,7 @@ export default {
     mine.getUserInforPost().then((data) => {
       this.$store.dispatch('userInfor',data.data.data)
       this.userIdentify=data.data.data.userIdentify
+      this.realnameStatus=data.data.data.userIdentify.realnameStatus
     if(data.data.data.userIdentify.realnameStatus!=3 && data.data.data.userIdentify.realnameStatus!=2){
       this.isShow=true
     }

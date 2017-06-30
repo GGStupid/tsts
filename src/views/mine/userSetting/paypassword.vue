@@ -48,12 +48,11 @@ export default {
             let sendData = {
                 code: 'payPassword'
             }
+            if (this.count != 60) {
+                return false
+            }
             mine.phoneCode(sendData).then(data => {
                 if (data.data.code == 200) {
-                    toast('手机验证码已发送请注意查收')
-                    if (this.count != 60) {
-                        return false
-                    }
                     let timer = setInterval(() => {
                         this.iscount = true
                         this.count--
@@ -65,6 +64,7 @@ export default {
                             this.iscount = false
                         }
                     }, 1000)
+                    toast('手机验证码已发送请注意查收')
                 } else {
                     toast(data.data.message)
                 }
@@ -79,14 +79,21 @@ export default {
                 mine.verifyPayPasswordCode(sendData).then(data => {
                     if (data.data.code == 200) {
                         this.$router.replace({ path: '/paypassword1' })
-                        this.$store.dispatch('phoneCode',this.phoneCode)
+                        this.$store.dispatch('phoneCode', this.phoneCode)
                     } else {
                         toast(data.data.message)
                     }
                 })
+            }else{
+                toast('请输入正确的验证码')
             }
         }
-    }
+    },
+    mounted() {
+    mine.getUserInforPost().then((data) => {
+      this.$store.dispatch('userInfor',data.data.data)   
+    })
+  },
 }
 </script>
 

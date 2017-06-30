@@ -51,12 +51,12 @@ export default {
         let sendData = {
           mobilePhone: this.phone
         }
-        login.userGetRegistCode(sendData).then(data => {
-          if (data.data.code == 200) {
-             toast('手机验证码已发送请注意查收')
-            if (this.count != 60) {
+        if (this.count != 60) {
               return false
             }
+        login.userGetRegistCode(sendData).then(data => {
+          if (data.data.code == 200) {
+             toast('验证码已发送至您的手机,请注意查收')
             let timer = setInterval(() => {
               this.count--
               this.phoneCodetitle = `${this.count}秒`
@@ -70,6 +70,8 @@ export default {
             toast(data.data.message)
           }
         })
+      }else{
+        toast('请输入正确的手机号')
       }
     },
     toNext() {
@@ -88,6 +90,8 @@ export default {
             toast(data.data.message)
           }
         })
+      }else{
+         toast('请输入手机号和短信验证码')
       }
     }
   }

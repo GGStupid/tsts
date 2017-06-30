@@ -1,7 +1,7 @@
 <template>
     <div class="wrapnickname">
         <div class="nickname">
-            <input type="text" v-model="nickname" @keyup='showClean' placeholder="请输入10位以内的中文昵称">
+            <input type="text" v-model="nickname" @keyup='showClean' placeholder="请输入10位以内的昵称">
             <img src="../../../assets/icon_clean.png" @click="cleanNickName" v-show="isShow" alt="">
         </div>
         <div class="buttonWrap">
@@ -39,14 +39,19 @@ export default {
             let senddata = {
                 nickName: this.nickname
             }
-            mine.nickName(senddata).then((data) => {
-                if (data.data.code == 200) {
-                     toast('昵称修改成功')
-                      this.$router.go(-1)
-                } else {
-                    toast(data.data.message)
-                }
-            })
+            console.log(this.nickname.length)
+            if (this.nickname.length > 0 && this.nickname.length <= 11) {
+                mine.nickName(senddata).then((data) => {
+                    if (data.data.code == 200) {
+                        toast('昵称修改成功')
+                        this.$router.go(-1)
+                    } else {
+                        toast(data.data.message)
+                    }
+                })
+            }else{
+                toast('请输入正确的昵称')
+            }
         }
     },
     mounted() {

@@ -1,10 +1,10 @@
 <template>
   <div class="marketWrap">
-    <div class="search">
+    <!--<div class="search">
       <img src="../../assets/quotes_nav_icon_search.png" alt="">
       <input type="text" @focus="toSearch" placeholder="输入发行人/代码">
       <span>{{search}}</span>
-    </div>
+    </div>-->
     <div class="top">
       <v-PositionTab :tabTitles='tabTitles' @toNext='totrunTab'></v-PositionTab>
     </div>
@@ -149,7 +149,8 @@ export default {
 
   .routeWrap {
     position: absolute;
-    top: 2.50667rem;
+    top:1.06667rem;
+    // top: 2.50667rem;
     right: 0;
     left: 0;
     bottom: 0;

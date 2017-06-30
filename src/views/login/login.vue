@@ -1,7 +1,7 @@
 <template>
 	<div class="loginwrap">
 		<div class="icon">
-			<img src="../../assets/login_logo.png"  alt="">
+			<img src="../../assets/logo_1.png"  alt="">
 		</div>
 		<div class="form">
 			<div class="list">
@@ -92,14 +92,21 @@ export default {
 			if (isPhone(this.mobile) && isPassWord(this.password)) {
 				login.userLogin(senddata).then((data) => {
 					if (data.data.code == 200) {
+						 this.$store.dispatch('isLogin',data.data.data)
 						this.$router.push({ path: '/home/news' })
 					} else {
 						toast(data.data.message)
 					}
 				})
+			}else{
+				toast('请输入正确的手机号和密码')
 			}
 		}
 	},
+	beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = '淘刻'
+        next()
+    },
 	watch: {
 
 	},

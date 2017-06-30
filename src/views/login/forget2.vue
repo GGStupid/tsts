@@ -102,12 +102,16 @@ export default {
                 }
                 login.resetPwd(sendData).then(data => {
                     if (data.data.code == 200) {
-                         toast('密码修改成功，请重新登录')
+                        toast('密码修改成功，请登录')
                         this.$router.push({ path: '/' })
                     } else {
                         toast(data.data.message)
                     }
                 })
+            } else if(this.password1 != this.password2){
+                toast('2次密码输入不一致')
+            }else{
+                toast('请输入正确的密码格式')
             }
         }
     }

@@ -10,7 +10,7 @@
                     <img class="arrow" src="../../../assets/arrow_right.png" alt="">
                 </div>
             </label>
-            <input ref="avatarImg" id="avatarImg" type="file" accept="*.jpg,*.gif,*.png" @change="uploadHandler" />
+            <input ref="avatarImg" id="avatarImg" type="file" accept="*.jpg,*.gif,*.png" @change="uploadHandler" >
         </div>
         <div class="list">
             <div class="wrap" @click="nickname">
@@ -142,6 +142,7 @@ export default {
         },
         logout() {
             console.log('logout')
+             localStorage.clear()
             this.$router.push('/')
         }
     },

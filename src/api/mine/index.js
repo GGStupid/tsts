@@ -90,6 +90,10 @@ export default {
     recharge(data) {
         return instance.post(wrapUrl + '/member/amount/recharge', qs.stringify(data))
     },
+    //银行卡充值验证码
+    rechargeMsg(data) {
+        return instance.post(wrapUrl + '/member/amount/rechargeMsg', qs.stringify(data))
+    },
     //资金记录
     accountLog(data) {
         return instance.post(wrapUrl + '/member/amount/accountLog', qs.stringify(data))
@@ -112,6 +116,6 @@ export default {
     },
     //帮助中心内容列表
     contents(data) {
-        return instance.get(wrapUrl + '/helps/contents', qs.stringify(data))
+        return instance.get(wrapUrl + '/helps/contents?'+qs.stringify(data))
     },
 }

@@ -1,8 +1,6 @@
 <template>
     <div class="listWrap">
-        <v-TextArrow  title="关于淘刻" @toNext="aboutAmoy"></v-TextArrow>
-        <v-TextArrow  title="关于行权" @toNext="aboutExercise"></v-TextArrow>
-        <v-TextArrow  title="关于申购和交易" @toNext="aboutDeal"></v-TextArrow>
+        <v-TextArrow v-for="(list,index) in helpList" :title="list.className" :key="index" @toNext="toNext(list)"></v-TextArrow>
     </div>
 </template>
 
@@ -12,27 +10,23 @@ import mine from '@/api/mine/index'
 export default {
     data() {
         return {
-           
+            helpList: [],
         }
     },
     methods: {
-        aboutAmoy() {
-            console.log('aboutAmoy')
+        toNext(list) {
+            console.log('toNext')
+             this.$router.push('/aboutExercise/' + list.id)
+            document.querySelector('title').innerText =list.className;
         },
-        aboutExercise() {
-            console.log('aboutExercise')
-            this.$router.push('/aboutExercise')
-        },
-        aboutDeal() {
-            console.log('aboutDeal')
-        }
     },
     components: {
         'v-TextArrow': TextArrow
     },
-    mounted(){
-        mine.classes().then(data=>{
+    mounted() {
+        mine.classes().then(data => {
             console.log(data.data)
+            this.helpList = data.data.data
         })
     },
     beforeRouteEnter(to, from, next) {

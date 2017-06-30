@@ -18,7 +18,7 @@ const toSearch = resolve => require(['@/views/market/toSearch'], resolve)
 const hot = resolve => require(['@/views/market/hot'], resolve)
 const personList = resolve => require(['@/views/market/personList'], resolve)
 const pricePersonDetail = resolve => require(['@/views/market/pricePersonDetail'], resolve)
-const marketNewsDeatil =resolve=> require(['@/views/market/marketNewsDeatil'], resolve)
+const marketNewsDeatil = resolve => require(['@/views/market/marketNewsDeatil'], resolve)
 const detailsTribune = resolve => require(['@/views/market/detailsTribune'], resolve)
 //deal
 const deal = resolve => require(['@/views/deal/deal'], resolve)
@@ -97,18 +97,27 @@ const router = new Router({
     //news
     {
       path: '/newDetail/:id',
-      component: newDetail
+      component: newDetail,
+      meta: {
+        requireAuth: true
+      }
     },
     //messages
     {
       path: '/notices',
       name: 'notices',
-      component: notices
+      component: notices,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/systemNotices',
       name: 'systemNotices',
-      component: systemNotices
+      component: systemNotices,
+      meta: {
+        requireAuth: true
+      }
     },
     //home
     {
@@ -119,51 +128,78 @@ const router = new Router({
         {
           path: '',
           name: 'default',
-          component: news
+          component: news,
+          meta: {
+            requireAuth: true
+          }
         },
         //news
         {
           path: 'news',
           name: 'news',
-          component: news
+          component: news,
+          meta: {
+            requireAuth: true
+          }
         },
         //market
         {
           path: 'market',
-          component: market
+          component: market,
+          meta: {
+            requireAuth: true
+          }
         },
         //deal
         {
           path: 'deal',
           name: 'deal',
-          component: deal
+          component: deal,
+          meta: {
+            requireAuth: true
+          }
         },
         //messages
         {
           path: 'messages',
           name: 'messages',
-          component: messages
+          component: messages,
+          meta: {
+            requireAuth: true
+          }
         },
         //mine
         {
           path: 'mine',
           name: 'mine',
-          component: mine
+          component: mine,
+          meta: {
+            requireAuth: true
+          }
         }
       ]
     },
     //market
     {
       path: '/toSearch',
-      component: toSearch
+      component: toSearch,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/pricePersonDetail/:product_id',
-      component: pricePersonDetail
+      component: pricePersonDetail,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/marketNewsDeatil/:product_id',
-      component: marketNewsDeatil
+      component: marketNewsDeatil,
+      meta: {
+        requireAuth: true
+      }
     },
     // {
     //   path: '/pricePersonDetail/:product_id',
@@ -171,144 +207,222 @@ const router = new Router({
     // },
     {
       path: '/detailsTribune',
-      component: detailsTribune
+      component: detailsTribune,
+      meta: {
+        requireAuth: true
+      }
     },
     //mine
     {
       path: '/Recharge',
       name: 'Recharge',
-      component: Recharge
+      component: Recharge,
+      meta: {
+        requireAuth: true
+      }
     }, {
       path: '/quickPay',
       name: 'quickPay',
-      component: quickPay
+      component: quickPay,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/BankPay',
-      component: BankPay
+      component: BankPay,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/Withdrawals',
       name: 'Withdrawals',
-      component: Withdrawals
+      component: Withdrawals,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/transactionRecord',
       name: 'transactionRecord',
-      component: transactionRecord
+      component: transactionRecord,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/delivery',
       name: 'delivery',
-      component: delivery
+      component: delivery,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/deliveryagreement',
-      component: deliveryagreement
+      component: deliveryagreement,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/fundDetails',
       name: 'fundDetails',
-      component: fundDetails
+      component: fundDetails,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/myIssuer',
       name: 'myIssuer',
-      component: myIssuer
+      component: myIssuer,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/userSetting',
       name: 'userSetting',
-      component: userSetting
+      component: userSetting,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/nickname',
       name: 'nickname',
-      component: nickname
+      component: nickname,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/loginpw',
       name: 'loginpw',
-      component: loginpw
+      component: loginpw,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/oldpaypassword',
-      component: oldpaypassword
+      component: oldpaypassword,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/paypassword',
       name: 'paypassword',
-      component: paypassword
+      component: paypassword,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/paypassword1',
       name: 'paypassword1',
-      component: paypassword1
+      component: paypassword1,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/authentication',
       name: 'authentication',
-      component: authentication
+      component: authentication,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/authenticationByPerson',
       name: 'authenticationByPerson',
-      component: authenticationByPerson
+      component: authenticationByPerson,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/myBack',
       name: 'myBack',
-      component: myBack
+      component: myBack,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/addBack',
       name: 'addBack',
-      component: addBack
+      component: addBack,
+      meta: {
+        requireAuth: true
+      }
     }, {
       path: '/addBackByPerson',
       name: 'addBackByPerson',
-      component: addBackByPerson
+      component: addBackByPerson,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/selectBank',
       name: 'selectBank',
-      component: selectBank
+      component: selectBank,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/invitingFriends',
       name: 'invitingFriends',
-      component: invitingFriends
+      component: invitingFriends,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/moreFriends',
-      component: moreFriends
+      component: moreFriends,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/helpCenter',
       name: 'helpCenter',
-      component: helpCenter
+      component: helpCenter,
+      meta: {
+        requireAuth: true
+      }
     },
     {
-      path: '/aboutExercise',
+      path: '/aboutExercise/:classId',
       name: 'aboutExercise',
-      component: aboutExercise
+      component: aboutExercise,
+      meta: {
+        requireAuth: true
+      }
     }
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   let token = localStorage.getItem("token")
-//   if (to.meta.requireAuth) {
-//     if (token) {
-//       next()
-//     } else {
-//       next({
-//         path: '/'
-//       })
-//     }
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  let token = localStorage.getItem("isLogin")
+  if (to.meta.requireAuth) {
+    if (token) {
+      next()
+    } else {
+      next({
+        path: '/'
+      })
+    }
+  } else {
+    next()
+  }
+})
 
 export default router

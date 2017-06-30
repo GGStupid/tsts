@@ -63,12 +63,12 @@ export default {
 footer {
   width: 100%;
   height: @height;
-  border-top: 1px solid #999999;
+  border-top: 1px solid #2a2a34;
   position: absolute;
   bottom: 0;
   font-size: @fsize;
   display: flex;
-  background-color: #000000;
+  background-color: #191a22;
   span {
     display: block;
     text-align: center;

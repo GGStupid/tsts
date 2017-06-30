@@ -1,23 +1,23 @@
 <template>
     <div class="quickPayWrap">
-         <v-PayPwToast :isShow="isShow" @cancelToast="cancelToast"></v-PayPwToast>
+        <!--<v-PayPwToast :isShow="isShow" @cancelToast="cancelToast"></v-PayPwToast>-->
         <div class="form">
             <div class="list" style="margin:0.266667rem 0">
                 <span>充值金额</span>
-                <input type="text" v-model="moneyNum" placeholder="请输入充值金额">
+                <input type="tel" v-model="amount" placeholder="请输入充值金额">
             </div>
             <div class="list" @click="showBankLists">
                 <span>支付银行</span>
-                <input type="text" v-model="SelectBank" placeholder="请选择支付银行" readonly>
+                <span class="bankName" :class="{'activeColor':activeColor}">{{bankName}}</span>
                 <img class="rIcon" src="../../../assets/arrow_right.png" alt="">
             </div>
             <div class="list">
                 <span>银行卡号</span>
-                <input type="text" v-model="bankId" placeholder="请输入银行卡号">
+                <input type="tel" v-model="bankNo" maxlength="20" placeholder="请输入银行卡号">
             </div>
             <div class="list">
                 <span>手机号码</span>
-                <input type="text" v-model="tel" placeholder="请输入银行预留手机号">
+                <input type="tel" v-model="mobilePhone" maxlength="11" placeholder="请输入银行预留手机号">
             </div>
             <div class="list">
                 <span>验证码&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -28,6 +28,13 @@
         <div class="button">
             <v-Button title='确定' :isActive='isActive' topNum='0.6667rem' @toNext='toNext'></v-Button>
         </div>
+        <div class="bankNameWrap" v-show="isbankNames">
+            <div class="list" @click="toSelect(bank)" v-for="(bank,index) in bankLists" :key="index">
+                <img class="icon" :src="baseImgUrl+bank.icon" alt="">
+                <span>{{bank.name}}</span>
+                <img class="rIcon" v-show="bankName==bank.name" src="../../../assets/pay_select_s.png" alt="">
+            </div>
+        </div>
     </div>
 </template>
 
@@ -35,14 +42,20 @@
 
 import Button from '@/components/buttons/Button690'
 import PayPwToast from '@/components/PayPwToast'
-import { isPhone } from '@/util/index'
+import mine from '@/api/mine/index'
+import { toast, isBankNumber, isPhone } from '@/util/index'
 export default {
     data() {
         return {
-            isShow:false,
-            moneyNum: '',
-            bankId:'',
-            tel: '',
+            baseImgUrl: this.$store.state.baseImgUrl,
+            isShow: false,
+            amount: '',
+            bankName: '请选择开户银行',
+            bankCode:'',
+            isbankNames: false,
+            bankLists: [],
+            bankNo: '',
+            mobilePhone: '',
             phoneCode: '',
             phoneCodetitle: '获取验证码',
             count: 60,
@@ -51,58 +64,106 @@ export default {
         }
     },
     computed: {
-        SelectBank() {
-            return this.$store.state.SelectBank
+        // bankName() {
+        //     return this.$store.state.bankName
+        // },
+        activeColor() {
+            return this.bankName != '请选择开户银行'
         }
-    },
-    components: {
-        'v-Button': Button,
-        'v-PayPwToast': PayPwToast
     },
     methods: {
         showBankLists() {
             console.log('showBankLists')
-            this.$router.push('/selectBank')
+            // this.$router.push('/bankName')
+            this.isbankNames = true
+            document.querySelector('title').innerText = '选择支付银行'
+        },
+        toSelect(bank) {
+            console.log(bank)
+            this.bankCode = bank.insideCode
+            this.bankName = bank.name
+            this.isbankNames = false
+            document.querySelector('title').innerText = '快捷支付'
         },
         getphoneCode() {
-            if (isPhone(this.tel)) {
-                if (this.count != 60) {
-                    return false
-                }
-                let timer = setInterval(() => {
-                    this.iscount = true
-                    this.count--
-                    this.phoneCodetitle = `${this.count}s`
-                    if (this.count == 0) {
-                        clearInterval(timer)
-                        this.phoneCodetitle = '重新获取验证码'
-                        this.count = 60
-                        this.iscount = false
-                    }
-                }, 1000)
-                let sendData = {
-                    phone: this.phone
-                }
-                login.userGetRegistCode(sendData).then(data => {
-                    if (data.data.code == 200) {
-
-                    } else {
-                        toast(data.data.message)
-                    }
-                })
+            let senddata = {
+                amount: this.amount,
+                bankCode: this.bankCode,
+                bankName: this.bankName,
+                bankNo: this.bankNo,
+                mobilePhone: this.mobilePhone,
+                phoneCode: this.phoneCode
             }
+            if (this.count != 60) {
+                return false
+            }
+            if (!this.amount) return toast('请输入充值金额')
+            if (!this.bankCode) return toast('请选择充值银行')
+            if (!isBankNumber(this.bankNo)) return toast('请输入正确的充值银行卡号')
+            if (!isPhone(this.mobilePhone)) return toast('请输入正确的充值银行手机号')
+            mine.phoneCode(sendData).then(data => {
+                if (data.data.code == 200) {
+                    toast('手机验证码已发送请注意查收')
+                    let timer = setInterval(() => {
+                        this.iscount = true
+                        this.count--
+                        this.phoneCodetitle = `${this.count}s`
+                        if (this.count == 0) {
+                            clearInterval(timer)
+                            this.phoneCodetitle = '重新获取验证码'
+                            this.count = 60
+                            this.iscount = false
+                        }
+                    }, 1000)
+                } else {
+                    toast(data.data.message)
+                }
+            })
         },
         toNext() {
             console.log('toNext---pay')
-            this.isShow = true
+            let senddata = {
+                amount: this.amount,
+                bankCode: this.bankCode,
+                bankName: this.bankName,
+                bankNo: this.bankNo,
+                mobilePhone: this.mobilePhone,
+                phoneCode: this.phoneCode
+            }
+            // this.isShow = true
+            if (!this.amount) return toast('请输入充值金额')
+            if (!this.bankCode) return toast('请选择充值银行')
+            if (!isBankNumber(this.bankNo)) return toast('请输入正确的充值银行卡号')
+            if (!isPhone(this.mobilePhone)) return toast('请输入正确的充值银行手机号')
+            if (this.phoneCode.length != 6) return toast('请输入正确的验证码')
+            mine.recharge(senddata).then((data) => {
+                if (data.data.code == 200) {
+                    toast(data.data.message)
+                } else {
+                    toast(data.data.message)
+                    // toast(data.data.message)
+                }
+            })
         },
-        cancelToast(){
+        cancelToast() {
             this.isShow = false
         }
+    },
+    mounted() {
+        mine.getUserInforPost().then((data) => {
+            this.$store.dispatch('userInfor', data.data.data)
+        }),
+            mine.bankList().then(data => {
+                this.bankLists = data.data.data
+            })
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '快捷支付'
         next()
+    },
+    components: {
+        'v-Button': Button,
+        'v-PayPwToast': PayPwToast
     },
 }
 </script>
@@ -143,7 +204,18 @@ export default {
                 right: 0.32rem;
                 top: 0.44rem;
             }
+            .bankName {
+                display: inline-block;
+                color: #999999;
+                height: 1.30667rem;
+                line-height: 1.30667rem;
+                margin-left: 1.06667rem;
+            }
+            .activeColor {
+                color: #ffffff;
+            }
             input {
+                width: 5.5rem;
                 color: #ffffff;
                 line-height: 1.1733rem;
                 margin-left: 1.06667rem;
@@ -168,6 +240,42 @@ export default {
     }
     .button {
         padding: 0 @p30;
+    }
+    .bankNameWrap {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        height: 100%;
+        .list {
+            height: 1.30667rem;
+            line-height: 1.30667rem;
+            padding: 0 @p30;
+            font-size: @fontsize32;
+            color: @color;
+            background-color: @bgcolor;
+            position: relative;
+            border-bottom: 1px solid #191A22;
+            .icon {
+                position: absolute;
+                top: 0.3rem;
+                width: 0.64rem;
+            }
+            span {
+                margin-left: 1rem;
+            }
+            .rIcon {
+                width: 0.48rem;
+                position: absolute;
+                right: 0.32rem;
+                top: 0.44rem;
+            }
+        }
     }
 }
 </style>

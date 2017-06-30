@@ -12,6 +12,11 @@ export default {
         localStorage.setItem('token', payload)
         state.token=payload
     },
+    //isLogin
+    isLogin(state,payload){
+        localStorage.setItem('isLogin', payload)
+        state.isLogin=payload
+    },
     //register regCode
     regCode(state,payload){
         state.regCode=payload

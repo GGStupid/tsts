@@ -11,6 +11,10 @@ export default {
     saveToken({ commit }, payload) {
         commit('saveToken', payload)
     },
+    //isLogin
+    isLogin({ commit }, payload) {
+        commit('isLogin', payload)
+    },
     //register phone
     regCode({ commit }, payload) {
         commit('regCode', payload)

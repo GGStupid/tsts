@@ -21,7 +21,7 @@
                 <div class="payWord">
                     <span v-show="payword.length>=6"></span>
                 </div>
-                <input type="tel" id="paywordinput" maxlength="6" v-model="payword">
+                <input type="tel" autofocus="autofocus" id="paywordinput" maxlength="6" v-model="payword">
             </div>
         </label>
         <div class="bottom">
@@ -54,6 +54,9 @@ export default {
     components: {
         'v-Button': Button,
         'v-Toast': Toast
+    },
+    watch: {
+        payword:`toNext`
     },
     methods: {
         toNext() {

@@ -1,20 +1,20 @@
 <template>
     <div class="WithdrawalsWrap">
-        <v-PayPwToast :isShow="isShow" :amount="amount"  :userBankId="userBankId" @cancelToast="cancelToast"></v-PayPwToast>
+        <v-PayPwToast :isShow="isShow" :amount="amount" :userBankId="userBankId" @cancelToast="cancelToast"></v-PayPwToast>
         <v-BankLists :banks="banks" :bankListShow="bankListShow" @selectBank="selectBank" @cancelLists="cancelLists"></v-BankLists>
         <div class="form">
             <div class="list" style="margin:0.266667rem 0" @click="showBankLists">
                 <span>银行卡&nbsp;&nbsp;&nbsp;</span>
-                <input type="text" v-model="SelectBank" placeholder="请选择开户银行" readonly>
+                <span class="bankName" :sytle="{'activeColor':activeColor}">{{SelectBank}}</span>
                 <img class="rIcon" src="../../../assets/arrow_right.png" alt="">
             </div>
             <div class="list" style="margin:0.266667rem 0">
                 <span>充值金额</span>
-                <input type="text" v-model="amount" placeholder="请输入提现金额">
+                <input type="tel" v-model="amount" placeholder="请输入提现金额">
             </div>
             <div class="end">
                 可用余额&nbsp;
-                <span>1,000.00</span>元
+                <span>{{assets}} </span>元
             </div>
         </div>
         <div class="button">
@@ -28,76 +28,90 @@
 import Button from '@/components/buttons/Button690'
 import PayPwToast from '@/components/PayPwToast'
 import BankLists from '@/components/mine/BankLists'
-import { isPhone } from '@/util/index'
+import { toast, isPhone } from '@/util/index'
 import mine from '@/api/mine/index'
 export default {
     data() {
         return {
             isShow: false,
             bankListShow: false,
-            banks:[
-                {
-                    icon:require('../../../assets/pay_logo_ABC.png'),
-                    name:'农业银行',
-                    cardend:'2118',
+            banks: [
+                // {
+                //     icon:require('../../../assets/pay_logo_ABC.png'),
+                //     name:'农业银行',
+                //     cardend:'2118',
 
-                },
-                 {
-                    icon:require('../../../assets/pay_logo_ABC.png'),
-                    name:'建设银行',
-                    cardend:'2118',
+                // },
+                //  {
+                //     icon:require('../../../assets/pay_logo_ABC.png'),
+                //     name:'建设银行',
+                //     cardend:'2118',
 
-                },
-                 {
-                    icon:require('../../../assets/pay_logo_ABC.png'),
-                    name:'商业银行',
-                    cardend:'2118',
-                }
+                // },
+                //  {
+                //     icon:require('../../../assets/pay_logo_ABC.png'),
+                //     name:'商业银行',
+                //     cardend:'2118',
+                // }
             ],
-            SelectBank:'',
-            userBankId:'',
+            SelectBank: '请选择开户银行',
+            userBankId: '',
             amount: '',
-            sendData:{},
+            sendData: {},
             isActive: true
         }
     },
-   
-    components: {
-        'v-Button': Button,
-        'v-PayPwToast': PayPwToast,
-        'v-BankLists': BankLists
+    computed: {
+        activeColor() {
+            return this.SelectBank != '请选择开户银行'
+        },
+        assets() {
+            return this.$store.state.userInfor.assets || this.$store.state.userInfor.assets == 0 ? this.$store.state.userInfor.assets.toFixed(2) : ''
+        }
     },
     methods: {
         showBankLists() {
             console.log('showBankLists')
             this.bankListShow = true
         },
-        cancelLists(){
+        cancelLists() {
             console.log('cancelLists')
             this.bankListShow = false
         },
         selectBank(bank) {
             console.log('selectBank')
             console.log(bank)
-            this.SelectBank=bank.bankName
-            this.userBankId=bank.id.toString();
+            this.SelectBank = `${bank.bankName} (尾号${bank.bankNo.slice(-4)})`
+            this.userBankId = bank.id.toString();
         },
         toNext() {
             console.log('toNext---pay')
-            this.isShow = true    
+            if (this.amount && this.userBankId) {
+                this.isShow = true
+            } else {
+                toast('请选择银行并输入金额')
+            }
         },
         cancelToast() {
             this.isShow = false
         }
     },
-    mounted(){
-        mine.userBank().then(data=>{
-            this.banks=data.data.data
+    mounted() {
+        mine.getUserInforPost().then((data) => {
+            this.$store.dispatch('userInfor', data.data.data)
+        })
+        mine.userBank().then(data => {
+            this.banks = data.data.data
         })
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '提现'
         next()
+    },
+    components: {
+        'v-Button': Button,
+        'v-PayPwToast': PayPwToast,
+        'v-BankLists': BankLists
     },
 }
 </script>
@@ -137,6 +151,16 @@ export default {
                 position: absolute;
                 right: 0.32rem;
                 top: 0.44rem;
+            }
+            .bankName {
+                display: inline-block;
+                color: #999999;
+                height: 1.30667rem;
+                line-height: 1.30667rem;
+                margin-left: 1.06667rem;
+            }
+            .activeColor {
+                color: #ffffff;
             }
             input {
                 color: #ffffff;

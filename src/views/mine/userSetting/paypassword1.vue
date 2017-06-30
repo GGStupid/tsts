@@ -21,7 +21,7 @@
                 <div class="payWord">
                     <span v-show="payword.length>=6"></span>
                 </div>
-                <input type="tel" id="paywordinput" maxlength="6" v-model="payword">
+                <input type="tel" autofocus="autofocus" id="paywordinput" maxlength="6" v-model="payword">
             </div>
         </label>
         <label for="repatpaywordinput" v-show="isAgain">
@@ -47,7 +47,7 @@
                 <input type="tel" id="repatpaywordinput" maxlength="6" v-model="repatpayword">
             </div>
         </label>
-        <v-Button :title='titleText' :isActive='isActive' topNum='0.6667rem' @toNext='toNext'></v-Button>
+        <!--<v-Button :title='titleText' :isActive='isActive' topNum='0.6667rem' @toNext='toNext'></v-Button>-->
     </div>
 </template>
 
@@ -74,7 +74,8 @@ export default {
         }
     },
     watch: {
-        payword: `change`
+        payword: `change`,
+        repatpayword:`toNext`
     },
     methods: {
         change() {
@@ -96,7 +97,7 @@ export default {
                     mine.oldPayPassword(sendData).then(data => {
                         if (data.data.code == 200) {
                             toast('支付密码设置成功')
-                            this.$router.push('/userSetting')
+                            this.$router.replace('/userSetting')
                         } else {
                             toast(data.data.message)
                         }
@@ -109,7 +110,7 @@ export default {
                     mine.payPassword(sendData).then(data => {
                         if (data.data.code == 200) {
                             toast('支付密码设置成功')
-                            this.$router.push('/userSetting')
+                            this.$router.replace('/userSetting')
                         } else {
                             toast(data.data.message)
                         }

@@ -2,31 +2,31 @@
     <div class="PayPwToastWrap" v-show="isShow">
         <div class="mask">
         </div>
-        <label for="paywordinput">
+        <label for="payPasswordinput">
             <div class="title">
                 请输入支付密码
                 <img src="../assets/trade_box_close.png" @click="cancelToast" alt="">
             </div>
             <div class="pwWrap">
-                <div class="payWord">
-                    <span v-show="payword.length>=1"></span>
+                <div class="payPassword">
+                    <span v-show="payPassword.length>=1"></span>
                 </div>
-                <div class="payWord">
-                    <span v-show="payword.length>=2"></span>
+                <div class="payPassword">
+                    <span v-show="payPassword.length>=2"></span>
                 </div>
-                <div class="payWord">
-                    <span v-show="payword.length>=3"></span>
+                <div class="payPassword">
+                    <span v-show="payPassword.length>=3"></span>
                 </div>
-                <div class="payWord">
-                    <span v-show="payword.length>=4"></span>
+                <div class="payPassword">
+                    <span v-show="payPassword.length>=4"></span>
                 </div>
-                <div class="payWord">
-                    <span v-show="payword.length>=5"></span>
+                <div class="payPassword">
+                    <span v-show="payPassword.length>=5"></span>
                 </div>
-                <div class="payWord" style="border:none">
-                    <span v-show="payword.length>=6"></span>
+                <div class="payPassword" style="border:none">
+                    <span v-show="payPassword.length>=6"></span>
                 </div>
-                <input type="tel" autofocus id="paywordinput" maxlength="6" v-model="payword">
+                <input type="tel" autofocus="autofocus" ref="payPasswordinput" id="payPasswordinput" maxlength="6" v-model="payPassword">
             </div>
             <div class="end" @click="toPayPw">
                 忘记密码？
@@ -37,46 +37,59 @@
 
 <script>
 import mine from '@/api/mine/index'
+import { toast, isPhone } from '@/util/index'
 export default {
     data() {
         return {
-            payword: ''
+            payPassword: ''
         }
     },
     props: {
         isShow: {
             type: Boolean
         },
-        amount:{
-            type:String
+        amount: {
+            type: String
         },
-        userBankId:{
-            type:String
+        userBankId: {
+            type: String
         }
     },
     methods: {
         cancelToast() {
             this.$emit('cancelToast')
-            this.payword=''
+            this.payPassword = ''
         },
         toPayPw() {
-            this.$router.push('/paypassword')
+            this.$router.replace('/paypassword')
         }
     },
-    watch:{
-      payword:function(){
-          if(this.payword.length==6){
-              console.log('toSuccessAjax')
-              let sendData={
-                  amount:this.amount,
-                  userBankId:this.userBankId,
-                  payword:this.payword
-              }
-              mine.cash(sendData).then(data=>{
-                  console.log(data)
-              })
-          }
-      }  
+    watch: {
+        isShow() {
+            setTimeout(() => {
+                document.querySelector('#payPasswordinput').focus();
+            }, 500)
+        },
+        payPassword: function () {
+            if (this.payPassword.length == 6) {
+                console.log('toSuccessAjax')
+                let encrypt = new JSEncrypt();
+                encrypt.setPublicKey(this.$store.state.pubkey);
+                let sendData = {
+                    amount: this.amount,
+                    userBankId: this.userBankId,
+                    payPassword: encrypt.encrypt(this.payPassword),
+                }
+                mine.cash(sendData).then(data => {
+                    if (data.data.code == 200) {
+                        toast(data.data.message)
+                        this.$router.go(-1)
+                    } else {
+                        toast(data.data.message)
+                    }
+                })
+            }
+        }
     }
 }
 </script>
@@ -134,7 +147,7 @@ label {
         width: 6.4rem;
         margin: 0 auto;
         position: relative;
-        .payWord {
+        .payPassword {
             border-right: 0.026667rem solid #ddd;
             flex: 1 1 1.066667rem;
             display: flex;
@@ -148,7 +161,7 @@ label {
                 background-color: #000;
             }
         }
-        #paywordinput {
+        #payPasswordinput {
             position: absolute;
             left: -9999px;
         }

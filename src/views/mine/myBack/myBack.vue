@@ -3,7 +3,9 @@
         <div class="listWrap">
             <div class="list" v-for="(bank,index) in bankLists" :key="index" :style="{backgroundColor:bank.status==2?'#578cce':'#ef6d74'}">
                 <div class="bankInfor">
-                    <img class="icon" :src="baseImgUrl+bank.bankPicUrl" alt="">
+                    <span class="icon">
+                        <img :src="baseImgUrl+bank.bankPicUrl" alt="">
+                    </span>
                     <div class="bankDetails">
                         <div class="name">{{bank.bankName}}</div>
                         <div class="type"></div>
@@ -16,7 +18,7 @@
                     </div>
                 </div>
                 <div class="bankState">
-                    <span class="stateButton" :class="{'review':!bank.status==2}" @click="deleteBank(bank)">{{bank.status==2?'删除':'审核中'}}</span>
+                    <span class="stateButton" :class="{'review':bank.status!=2}" @click="deleteBank(bank)">{{bank.status==2?'删除':'审核中'}}</span>
                 </div>
             </div>
         </div>
@@ -32,6 +34,7 @@
 
 <script>
 import mine from '@/api/mine/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
@@ -63,19 +66,35 @@ export default {
         deleteBank(bank) {
             console.log('deleteBank')
             console.log(bank)
-            if (bank.states==2) {
+            if (bank.status == 2) {
                 console.log('删除')
+                let sendData = {
+                    id: bank.id
+                }
+                mine.delBank(sendData).then(data => {
+                    console.log(data)
+                    if (data.data.code == 200) {
+                        toast('删除银行卡成功')
+                        mine.userBank().then(data => {
+                            console.log(data.data)
+                            this.bankLists=data.data.data
+                        })
+                    } else {
+                        toast(data.data.data.message)
+                    }
+                })
             } else {
                 console.log('审核中---------')
+                return
             }
         },
         addBack() {
             console.log('addBack')
             if (this.auto == 1) {
-                this.$router.push('/addBackByPerson')
+                this.$router.replace('/addBackByPerson')
                 return
             }
-            this.$router.push('/addBack')
+            this.$router.replace('/addBack')
         }
     },
     filters: {
@@ -88,10 +107,7 @@ export default {
     },
     mounted() {
         mine.userBank().then(data => {
-            console.log(data.data)
-            data.data.data.forEach(function (element) {
-                this.bankLists.push(element)
-            }, this);
+            this.bankLists=data.data.data
         })
         mine.verifyBank().then((data) => {
             this.add = data.data.data.add
@@ -127,9 +143,18 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 .icon {
+                    display: inline-block;
                     width: 1.12rem;
                     height: 1.12rem;
-                    margin-right: 0.53333rem
+                    border-radius: 50%;
+                    overflow: hidden;
+                    text-align: center;
+                    line-height: 1.12rem;
+                    margin-right: 0.53333rem;
+                    img {
+                        width: 1.12rem;
+                        height: 1.12rem;
+                    }
                 }
                 .bankDetails {
                     .type {

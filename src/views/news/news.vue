@@ -2,9 +2,9 @@
   <div>
     <div class="newsWrap">
       <v-Swiper swipeid="swipe" ref="swiper" :autoplay="3000" effect="slide">
-        <div @click="toNewDetail(top.id)" v-for="(top,index) in tops" :key="index" class="swiper-slide" slot="swiper-con">
+        <a :href="top.linkUrl" v-for="(top,index) in tops" :key="index" class="swiper-slide" slot="swiper-con">
           <img :src="baseImgUrl+top.picPath">
-        </div>
+        </a>
       </v-Swiper>
       <v-NewsList v-for="list in lists" :title="list.title" :picPath="baseImgUrl+list.picPath" :id="list.id" @toNewDetail="toNewDetail(list.id)" :key="list.index"></v-NewsList>
     </div>

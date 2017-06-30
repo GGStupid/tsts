@@ -79,8 +79,15 @@ export default {
         },
         toConfirm() {
             console.log('toConfirm')
-            this.isShow = true
-            if (isPassWord(this.newPw2) && this.newPw1 == this.newPw2) {
+            if (!isPassWord(this.currenPw)) {
+                toast('请输入正确的当前密码')
+                return
+            }
+            if (!isPassWord(this.newPw2) || this.newPw1 != this.newPw2) {
+                toast('请输入2次正确的新密码')
+                return
+            }
+            if (isPassWord(this.currenPw) && isPassWord(this.newPw2) && this.newPw1 == this.newPw2) {
                 let encrypt = new JSEncrypt();
                 encrypt.setPublicKey(this.$store.state.pubkey);
                 let sendData = {
@@ -89,18 +96,19 @@ export default {
                 }
                 mine.password(sendData).then(data => {
                     if (data.data.code == 200) {
-                        toast(data.data.message)
-                        this.$router.go(-1)
+                        toast('登录密码修改成功,请重新登录')
+                        this.$router.push('/')
+                        localStorage.clear()
                     } else {
                         toast(data.data.message)
                     }
                 })
             }
         },
-        toastConfirm() {
-            console.log('toastConfirm')
-            this.isShow = false
-        }
+        // toastConfirm() {
+        //     console.log('toastConfirm')
+        //     this.isShow = false
+        // }
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '修改登录密码'

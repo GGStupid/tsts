@@ -3,7 +3,7 @@
     <div class="form">
       <div class="list">
         <span>手机号</span>
-        <input type="tel" maxlength="11" v-model='phone' placeholder='请输入手机号' @keyup='isPhoneClean'>
+        <input type="tel" maxlength="11" v-model='phone' placeholder='请输入您的手机号码' @keyup='isPhoneClean'>
         <img src="../../assets/icon_clean.png" class="rIcon" v-show="isphone" @click='cleanPhone' alt="">
       </div>
       <div class="list">
@@ -51,12 +51,12 @@ export default {
         let sendData = {
           mobilePhone: this.phone
         }
+        if (this.count != 60) {
+          return false
+        }
         login.resetPwdMsg(sendData).then(data => {
           if (data.data.code == 200) {
             toast('手机验证码已发送请注意查收')
-            if (this.count != 60) {
-              return false
-            }
             let timer = setInterval(() => {
               this.count--
               this.phoneCodetitle = `${this.count}秒`
@@ -70,6 +70,8 @@ export default {
             toast(data.data.message)
           }
         })
+      } else {
+        toast('请输入正确的手机号')
       }
     },
     toNext() {
@@ -82,12 +84,14 @@ export default {
         login.checkResetPwdMsg(sendData).then(data => {
           if (data.data.code == 200) {
             this.$store.dispatch('savePhone', this.phone)
-             this.$store.dispatch('phoneCode', this.phoneCode)
+            this.$store.dispatch('phoneCode', this.phoneCode)
             this.$router.push({ path: '/forget2' })
           } else {
             toast(data.data.message)
           }
         })
+      }else{
+         toast('请输入手机号和短信验证码')
       }
     }
   }

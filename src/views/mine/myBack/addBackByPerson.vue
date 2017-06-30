@@ -11,7 +11,7 @@
             </div>
             <div class="list" @click="showBankLists">
                 <span>开户银行</span>
-                <input type="text" v-model="bankName" placeholder="请选择开户银行" readonly>
+                <span class="bankName" :class="{'activeColor':activeColor}">{{bankName}}</span>
                 <img class="rIcon" src="../../../assets/arrow_right.png" alt="">
             </div>
             <div class="list">
@@ -56,9 +56,8 @@ export default {
             isShow: false,
             msg: '',
             baseImgUrl: this.$store.state.baseImgUrl,
-            realName: this.$store.state.userInfor.realName,
             bankCode: '',
-            bankName: '',
+            bankName: '请选择开户银行',
             bankNo: '',
             mobilePhone: '',
             bankImg: require('../../../assets/bank card_add_pic.png'),
@@ -69,8 +68,11 @@ export default {
         }
     },
     computed: {
-        SelectBank() {
-            return this.$store.state.SelectBank
+        realName() {
+            return this.$store.state.userInfor.realName
+        },
+        activeColor() {
+            return this.bankName != '请选择开户银行'
         }
     },
     components: {
@@ -141,7 +143,7 @@ export default {
         },
         toastConfirm() {
             console.log('toastConfirm')
-            this.$router.replace('/myBack')
+            this.$router.go(-1)
         }
     },
     mounted() {
@@ -194,6 +196,16 @@ export default {
                 position: absolute;
                 right: 0.32rem;
                 top: 0.44rem;
+            }
+            .bankName {
+                display: inline-block;
+                color: #999999;
+                height: 1.30667rem;
+                line-height: 1.30667rem;
+                margin-left: 1.06667rem;
+            }
+            .activeColor {
+                color: #ffffff;
             }
             input {
                 width: 5.5rem;

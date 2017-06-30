@@ -58,24 +58,24 @@ export default {
     data() {
         return {
             friends: [
-                {
-                    nickName: '啊打发',
-                    mobilePhone: '135****1234',
-                    createTime: '2017-4-2'
-                },
-                {
-                    nickName: '啊打发',
-                    mobilePhone: '135****1234',
-                    createTime: '2017-4-2'
-                },{
-                    nickName: '啊打发',
-                    mobilePhone: '135****1234',
-                    createTime: '2017-4-2'
-                },{
-                    nickName: '啊打发',
-                    mobilePhone: '135****1234',
-                    createTime: '2017-4-2'
-                },
+                // {
+                //     nickName: '啊打发',
+                //     mobilePhone: '135****1234',
+                //     createTime: '2017-4-2'
+                // },
+                // {
+                //     nickName: '啊打发',
+                //     mobilePhone: '135****1234',
+                //     createTime: '2017-4-2'
+                // },{
+                //     nickName: '啊打发',
+                //     mobilePhone: '135****1234',
+                //     createTime: '2017-4-2'
+                // },{
+                //     nickName: '啊打发',
+                //     mobilePhone: '135****1234',
+                //     createTime: '2017-4-2'
+                // },
             ],
             endTitle:' 查看更多'
         }

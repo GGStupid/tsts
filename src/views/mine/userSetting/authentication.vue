@@ -167,6 +167,8 @@ export default {
                             // toast(data.data.message)
                         }
                     })
+                }else{
+                    toast('请输入正确的姓名和身份证号并上传身份证照片')
                 }
             } else {
                 if (isRealName(this.name) && isIdCard(this.cardId)) {
@@ -188,6 +190,8 @@ export default {
                             // toast(data.data.message)
                         }
                     })
+                }else{
+                    toast('请输入正确的姓名和身份证号')
                 }
             }
 
@@ -198,7 +202,7 @@ export default {
                 this.isShow = false
                 return
             } else {
-                this.$router.replace('/userSetting')
+                this.$router.go(-1)
             }
         }
     },

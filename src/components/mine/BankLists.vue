@@ -8,7 +8,9 @@
             </div>
             <div class="list" v-for="(bank,index) in banks" :key="index" @click="selectBank(bank)">
                 <div class="bankinfor">
-                    <img :src="bank.bankPicUrl" alt="">
+                    <span class="icon">
+                        <img :src="baseImgUrl+bank.bankPicUrl" alt="">
+                    </span>
                     <div class="bank">
                         <div>{{bank.bankName}}</div>
                         <span>****</span>
@@ -40,7 +42,8 @@
 export default {
     data() {
         return {
-            selectBankName: ''
+            selectBankName: '',
+            baseImgUrl: this.$store.state.baseImgUrl,
         }
     },
     props: {
@@ -60,14 +63,14 @@ export default {
         cancelLists() {
             this.$emit('cancelLists')
         },
-        addBank(){
+        addBank() {
             console.log('addBank')
             this.$router.push('/myBack')
         }
     },
-    filters:{
-        bankEnd(id){
-           return id?id.slice(-4):''
+    filters: {
+        bankEnd(id) {
+            return id ? id.slice(-4) : ''
         }
     }
 }
@@ -124,6 +127,20 @@ export default {
             justify-content: space-between;
             align-items: center;
             text-align: left;
+            .icon {
+                display: inline-block;
+                width: 0.64rem;
+                height: 0.64rem;
+                border-radius: 50%;
+                overflow: hidden;
+                text-align: center;
+                line-height: 0.64rem;
+                margin: 0 0.45333rem;
+                img {
+                    width: 0.64rem;
+                    height: 0.64rem;
+                }
+            }
             img {
                 width: 0.64rem;
                 margin: 0 0.45333rem;

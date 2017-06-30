@@ -11,7 +11,7 @@
             </div>
             <div class="list" @click="showBankLists">
                 <span>开户银行</span>
-                <input type="text" v-model="bankName" placeholder="请选择开户银行" readonly>
+                <span class="bankName" :class="{'activeColor':activeColor}">{{bankName}}</span>
                 <img class="rIcon" src="../../../assets/arrow_right.png" alt="">
             </div>
             <div class="list">
@@ -45,7 +45,7 @@
 import mine from '@/api/mine/index'
 import Button from '@/components/buttons/Button690'
 import WhiteToastButton1 from '@/components/WhiteToastButton1'
-import { toast, isBankNumber,isPhone } from '@/util/index'
+import { toast, isBankNumber, isPhone } from '@/util/index'
 export default {
     data() {
         return {
@@ -53,9 +53,8 @@ export default {
             msg: '',
             realFailCount: 0,
             baseImgUrl: this.$store.state.baseImgUrl,
-            realName: this.$store.state.userInfor.realName,
             bankCode: '',
-            bankName: '',
+            bankName: '请选择开户银行',
             bankNo: '',
             mobilePhone: '',
             phoneCode: '',
@@ -64,17 +63,19 @@ export default {
             iscount: false,
             isActive: true,
             isSelectBanks: false,
-            bankLists: []
+            bankLists: [],
+            add:'',
+            bankFailCount:'',
+            auto:''
         }
     },
-    // computed: {
-    //     SelectBank() {
-    //         return this.$store.state.SelectBank
-    //     }
-    // },
-    components: {
-        'v-Button': Button,
-        'v-WhiteToastButton1': WhiteToastButton1
+    computed: {
+        realName() {
+            return this.$store.state.userInfor.realName
+        },
+        activeColor() {
+            return this.bankName != '请选择开户银行'
+        }
     },
     methods: {
         showBankLists() {
@@ -93,12 +94,12 @@ export default {
             let sendData = {
                 code: 'userBank'
             }
+            if (this.count != 60) {
+                return false
+            }
             mine.phoneCode(sendData).then(data => {
                 if (data.data.code == 200) {
                     toast('手机验证码已发送请注意查收')
-                    if (this.count != 60) {
-                        return false
-                    }
                     let timer = setInterval(() => {
                         this.iscount = true
                         this.count--
@@ -117,31 +118,33 @@ export default {
         },
         toNext() {
             console.log('toNext---bank')
-            if (this.bankNo.length>16 && isPhone(this.mobilePhone) && this.bankCode && this.bankName && this.phoneCode.length==6) {
+            if (this.bankNo.length > 16 && isPhone(this.mobilePhone) && this.bankCode && this.bankName && this.phoneCode.length == 6) {
                 let senddata = {
                     bankCode: this.bankCode,
                     bankName: this.bankName,
                     bankNo: this.bankNo,
                     mobilePhone: this.mobilePhone,
-                    phoneCode:this.phoneCode
+                    phoneCode: this.phoneCode
                 }
                 mine.bank(senddata).then((data) => {
                     if (data.data.code == 200) {
-                        this.realFailCount =data.data.data
+                        this.auto = data.data.data
                         this.isShow = true
                         this.msg = data.data.message
                     } else {
-                        this.realFailCount = data.data.data
+                        this.auto = data.data.data
                         this.isShow = true
                         this.msg = data.data.message
                         // toast(data.data.message)
                     }
                 })
+            } else {
+                toast('请输入完整的信息来完成添加银行卡')
             }
         },
         toastConfirm() {
             console.log('toastConfirm')
-            if (this.realFailCount < 3) {
+            if (this.auto==0) {
                 this.isShow = false
                 return
             } else {
@@ -153,13 +156,22 @@ export default {
         mine.getUserInforPost().then((data) => {
             this.$store.dispatch('userInfor', data.data.data)
         }),
-            mine.bankList().then(data => {
-                this.bankLists = data.data.data
+            mine.verifyBank().then((data) => {
+                this.add = data.data.data.add
+                this.bankFailCount = data.data.data.bankFailCount
+                this.auto = data.data.data.auto
             })
+        mine.bankList().then(data => {
+            this.bankLists = data.data.data
+        })
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '添加银行卡'
         next()
+    },
+    components: {
+        'v-Button': Button,
+        'v-WhiteToastButton1': WhiteToastButton1
     },
 }
 </script>
@@ -199,6 +211,16 @@ export default {
                 position: absolute;
                 right: 0.32rem;
                 top: 0.44rem;
+            }
+            .bankName {
+                display: inline-block;
+                color: #999999;
+                height: 1.30667rem;
+                line-height: 1.30667rem;
+                margin-left: 1.06667rem;
+            }
+            .activeColor {
+                color: #ffffff;
             }
             input {
                 width: 5.5rem;
