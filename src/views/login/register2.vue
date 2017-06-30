@@ -116,6 +116,11 @@ export default {
       text-align: center;
       border-left: 1px solid #191A22;
     }
+    .rclean{
+      position: absolute;
+      right: 1rem;
+      top: 0.44rem;
+    }
     .rIcon {
       position: absolute;
       right: 0.32rem;

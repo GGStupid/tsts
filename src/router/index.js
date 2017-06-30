@@ -98,9 +98,7 @@ const router = new Router({
     {
       path: '/newDetail/:id',
       component: newDetail,
-      meta: {
-        requireAuth: true
-      }
+      
     },
     //messages
     {
@@ -129,26 +127,17 @@ const router = new Router({
           path: '',
           name: 'default',
           component: news,
-          meta: {
-            requireAuth: true
-          }
         },
         //news
         {
           path: 'news',
           name: 'news',
           component: news,
-          meta: {
-            requireAuth: true
-          }
         },
         //market
         {
           path: 'market',
           component: market,
-          meta: {
-            requireAuth: true
-          }
         },
         //deal
         {
@@ -183,23 +172,14 @@ const router = new Router({
     {
       path: '/toSearch',
       component: toSearch,
-      meta: {
-        requireAuth: true
-      }
     },
     {
       path: '/pricePersonDetail/:product_id',
       component: pricePersonDetail,
-      meta: {
-        requireAuth: true
-      }
     },
     {
       path: '/marketNewsDeatil/:product_id',
       component: marketNewsDeatil,
-      meta: {
-        requireAuth: true
-      }
     },
     // {
     //   path: '/pricePersonDetail/:product_id',
@@ -208,9 +188,6 @@ const router = new Router({
     {
       path: '/detailsTribune',
       component: detailsTribune,
-      meta: {
-        requireAuth: true
-      }
     },
     //mine
     {

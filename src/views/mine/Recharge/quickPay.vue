@@ -101,7 +101,7 @@ export default {
             if (!this.bankCode) return toast('请选择充值银行')
             if (!isBankNumber(this.bankNo)) return toast('请输入正确的充值银行卡号')
             if (!isPhone(this.mobilePhone)) return toast('请输入正确的充值银行手机号')
-            mine.phoneCode(sendData).then(data => {
+            mine.rechargeMsg(senddata).then(data => {
                 if (data.data.code == 200) {
                     toast('手机验证码已发送请注意查收')
                     let timer = setInterval(() => {
@@ -136,7 +136,7 @@ export default {
             if (!isBankNumber(this.bankNo)) return toast('请输入正确的充值银行卡号')
             if (!isPhone(this.mobilePhone)) return toast('请输入正确的充值银行手机号')
             if (this.phoneCode.length != 6) return toast('请输入正确的验证码')
-            mine.recharge(senddata).then((data) => {
+            mine.rechargeMsg(senddata).then((data) => {
                 if (data.data.code == 200) {
                     toast(data.data.message)
                 } else {
