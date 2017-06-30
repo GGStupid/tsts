@@ -117,6 +117,12 @@ export default {
                     })
                 }
             }
+             if (this.repatpayword.length == 6 && this.repatpayword != this.payword){
+                 toast('请输入2次一样的密码')
+                 setTimeout(()=>{
+                     this.$router.go(-1)
+                 },2000)
+             }
         }
     },
     beforeRouteEnter(to, from, next) {

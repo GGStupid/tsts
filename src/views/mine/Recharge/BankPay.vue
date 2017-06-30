@@ -42,7 +42,7 @@ export default {
             bankListShow: false,
             banks: [],
             bankName: '',
-            bankSelect: '请选择开户银行',
+            bankSelect: '请选择银行卡',
             userBankId: '',
             amount: '',
             mobilePhone: '选择银行即可',
@@ -57,7 +57,7 @@ export default {
     },
     computed: {
         activeColor() {
-            return this.bankSelect != '请选择开户银行'
+            return this.bankSelect != '请选择银行卡'
         }
     },
     methods: {

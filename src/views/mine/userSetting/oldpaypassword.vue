@@ -73,6 +73,7 @@ export default {
                         this.$router.replace('/paypassword1')
                     }else{
                         toast(data.data.message)
+                        this.payword=''
                     }
                 })
             }

@@ -54,7 +54,7 @@ export default {
                 //     cardend:'2118',
                 // }
             ],
-            SelectBank: '请选择开户银行',
+            SelectBank: '请选择银行卡',
             userBankId: '',
             amount: '',
             sendData: {},
@@ -63,7 +63,7 @@ export default {
     },
     computed: {
         activeColor() {
-            return this.SelectBank != '请选择开户银行'
+            return this.SelectBank != '请选择银行卡'
         },
         assets() {
             return this.$store.state.userInfor.assets || this.$store.state.userInfor.assets == 0 ? this.$store.state.userInfor.assets.toFixed(2) : ''

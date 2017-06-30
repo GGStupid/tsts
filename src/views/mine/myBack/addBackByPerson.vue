@@ -27,7 +27,7 @@
                 <label for="upBankImg">
                     <img :src="bankImg" alt="">
                     <br>
-                    <span>银行卡正面（图片大小不大于1M）</span>
+                    <span>银行卡正面（图片大小不大于5M）</span>
                 </label>
                 <input ref="upBankImg" id="upBankImg" type="file" accept="*.jpg,*.gif,*.png" @change="uploadHandler" >
             </div>
@@ -97,8 +97,8 @@ export default {
             var that = this;
             var file = e.target.files[0];
             if (file) {
-                if (file.size > 1024 * 1024 * 10) {
-                    console.log("图片大小最大不能超过10M")
+                if (file.size > 1024 * 1024 * 5) {
+                    console.log("图片大小最大不能超过5M")
                 }
                 else {
                     lrz(file, { width: 512, quality: 0.9 }, function (rst) {
@@ -119,7 +119,11 @@ export default {
         },
         toNext() {
             console.log('toNext---bankPerson')
-            if (this.bankNo.length > 16 && isPhone(this.mobilePhone) && this.bankCode && this.bankName && this.bankPicUrl) {
+            if (!isBankNumber(this.bankNo)) return toast('请输入正确的银行卡号')
+            if (!isPhone(this.mobilePhone)) return toast('请输入正确的手机号')
+            if (!this.bankCode) return toast('请选择银行类型')
+            if(!this.bankPicUrl)return toast('请上传银行卡照片')
+            // if (this.bankNo.length > 16 && isPhone(this.mobilePhone) && this.bankCode && this.bankName && this.bankPicUrl) {
                 let senddata = {
                     bankCode: this.bankCode,
                     bankName: this.bankName,
@@ -139,7 +143,7 @@ export default {
                         // toast(data.data.message)
                     }
                 })
-            }
+            
         },
         toastConfirm() {
             console.log('toastConfirm')

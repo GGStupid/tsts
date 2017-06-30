@@ -18,7 +18,7 @@
                 <div class="upimg">
                     <img :src="cardOppositeUp" alt="">
                     <br>
-                    <span>上传身份证正面（图片大小不大于1M）</span>
+                    <span>上传身份证正面（图片大小不大于5M）</span>
                 </div>
             </label>
             <input ref="cardOppositePic" id="cardOppositePic" type="file" accept="*.jpg,*.gif,*.png" @change="uploadcardOppositePicHandler" >
@@ -28,7 +28,7 @@
                 <div class="upimg">
                     <img :src="cardPositiveUp" alt="">
                     <br>
-                    <span>上传身份证反面（图片大小不大于1M）</span>
+                    <span>上传身份证反面（图片大小不大于5M）</span>
                 </div>
             </label>
             <input ref="cardPositivePic" id="cardPositivePic" type="file" accept="*.jpg,*.gif,*.png" @change="uploadcardPositivePicHandler" >
@@ -99,8 +99,8 @@ export default {
             var formdata = new FormData();
             formdata.append("file", file)
             if (file) {
-                if (file.size > 1024 * 1024 * 1) {
-                    toast("图片大小最大不能超过1M")
+                if (file.size > 1024 * 1024 * 5) {
+                    toast("图片大小最大不能超过5M")
                 }
                 else {
                     lrz(file, { width: 512, quality: 0.9 }, function (rst) {
@@ -125,8 +125,8 @@ export default {
             var formdata = new FormData();
             formdata.append("file", file)
             if (file) {
-                if (file.size > 1024 * 1024 * 1) {
-                    toast("图片大小最大不能超过1M")
+                if (file.size > 1024 * 1024 * 5) {
+                    toast("图片大小最大不能超过5M")
                 }
                 else {
                     lrz(file, { width: 512, quality: 0.9 }, function (rst) {

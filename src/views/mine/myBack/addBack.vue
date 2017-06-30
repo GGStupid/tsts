@@ -64,9 +64,9 @@ export default {
             isActive: true,
             isSelectBanks: false,
             bankLists: [],
-            add:'',
-            bankFailCount:'',
-            auto:''
+            add: '',
+            bankFailCount: '',
+            auto: ''
         }
     },
     computed: {
@@ -118,33 +118,33 @@ export default {
         },
         toNext() {
             console.log('toNext---bank')
-            if (this.bankNo.length > 16 && isPhone(this.mobilePhone) && this.bankCode && this.bankName && this.phoneCode.length == 6) {
-                let senddata = {
-                    bankCode: this.bankCode,
-                    bankName: this.bankName,
-                    bankNo: this.bankNo,
-                    mobilePhone: this.mobilePhone,
-                    phoneCode: this.phoneCode
-                }
-                mine.bank(senddata).then((data) => {
-                    if (data.data.code == 200) {
-                        this.auto = data.data.data
-                        this.isShow = true
-                        this.msg = data.data.message
-                    } else {
-                        this.auto = data.data.data
-                        this.isShow = true
-                        this.msg = data.data.message
-                        // toast(data.data.message)
-                    }
-                })
-            } else {
-                toast('请输入完整的信息来完成添加银行卡')
+            if (!isBankNumber(this.bankNo)) return toast('请输入正确的银行卡号')
+            if (!isPhone(this.mobilePhone)) return toast('请输入正确的手机号')
+            if (!this.bankCode) return toast('请选择银行类型')
+            if (this.phoneCode.length != 6) return toast('请输入验证码')
+            let senddata = {
+                bankCode: this.bankCode,
+                bankName: this.bankName,
+                bankNo: this.bankNo,
+                mobilePhone: this.mobilePhone,
+                phoneCode: this.phoneCode
             }
+            mine.bank(senddata).then((data) => {
+                if (data.data.code == 200) {
+                    this.auto = data.data.data
+                    this.isShow = true
+                    this.msg = data.data.message
+                } else {
+                    this.auto = data.data.data
+                    this.isShow = true
+                    this.msg = data.data.message
+                    // toast(data.data.message)
+                }
+            })
         },
         toastConfirm() {
             console.log('toastConfirm')
-            if (this.auto==0) {
+            if (this.auto == 0) {
                 this.isShow = false
                 return
             } else {

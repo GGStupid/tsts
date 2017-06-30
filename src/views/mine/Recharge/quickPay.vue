@@ -50,7 +50,7 @@ export default {
             baseImgUrl: this.$store.state.baseImgUrl,
             isShow: false,
             amount: '',
-            bankName: '请选择开户银行',
+            bankName: '请选择银行卡',
             bankCode:'',
             isbankNames: false,
             bankLists: [],
@@ -68,7 +68,7 @@ export default {
         //     return this.$store.state.bankName
         // },
         activeColor() {
-            return this.bankName != '请选择开户银行'
+            return this.bankName != '请选择银行卡'
         }
     },
     methods: {
@@ -139,6 +139,7 @@ export default {
             mine.rechargeMsg(senddata).then((data) => {
                 if (data.data.code == 200) {
                     toast(data.data.message)
+                      this.$router.go(-2)  
                 } else {
                     toast(data.data.message)
                     // toast(data.data.message)

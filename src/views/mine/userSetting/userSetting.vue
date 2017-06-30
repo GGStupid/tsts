@@ -84,8 +84,8 @@ export default {
             var formdata = new FormData();
             formdata.append("file", file)
             if (file) {
-                if (file.size > 1024 * 1024 * 10) {
-                    toast("图片大小最大不能超过1M")
+                if (file.size > 1024 * 1024 *5) {
+                    toast("图片大小最大不能超过5M")
                 }
                 else {
                     lrz(file, { width: 512, quality: 0.9 }, function (rst) {
