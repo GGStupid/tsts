@@ -31,7 +31,7 @@ export default {
     loadNews() {
       var that = this
       let sendData = {
-        publisherId: this.$store.state.publisherId,
+        productId: this.$store.state.productId,
         page: this.page,
         rows: this.rows
       }

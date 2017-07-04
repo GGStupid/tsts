@@ -35,6 +35,14 @@ export default {
 			type: Number,
 			default: 5000,
 		},
+		observer: {
+			type: Boolean,
+			default: true
+		},
+		observeParents: {
+			type: Boolean,
+			default: true
+		},
 		paginationType: {
 			type: String,
 			default: 'bullets'
@@ -47,9 +55,11 @@ export default {
 	},
 	mounted() {
 		var That = this;
-		this.dom = new Swiper('.' + That.swipeid, {
+		setTimeout(()=>{
+			this.dom = new Swiper('.' + That.swipeid, {
+			effect: That.effect,
 			//循环
-			loop: That.loop,
+			loop: true,
 			//分页器
 			pagination: '.swiper-pagination',
 			//分页类型
@@ -59,12 +69,12 @@ export default {
 			autoplay: That.autoplay,
 			//方向
 			direction: That.direction,
-			//特效
-			effect: That.effect, //slide,fade,coverflow,cube
+			//特效 //slide,fade,coverflow,cube
 			autoplayDisableOnInteraction: false,
-			observer: true, //修改swiper自己或子元素时，自动初始化swiper
-			observeParents: true //修改swiper的父元素时，自动初始化swiper
+			observer: That.observer, //修改swiper自己或子元素时，自动初始化swiper
+			observeParents: That.observeParents //修改swiper的父元素时，自动初始化swiper
 		})
+		},200)
 	}
 }
 </script>

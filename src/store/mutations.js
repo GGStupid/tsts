@@ -38,8 +38,8 @@ export default {
     payPassword(state,payload){
         state.payPassword=payload
     },
-    //publisherId
-    publisherId(state,payload){
-        state.publisherId=payload
+    //productId
+    productId(state,payload){
+        state.productId=payload
     },
 }

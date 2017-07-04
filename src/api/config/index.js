@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import app from '../../main'
 const instance=axios.create();
 instance.defaults.timeout=5000
 instance.defaults.headers['Content-Type']='application/x-www-form-urlencoded'
@@ -13,7 +13,9 @@ instance.interceptors.request.use(config=>{
 
 instance.interceptors.response.use(response=>{
     //   console.log('请求结束')
-    // console.log(response)
+    if(response.data.code==401){
+        app.$router.push('/')
+    }
     return response
 },err=>{
     return Promise.reject(err)

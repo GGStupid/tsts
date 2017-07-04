@@ -11,27 +11,27 @@
             </div>
             <div class="commentsabout">
               <span class="icon" @click="addZans">
-                <img :src="comment.zansNum>0?require('../../assets/quotes_forum_icon_zan_s.png'):require('../../assets/quotes_forum_icon_zan_n.png')" alt=""> {{comment.zansNum}}
+                <img :src="comment.likeCount>0?require('../../assets/quotes_forum_icon_zan_s.png'):require('../../assets/quotes_forum_icon_zan_n.png')" alt=""> {{comment.likeCount}}
               </span>
               <span class="icon" @click="addReport">
-                <img :src="comment.reportNum>0?require('../../assets/quotes_forum_icon_comt_s.png'):require('../../assets/quotes_forum_icon_comt_n.png')" alt=""> {{comment.reportNum}}
+                <img :src="comment.commentCount>0?require('../../assets/quotes_forum_icon_comt_s.png'):require('../../assets/quotes_forum_icon_comt_n.png')" alt=""> {{comment.commentCount}}
               </span>
             </div>
           </div>
-          <div class="times">
-            {{comment.time}}
+          <div class="createTimes">
+            {{comment.createTime}}
           </div>
           <div class="content">
             {{comment.content}}
           </div>
-          <div class="comments" v-show="comment.zansNum>0 || comment.reportNum>0">
-            <div class="zans" v-show="comment.zansNum>0">
+          <div class="comments" v-show="comment.likeCount>0 || comment.commentCount>0">
+            <div class="zans" v-show="comment.likeCount>0">
               <img src="../../assets/quotes_forum_icon_zan_s.png" alt="">
-              <span class="answer">{{comment.answerLists}}</span>
+              <span class="answer" v-for="(zans,index) in comment.forumLikes" :key="index">{{zans.nickName }}</span>
             </div>
-            <div class="commentList" v-show="comment.reportNum>0">
-              <span class="answer">{{comment.answerName}}</span>
-              <span class="comListContent">：{{comment.answerContent}}</span>
+            <div class="commentList" v-show="comment.commentCount>0" v-for="(comment,index) in comment.commentModelList" :key="index">
+              <span class="answer">{{comment.userName}}:{{comment.parentUserName || ''}}</span>
+              <span class="comListContent">：{{comment.content}}</span>
             </div>
           </div>
         </div>
@@ -48,39 +48,40 @@ import market from '@/api/market/index'
 export default {
   data() {
     return {
+      baseImgUrl: this.$store.state.baseImgUrl,
       commentLists: [
         {
           avatarImg: require('../../assets/quotes_forum_avatar.png'),
           name: 'a阿道夫',
           isAuthentication: true,
-          zansNum: 0,
-          reportNum: 10,
-          time: '06-01',
+          likeCount: 0,
+          commentCount: 10,
+          createTime: '06-01',
           content: '大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食',
-          answerLists: '阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发',
+          forumLikes: '阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发',
           answerName: '我',
           answerContent: '买水电费阿斯蒂芬啊速达阿斯蒂芬阿萨德发送到啊速达发射点发苏打撒旦法地方a卖',
         },
-        {
-          avatarImg: require('../../assets/quotes_forum_avatar.png'),
-          name: 'a阿道夫',
-          isAuthentication: false,
-          zansNum: 2,
-          reportNum: 2,
-          time: '06-01',
-          content: '大师傅阿道夫嗷嗷待食',
-          answerLists: '阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发',
-          answerName: '我',
-          answerContent: '买水电费阿斯蒂芬啊速达阿斯蒂芬阿萨德发送到啊速达发射点发苏打撒旦法地方a卖',
-        }
+        // {
+        //   avatarImg: require('../../assets/quotes_forum_avatar.png'),
+        //   name: 'a阿道夫',
+        //   isAuthentication: false,
+        //   likeCount: 2,
+        //   commentCount: 2,
+        //   createTime: '06-01',
+        //   content: '大师傅阿道夫嗷嗷待食',
+        //   answerLists: '阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发',
+        //   answerName: '我',
+        //   answerContent: '买水电费阿斯蒂芬啊速达阿斯蒂芬阿萨德发送到啊速达发射点发苏打撒旦法地方a卖',
+        // }
       ]
     }
   },
   methods: {
-    addZans(){
+    addZans() {
       console.log('addZans')
     },
-    addReport(){
+    addReport() {
       console.log('addReport')
     },
     moreComments() {
@@ -88,14 +89,20 @@ export default {
       this.$router.push('/detailsTribune')
     }
   },
-  mounted(){
+  filters:{
+    matchNick(id){
+     
+    }
+  },
+  mounted() {
     let sendData = {
-      productId: this.$route.params.product_id,
-      page:1,
-      rows:2
+      productId: this.$route.params.productId,
+      page: 1,
+      rows: 2
     }
     market.getforums(sendData).then(data => {
       console.log(data)
+      this.commentLists = data.data.data.rows
     })
   }
 }
@@ -143,7 +150,7 @@ export default {
             }
           }
         }
-        .times {
+        .createTimes {
           font-size: 0.32rem;
           color: #999;
         }

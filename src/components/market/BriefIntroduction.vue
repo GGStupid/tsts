@@ -1,7 +1,12 @@
 <template>
   <div class="briefIntroductionWrap">
     <div class="video">
-      <img src="../../assets/quotes_intro_pic.png" alt="">
+      <v-Swiper swipeid="swipe" ref="swiper" :autoplay="3000" effect="slide">
+        <a v-for="(top,index) in personBaners" :key="index" class="swiper-slide" slot="swiper-con">
+          <img :src="baseImgUrl+top">
+        </a>
+      </v-Swiper>
+      <!--<img src="../../assets/quotes_intro_pic.png" alt="">-->
     </div>
     <div class="timeWorth">
       <div class="title">
@@ -51,47 +56,65 @@
         </div>
       </div>
     </div>
-    <div class="mainExperience">
+    <div class="mainExperience" v-show="informationObj.experience">
       <div class="title">
         <img src="../../assets/quotes_intro_line.png" alt=""> 主要经历
       </div>
-      <div class="content" v-html="informationObj.experience">
+      <div class="content" v-html="replacePx(informationObj.experience)">
       </div>
     </div>
-    <div class="mainExperience">
+    <div class="mainExperience" v-show="informationObj.achievement">
       <div class="title">
         <img src="../../assets/quotes_intro_line.png" alt=""> 主要成就
       </div>
-      <div class="content" v-html="informationObj.achievement">
+      <div class="content" v-html="replacePx(informationObj.achievement)">
       </div>
     </div>
-    <div class="mainExperience">
+    <div class="mainExperience" v-show="informationObj.useArea">
       <div class="title">
         <img src="../../assets/quotes_intro_line.png" alt=""> 时间使用范围
       </div>
-      <div class="content" v-html="informationObj.useArea">
+      <div class="content" v-html="replacePx(informationObj.useArea)">
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Swiper from '@/components/swiper/Swiper.vue'
 import market from '@/api/market/index'
 export default {
   data() {
     return {
-      informationObj:{}
+      baseImgUrl: this.$store.state.baseImgUrl,
+      personBaners: [],
+      informationObj: {}
+    }
+  },
+  methods: {
+    replacePx(str) {
+      console.log(typeof str)
+      if (!str) return
+      let reg = /font-size: 14px/
+      let dpr = document.querySelector('html').getAttribute('data-dpr')
+      console.log(dpr)
+      str.replace(reg, ' ')
+      return str
     }
   },
   mounted() {
     let sendData = {
-      publisherId: this.$store.state.publisherId
+      productId: this.$store.state.productId
     }
     market.detail(sendData).then(data => {
       console.log(data)
-      this.informationObj=data.data.data
+      this.informationObj = data.data.data
+      this.personBaners = data.data.data.picPaths
     })
   },
+  components: {
+    'v-Swiper': Swiper,
+  }
 }
 </script>
 
@@ -105,7 +128,8 @@ export default {
   -webkit-overflow-scrolling: touch;
   .video {
     height: 5.62667rem;
-    img {
+    .swiper-slide img {
+      width: 100%;
       height: 5.62667rem;
     }
   }

@@ -1,14 +1,13 @@
 <template>
     <div class="newDetailWrap">
         <div class="top">
-            <div class="title" v-text="title">爱的</div>
+            <div class="title" v-text="title"></div>
             <div class="about">
-                <span class="type" v-text="author">寒夜深度</span>
-                <span class="time" v-text="updateTime">2016-10-10 10:32</span>
+                <span class="type" v-text="author"></span>
+                <span class="time" v-text="updateTime"></span>
             </div>
         </div>
         <div class="newContent" v-html="content">
-            阿斯蒂芬爱的色放安德森阿斯蒂芬阿斯蒂芬大事发生地方阿斯蒂 阿斯蒂芬爱的色放安德森阿斯蒂芬阿斯蒂芬大芬阿斯蒂芬大事发生地方阿斯蒂 阿斯蒂芬爱的色放安德森阿斯蒂芬阿斯蒂芬大事发生地方阿斯蒂 安德森阿斯蒂芬阿斯蒂芬大事发生地
         </div>
         <div class="toTop" v-show="scrollTop>5" @click="toTop">
             <img src="../../assets/zixun_details_icon_top@2x.png" alt="">
@@ -75,34 +74,27 @@ export default {
     background-color: #20212a;
     .top {
         .title {
-            font-size: 0.5333rem;
+           font-size: 20px;
             color: #eee;
             font-weight: 500;
             line-height: 1.5;
         }
         .about {
-            font-size: 0.32rem;
+            font-size: 12px;
             color: #999;
-            margin: @p30 0 0.5866rem;
+            margin: 15px 0;
         }
     }
     .newContent {
-        font-size: 0.426667rem;
         color: #999;
-        line-height: 1.5;
-        p {
-            strong {
-                width: 9.466667rem!important;
-            }
-        }
     }
     .toTop {
         position: fixed;
         bottom: 0.6rem;
         right: 0.5rem;
         img {
-            width: 1rem;
-            height: 1rem;
+            width: 37.5px;
+            height: 37.5px;
         }
     }
 }

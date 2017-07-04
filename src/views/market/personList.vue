@@ -2,7 +2,7 @@
     <div class="personList">
         <div class="title">
             <span style="flex:0 0 4rem;">全部</span>
-            <span class="priceSort" @click='sortByPrices' style="text-align: right;flex:0 0 3rem;">
+            <span class="priceSort" @click='sortByPrices' style="text-align: right;flex:0 0 3.1rem;">
                 最新价
                 <span class="per">元 / 小时</span>
                 <span class="sort">

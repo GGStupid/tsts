@@ -1,7 +1,7 @@
 <template>
 	<div class="loginwrap">
 		<div class="icon">
-			<img src="../../assets/logo_1.png"  alt="">
+			<img src="../../assets/logo_1.png" alt="">
 		</div>
 		<div class="form">
 			<div class="list">
@@ -20,7 +20,7 @@
 		<v-button title='登录' :isActive='isActive' topNum='0.6667rem' @toNext='login'></v-button>
 		<div class="tips">
 			<router-link class="register" to='/register1'>注册淘刻</router-link>
-			<router-link  class="forget" to='/forget1'>忘记密码？</router-link>
+			<router-link class="forget" to='/forget1'>忘记密码？</router-link>
 		</div>
 	</div>
 </template>
@@ -38,8 +38,8 @@ export default {
 			passShow: false,
 			passwordSrc: require('../../assets/icon_hide_pwd.png'),
 			ispassword: true,
-            isActive:true
-            
+			isActive: true
+
 		}
 	},
 	components: {
@@ -58,18 +58,18 @@ export default {
 				this.passShow = false
 			}
 		},
-		isPhoneClean(){
+		isPhoneClean() {
 			if (this.mobile != '') {
 				this.mobile = ''
 				this.iconShow = false
-				return 
+				return
 			}
 		},
 		isPassWrodClean() {
 			if (this.password != '') {
 				this.password = ''
 				this.passShow = false
-				return 
+				return
 			}
 		},
 		checkTpye() {
@@ -92,21 +92,22 @@ export default {
 			if (isPhone(this.mobile) && isPassWord(this.password)) {
 				login.userLogin(senddata).then((data) => {
 					if (data.data.code == 200) {
-						 this.$store.dispatch('isLogin',data.data.data)
-						this.$router.push({ path: '/home/news' })
+						this.$store.dispatch('isLogin', data.data.data)
+						let redirect = decodeURIComponent(this.$route.query.redirect || '/home/news');
+						this.$router.push({ path: redirect })
 					} else {
 						toast(data.data.message)
 					}
 				})
-			}else{
+			} else {
 				toast('请输入正确的手机号和密码')
 			}
 		}
 	},
 	beforeRouteEnter(to, from, next) {
-        document.querySelector('title').innerText = '淘刻'
-        next()
-    },
+		document.querySelector('title').innerText = '淘刻'
+		next()
+	},
 	watch: {
 
 	},
@@ -116,40 +117,43 @@ export default {
 }
 </script>
 <style lang='less' scoped>
-@placeColor:#999999;
-@color:#EEEEEE;
-@fontsize32:0.42667rem;
-@p30:0.4rem;
+@placeColor: #999999;
+@color: #EEEEEE;
+@fontsize32: 0.42667rem;
+@p30: 0.4rem;
 .loginwrap {
 	height: 100%;
 	background-image: url('../../assets/login_bg.png');
 	background-repeat: no-repeat;
 	background-size: 100%;
-    padding: 0 @p30;
+	padding: 0 @p30;
 }
+
 .icon {
 	padding-top: 1.3333rem;
-    padding-bottom: 1.1733rem;
+	padding-bottom: 1.1733rem;
 	text-align: center;
 	img {
 		width: 1.6rem;
 	}
 }
-.form{
-    border-radius: 0.08rem;
-    background-color: #353641;
+
+.form {
+	border-radius: 0.08rem;
+	background-color: #353641;
 }
+
 .list {
 	height: 1.30667rem;
-    padding: 0 0.32rem;
+	padding: 0 0.32rem;
 	position: relative;
 	font-size: @fontsize32;
-    color:@color;
-    border-bottom:1px solid #191A22;
-    span{
-        display: inline-block;
-        width: 1.5rem;
-    }
+	color: @color;
+	border-bottom: 1px solid #191A22;
+	span {
+		display: inline-block;
+		width: 1.5rem;
+	}
 	img {
 		width: 0.42667rem;
 		line-height: 1.1733rem;
@@ -160,11 +164,11 @@ export default {
 		right: 0.32rem;
 		top: 0.45rem;
 	}
-    .rclean{
-        position: absolute;
-        top:0.45rem;
-        right: 1.28rem;
-    }
+	.rclean {
+		position: absolute;
+		top: 0.45rem;
+		right: 1.28rem;
+	}
 	input {
 		width: 5rem;
 		color: #ffffff;
@@ -196,13 +200,13 @@ export default {
 		color: @color;
 		text-decoration: none;
 	}
-    .register{
-        color:#F8CC00
-    }
+	.register {
+		color: #F8CC00
+	}
 	.forget {
 		position: absolute;
 		right: 0;
-        color:#999999;
+		color: #999999;
 	}
 }
 </style>

@@ -35,8 +35,8 @@ export default {
     payPassword({commit},payload){
         commit('payPassword', payload)
     },
-    //publisherId
-     publisherId({commit},payload){
-        commit('publisherId', payload)
+    //productId
+     productId({commit},payload){
+        commit('productId', payload)
     },
 }

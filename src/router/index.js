@@ -174,11 +174,11 @@ const router = new Router({
       component: toSearch,
     },
     {
-      path: '/pricePersonDetail/:product_id',
+      path: '/pricePersonDetail/:productId',
       component: pricePersonDetail,
     },
     {
-      path: '/marketNewsDeatil/:product_id',
+      path: '/marketNewsDeatil/:productId',
       component: marketNewsDeatil,
     },
     // {
@@ -394,7 +394,8 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       next({
-        path: '/'
+        path: '/',
+        query: { redirect: from.fullPath }
       })
     }
   } else {

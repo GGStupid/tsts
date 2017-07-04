@@ -22,36 +22,36 @@ export default {
     return {
       swiper: '',
       ranks: [
-        {
-          title: '买卖榜',
-          lists: [
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
-          ],
-        },
-        {
-          title: '换手榜',
-          lists: [
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
-          ],
-        },
-        {
-          title: '身价榜',
-          lists: [
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-            { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
-          ],
-        },
+        // {
+        //   // title: '买卖榜',
+        //   // lists: [
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
+        //   // ],
+        // },
+        // {
+        //   // title: '换手榜',
+        //   // lists: [
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
+        //   // ],
+        // },
+        // {
+        //   // title: '身价榜',
+        //   // lists: [
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
+        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
+        //   // ],
+        // },
       ],
       tabTitles: [
         { title: '新人预告' },
@@ -64,7 +64,8 @@ export default {
     toDetails(data) {
       console.log('toDetails')
       console.log(data)
-      this.$router.push('/pricePersonDetail/' + data.product_id)
+      this.$store.dispatch('productId',data.productId)
+      this.$router.push('/pricePersonDetail/' + data.productId)
     },
     toCheckTab(e) {
       console.log('toCheckTab')
@@ -85,7 +86,7 @@ export default {
     'v-FlexTab': FlexTab,
     'v-HotList': HotList
   },
-  mounted() {
+  created() {
     market.hot().then(data => {
       this.ranks = data.data.data
       let swiper = this.$refs.swiper

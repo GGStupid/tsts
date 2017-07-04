@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 import store from './store'
 
-
 // css
 import 'normalize.css'
 import 'flex.css'
@@ -14,10 +13,13 @@ import 'flex.css'
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
-new Vue({
+const app=new Vue({
   el: '#app',
   router,
   store,
   template: '<App/>',
   components: { App }
 })
+
+export default app
+

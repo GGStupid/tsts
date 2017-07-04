@@ -3,12 +3,11 @@
         <div class="content">
             <div class="top">
                 <div class="big">
-                    0.13
-                    <img src="../../assets/quotes_details_arrow_up.png" alt="">
+                  {{lastPrice | toFiexed}}
+                    <img :src="growth>=0?require('../../assets/quotes_details_arrow_up.png'):require('../../assets/quotes_details_arrow_down.png')" alt="">
                 </div>
-    
-                <span class="first">0.03</span>
-                <span>30.00%</span>
+                <span class="first">{{growth | toFiexed}}</span>
+                <span>{{growthRatio*100 | toFiexed}}%</span>
             </div>
             <div class="charts">
                 <img src="../../assets/echats.png" alt="">
@@ -16,33 +15,33 @@
                     <div class="chartstop">
                         <div class="box">
                             <span style="margin-right: 0.1rem;">最&nbsp;&nbsp;高</span>
-                            <span class="num">00.00</span>
+                            <span class="num">{{topPrice | toFiexed}}</span>
                         </div>
                         <div class="box" style="text-align:right">
                             <span style="margin-right: 0.1rem;">今&nbsp;&nbsp;开</span>
-                            <span class="num">00.00</span>
+                            <span class="num">{{openPrice | toFiexed}}</span>
                         </div>
                         <div class="box">
                             <span style="margin-right: 0.1rem;">最&nbsp;&nbsp;低</span>
-                            <span class="num">00.00</span>
+                            <span class="num">{{bottomPrice | toFiexed}}</span>
                         </div>
                         <div class="box" style="text-align:right">
                             <span style="margin-right: 0.1rem;">换&nbsp;&nbsp;手</span>
-                            <span class="num">00.00%</span>
+                            <span class="num">{{exchangeRate*100 | toFiexed}}%</span>
                         </div>
                     </div>
                     <div class="bottom">
                         <div class="box">
                             <span>均&nbsp;&nbsp;价</span>
-                            <span class="active">0.00元/秒</span>
+                            <span class="active">{{averagePrice | toFiexed}}元/秒</span>
                         </div>
                         <div class="box">
                             <span>最&nbsp;&nbsp;新</span>
-                            <span class="num">00.00元/时</span>
+                            <span class="num">{{lastPrice*3600 | toFiexed}}元/时</span>
                         </div>
                         <div class="box">
                             <span>总&nbsp;&nbsp;额</span>
-                            <span class="num">00.00万元</span>
+                            <span class="num">{{tradeAmount/10000 | toFiexed}}万元</span>
                         </div>
                     </div>
                 </div>
@@ -80,6 +79,16 @@ import market from '@/api/market/index'
 export default {
     data() {
         return {
+            lastPrice:'',
+            growth:'',
+            growthRatio:'',
+            topPrice:'',
+            openPrice:'',
+            bottomPrice:'',
+            exchangeRate:'',
+            averagePrice:'',
+            lastPrice:'',
+            tradeAmount:'',
             optional: false,
             list: [
                 {
@@ -157,18 +166,34 @@ export default {
         },
         toCurrentView(mainToptab){
             this.currentView=mainToptab.component
-            this.$store.dispatch('publisherId',this.publisherId)
         }
     },
     mounted() {
+        console.log(this.$route.params.productId)
         let sendData = {
-            productId: this.$route.params.product_id
+            productId: this.$route.params.productId,
         }
         market.quotation(sendData).then(data => {
             document.querySelector('title').innerText = `${data.data.data.name} (${data.data.data.code})`
             this.optional = data.data.data.optional
-            this.publisherId=data.data.data.publisherId
+              this.lastPrice=data.data.data.lastPrice
+              this.growth=data.data.data.growth
+              this.growthRatio=data.data.data.growthRatio
+              this.topPrice=data.data.data.topPrice
+              this.openPrice=data.data.data.openPrice
+              this.bottomPrice=data.data.data.bottomPrice
+              this.exchangeRate=data.data.data.exchangeRate
+              this.averagePrice=data.data.data.averagePrice
+              this.tradeAmount=data.data.data.tradeAmount
+            this.$store.dispatch('productId',data.data.data.productId)
         })
+    },
+    filters:{
+        toFiexed(t){
+            if(t==0)return '0.00'
+            if(!t)return
+            return t.toFixed(2)
+        }
     },
     beforeRouteEnter(to, from, next) {
         next()

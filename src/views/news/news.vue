@@ -23,7 +23,7 @@ export default {
     return {
       baseImgUrl:this.$store.state.baseImgUrl,
       page: 1,
-      rows: 10,
+      rows: 6,
       swiper: '',
       tops: [
         // { image: require('@/assets/zixun_banner.png'), href: 'https://www.baidu.com/' },
@@ -68,7 +68,7 @@ export default {
       let scrollTop = document.querySelector('.homeWrap').scrollTop;
       let pageHeight = document.querySelector('.homeWrap').offsetHeight;
       let allHeight = document.querySelector('.newsWrap').offsetHeight;
-      if (scrollTop + pageHeight == allHeight) {
+      if (scrollTop + pageHeight== allHeight) {
         this.loadNews();
       }
     },
@@ -79,14 +79,13 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     document.querySelector('title').innerText = '资讯';
-    next(vm => {
-      news.banners().then(data => {
-        vm.tops = data.data.data
-      })
-    })
+    next()
   },
   mounted() {
     let that = this;
+    news.banners().then(data => {
+        this.tops = data.data.data
+      })
     if (that.page === 1) {
       that.loadNews();
       document.querySelector('.homeWrap').addEventListener('scroll', that.handleScroll);
