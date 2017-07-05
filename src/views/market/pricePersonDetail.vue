@@ -174,6 +174,8 @@ export default {
             productId: this.$route.params.productId,
         }
         market.quotation(sendData).then(data => {
+            let title= `${data.data.data.name} (${data.data.data.code})`
+            this.$store.dispatch('title',title)
             document.querySelector('title').innerText = `${data.data.data.name} (${data.data.data.code})`
             this.optional = data.data.data.optional
               this.lastPrice=data.data.data.lastPrice

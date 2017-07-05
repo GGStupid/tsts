@@ -12,7 +12,7 @@ export default {
     },
     //增发预告预告
     inc(data) {
-         return instance.post(wrapUrl + '/quotation/purchase/inc', qs.stringify(data))
+        return instance.post(wrapUrl + '/quotation/purchase/inc', qs.stringify(data))
     },
     //分类列表
     type(data) {
@@ -38,21 +38,24 @@ export default {
     getforums(data) {
         return instance.get(wrapUrl + '/forums?' + qs.stringify(data))
     },
+    upload(data) {
+        return instance.post(wrapUrl + '/file/upload', qs.stringify(data))
+    },
     //发表论坛
     postforums(data) {
-        return instance.post(wrapUrl + '/forums',qs.stringify(data))
+        return instance.post(wrapUrl + '/forums', qs.stringify(data))
     },
     //论坛评论
     comment(data) {
-        return instance.post(wrapUrl + '/forums/comment',qs.stringify(data))
+        return instance.post(wrapUrl + '/forums/comment', qs.stringify(data))
     },
     //论坛点赞
     like(data) {
-        return instance.post(wrapUrl + '/forums/like',qs.stringify(data))
+        return instance.post(wrapUrl + '/forums/like', qs.stringify(data))
     },
     //删除评论
     commentDelete(data) {
-        return instance.post(wrapUrl + '/forums/commentDelete',qs.stringify(data))
+        return instance.post(wrapUrl + '/forums/commentDelete', qs.stringify(data))
     },
     //发行人简介
     detail(data) {
@@ -60,7 +63,7 @@ export default {
     },
     //前台新闻列表
     news(data) {
-        return instance.get(wrapUrl + '/news?'+qs.stringify(data))
+        return instance.get(wrapUrl + '/news?' + qs.stringify(data))
     },
     //新闻详情
     newsId(data) {

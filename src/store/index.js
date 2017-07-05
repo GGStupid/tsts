@@ -16,7 +16,8 @@ const state={
     payPassword:'',
     SelectBank:'',
     userInfor:'',
-    productId:''
+    productId:localStorage.getItem('productId'),
+    title:''
 }
 
 export default new Vuex.Store({

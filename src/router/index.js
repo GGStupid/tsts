@@ -14,6 +14,7 @@ const news = resolve => require(['@/views/news/news'], resolve)
 const newDetail = resolve => require(['@/views/news/newDetail'], resolve)
 //market
 const market = resolve => require(['@/views/market/market'], resolve)
+const releaseComments=resolve=>require(['@/views/market/releaseComments'], resolve)
 const toSearch = resolve => require(['@/views/market/toSearch'], resolve)
 const hot = resolve => require(['@/views/market/hot'], resolve)
 const personList = resolve => require(['@/views/market/personList'], resolve)
@@ -172,6 +173,13 @@ const router = new Router({
     {
       path: '/toSearch',
       component: toSearch,
+    },
+    {
+      path:'/releaseComments',
+      component:releaseComments,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/pricePersonDetail/:productId',

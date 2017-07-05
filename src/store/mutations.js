@@ -41,5 +41,10 @@ export default {
     //productId
     productId(state,payload){
         state.productId=payload
+         localStorage.setItem('productId', JSON.stringify(payload))
+    },
+    //title
+    title(state,payload){
+        state.title=payload
     },
 }

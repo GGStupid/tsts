@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="footer">
-            <input type="text" placeholder="我也来说一句...">
+            <span @click="releaseComments">我也来说一句...</span>
         </div>
     </div>
 </template>
@@ -49,7 +49,7 @@
 export default {
     data() {
         return {
-            title: '胡灵（500060）',
+            title: this.$store.state.title,
             commentLists: [
                 {
                     avatarImg: require('../../assets/quotes_forum_avatar.png'),
@@ -87,6 +87,10 @@ export default {
         },
         reportComment(){
             console.log('reportComment')
+        },
+        releaseComments(){
+            console.log('releaseComments')
+            this.$router.push('/releaseComments')
         }
     },
     beforeRouteEnter(to, from, next) {
@@ -209,9 +213,11 @@ export default {
         justify-content: space-around;
         align-items: center;
         background-color: #191a22;
-        input {
+        span {
             width: 9.2rem;
             height: 0.85333rem;
+            line-height:  0.85333rem;
+            color:#ccc;
             background-color: #fff;
             border-radius: 0.08rem;
             padding-left: 0.2rem;

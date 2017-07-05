@@ -39,4 +39,8 @@ export default {
      productId({commit},payload){
         commit('productId', payload)
     },
+    //title
+    title({commit},payload){
+        commit('title', payload)
+    },
 }

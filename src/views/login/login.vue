@@ -93,7 +93,8 @@ export default {
 				login.userLogin(senddata).then((data) => {
 					if (data.data.code == 200) {
 						this.$store.dispatch('isLogin', data.data.data)
-						let redirect = decodeURIComponent(this.$route.query.redirect || '/home/news');
+						console.log(this.$route.query.redirect)
+						let redirect = this.$route.query.redirect || '/home/news';
 						this.$router.push({ path: redirect })
 					} else {
 						toast(data.data.message)
