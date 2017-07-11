@@ -20,7 +20,7 @@ export default {
     },
     //行情 自选
     my(data) {
-        return instance.get(wrapUrl + '/quotation/my?' + qs.stringify(data))
+        return instance.get(wrapUrl + '/member/quotation/my?' + qs.stringify(data))
     },
     //产品列表
     list(data) {
@@ -32,30 +32,31 @@ export default {
     },
     //添加自选功能/或取消
     optional(data) {
-        return instance.post(wrapUrl + '/quotation/optional', qs.stringify(data))
+        return instance.post(wrapUrl + '/member/quotation/optional', qs.stringify(data))
     },
     //产品论坛分页列表
     getforums(data) {
         return instance.get(wrapUrl + '/forums?' + qs.stringify(data))
     },
+    //上传图片
     upload(data) {
         return instance.post(wrapUrl + '/file/upload', qs.stringify(data))
     },
     //发表论坛
     postforums(data) {
-        return instance.post(wrapUrl + '/forums', qs.stringify(data))
+        return instance.post(wrapUrl + '/member/forums', qs.stringify(data))
     },
     //论坛评论
     comment(data) {
-        return instance.post(wrapUrl + '/forums/comment', qs.stringify(data))
+        return instance.post(wrapUrl + '/member/forums/comment', qs.stringify(data))
     },
     //论坛点赞
     like(data) {
-        return instance.post(wrapUrl + '/forums/like', qs.stringify(data))
+        return instance.post(wrapUrl + '/member/forums/like', qs.stringify(data))
     },
     //删除评论
     commentDelete(data) {
-        return instance.post(wrapUrl + '/forums/commentDelete', qs.stringify(data))
+        return instance.post(wrapUrl + '/member/forums/commentDelete', qs.stringify(data))
     },
     //发行人简介
     detail(data) {
@@ -66,8 +67,8 @@ export default {
         return instance.get(wrapUrl + '/news?' + qs.stringify(data))
     },
     //新闻详情
-    newsId(data) {
-        return instance.get(wrapUrl + '/news/detail?' + qs.stringify(data))
+    newsId(data,config) {
+        return instance.get(wrapUrl + '/news/detail?' + qs.stringify(data),config)
     },
     //艺人公告
     announces(data) {

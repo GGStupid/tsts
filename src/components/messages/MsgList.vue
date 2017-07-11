@@ -7,10 +7,10 @@
         <div class="informations">
             <div class="left">
                 <h3>{{title}}</h3>
-                <span>{{subtitle}}</span>
+                <span v-html="subtitle"></span>
             </div>
             <div class="right">
-                <span>{{time}}</span>
+                <span>{{time | formateDate}}</span>
             </div>
         </div>
     </div>
@@ -37,9 +37,24 @@ export default {
             type: String
         }
     },
-    methods:{
-        toNext(){
+    methods: {
+        toNext() {
             this.$emit('toNext')
+        }
+    },
+    filters: {
+        formateDate(v) {
+            if (!v) return
+            let date = new Date()
+            let month = (date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : `0${date.getMonth() + 1}`
+            let day = date.getDate() >= 10 ? date.getDate() : `0${date.getDate()}`
+            let today = `${date.getFullYear()}-${month}-${day}`
+            let istoday = v.substring(0, 10)
+            if (istoday == today) {
+                return `今天 ${v.substring(11, 16)}`
+            } else {
+                return v.substring(5, 16)
+            }
         }
     }
 }

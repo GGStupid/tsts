@@ -17,11 +17,11 @@ import Footer from '@/components/Footer'
 import Swiper from '@/components/swiper/Swiper.vue'
 import NewsList from '@/components/news/NewsList.vue'
 import news from '@/api/news/index'
-
+import { toast } from '@/util/index'
 export default {
   data() {
     return {
-      baseImgUrl:this.$store.state.baseImgUrl,
+      baseImgUrl: this.$store.state.baseImgUrl,
       page: 1,
       rows: 6,
       swiper: '',
@@ -55,20 +55,26 @@ export default {
         rows: this.rows
       }
       news.informations(sendData).then(data => {
-        data.data.data.rows.forEach(function (element) {
-          that.lists.push(element)
-        }, this);
-        if (data.data.data.rows.length == 0) {
-          document.querySelector('.homeWrap').removeEventListener('scroll', that.handleScroll)
+
+        if (data.data.code == 200) {
+          if(!data.data.data.rows)return
+          data.data.data.rows.forEach(function (element) {
+            that.lists.push(element)
+          }, this);
+          if (data.data.data.rows.length == 0) {
+            document.querySelector('.homeWrap').removeEventListener('scroll', that.handleScroll)
+          }
+          this.page++
+        }else{
+          toast(data.data.message)
         }
-        this.page++
       })
     },
     handleScroll() {
       let scrollTop = document.querySelector('.homeWrap').scrollTop;
       let pageHeight = document.querySelector('.homeWrap').offsetHeight;
       let allHeight = document.querySelector('.newsWrap').offsetHeight;
-      if (scrollTop + pageHeight== allHeight) {
+      if (scrollTop + pageHeight == allHeight) {
         this.loadNews();
       }
     },
@@ -84,8 +90,8 @@ export default {
   mounted() {
     let that = this;
     news.banners().then(data => {
-        this.tops = data.data.data
-      })
+      this.tops = data.data.data
+    })
     if (that.page === 1) {
       that.loadNews();
       document.querySelector('.homeWrap').addEventListener('scroll', that.handleScroll);

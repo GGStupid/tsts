@@ -3,11 +3,10 @@
     <div class="noticeListWrap">
       <div class="noticesList" v-for="(notice,index) in noticesLists" :key="index">
         <div class="title">
-          <span>{{notice.time}}</span>
-          <span class="type">{{notice.type}}</span>
+          <span>{{notice.createTime}}</span>
+          <span class="type">{{notice.typeFormatter}}</span>
         </div>
-        <div class="body">
-          {{notice.content}}
+        <div class="body" v-html="notice.content">
         </div>
       </div>
     </div>

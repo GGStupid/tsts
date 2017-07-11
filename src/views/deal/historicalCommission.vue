@@ -1,7 +1,13 @@
 <template>
-    <div class="orderWrap">
-        <WhiteToastButton2 :isShow='isShow2Button' :leftText='leftText' @toastLeft='toastLeft' :msg='msg' rightText='取消' @toastRight='toastRight'></WhiteToastButton2>
-        <WhiteToastButton1 :isShow='isShow1Button' msg='订单已成交，无法撤单' @toastConfirm='toastConfirm'></WhiteToastButton1>
+    <div class="dayTransactionWrap">
+        <div class="timeSelectWrap">
+            <div class="left">
+                <DateTimePicker :parentvalue='bgTime' @change='bgchange'></DateTimePicker>
+            </div>
+            <div class="right">
+                <DateTimePicker title='截至日期' :parentvalue='edTime' @change='edchange'></DateTimePicker>
+            </div>
+        </div>
         <div class="topWrap">
             <span>名称/代码</span>
             <span>委托价/时间</span>
@@ -10,63 +16,58 @@
         </div>
         <div class="orderContent">
             <div class="scrollWrap">
-                <div class="orderList" v-for="(order,index) in orderLists" :key="index">
+                <div class="orderList" v-for="(order,index) in historyLists" :key="index">
                     <div class="up">
                         <span>{{order.publisherName}}</span>
                         <span>{{order.price}}</span>
                         <span>{{order.number}}</span>
-                        <span class="buyTypes" style="text-align:right;flex:0 0 1.92rem;">{{order.orderType | orderType}}</span>
+                        <span class="buyTypes" style="text-align:right;flex:0 0 1.92rem;">{{order.statusMap.statusStr}}</span>
                     </div>
                     <div class="down">
                         <span>{{order.publisherCode}}</span>
-                        <span>{{order.createTime | formateTime}}</span>
+                        <span>{{order.entrustTime}}</span>
                         <span>{{order.dealNumber}}</span>
-                        <span v-if="order.cancel" class="button" @click="killOrder(order)" :class="{'active':order.cancel}" style="flex:0 0 1.92rem;">撤单</span>
-                        <span v-else class="button" :class="{'active':order.cancel}" style="flex:0 0 1.92rem;">{{order.statusMap.statusStr}}</span>
+                        <span style="text-align:right;flex:0 0 1.92rem;" class="buyTypes" :class="{'active':order.boolean}"></span>
                     </div>
                 </div>
-                 <Nomore :isNomoreShow='isNomoreShow'></Nomore>
+                <Nomore :isNomoreShow='isNomoreShow'></Nomore>
             </div>
         </div>
     </div>
 </template>
-
 <script>
-import WhiteToastButton2 from '@/components/WhiteToastButton2'
-import WhiteToastButton1 from '@/components/WhiteToastButton1'
-import Nomore from '@/components/Nomore'
 import deal from '@/api/deal'
+import Nomore from '@/components/Nomore'
 import { toast } from '@/util/index'
+import DateTimePicker from '@/components/DateTimePicker/DateTimePicker'
 export default {
     data() {
         return {
             page: 1,
             rows: 10,
-            orderLists: [],
-            isShow2Button: false,
-            isShow1Button: false,
-            entrustId: '',
-            msg: '是否确认撤单',
-            leftText: '确定',
-             isNomoreShow: false
+            historyLists: [],
+            isShowShort: false,
+            isNomoreShow: false,
+            bgTime: '',
+            edTime: '',
         }
     },
     methods: {
-        loadOrderLists() {
-            console.log('loadOrderLists')
+        loadhistoryLists() {
+            console.log('loadhistoryLists')
             let sendData = {
                 page: this.page,
                 rows: this.rows
             }
-            deal.entrusts(sendData).then(data => {
+            deal.history(sendData).then(data => {
                 let that = this
                 if (data.data.code == 200) {
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
-                        this.orderLists.push(element)
+                        this.historyLists.push(element)
                     }, this);
                     if (data.data.data.rows.length == 0) {
-                         this.isNomoreShow=true
+                        this.isNomoreShow = true
                         document.querySelector('.orderContent').removeEventListener('scroll', that.handleScroll)
                     }
                     this.page++
@@ -80,47 +81,51 @@ export default {
             let pageHeight = document.querySelector('.orderContent').offsetHeight;
             let allHeight = document.querySelector('.scrollWrap').offsetHeight;
             if (scrollTop + pageHeight == allHeight) {
-                this.loadOrderLists()
+                this.loadhistoryLists()
             }
         },
-        //是否确认撤单
-        toastLeft() {
-            console.log('toastLeft')
-            let sendData = {
-                entrustId: this.entrustId
+        bgchange(v) {
+            console.log('bgchange')
+            this.edTime = ''
+            this.bgTime = v
+        },
+        edchange(e) {
+            console.log('edchange')
+            this.edTime = ''
+            if (this.formateTime(this.bgTime) > this.formateTime(e)) {
+                toast('起始时间不能大于截至时间')
+                this.edTime = this.bgTime
+                return
             }
-            deal.back(sendData).then(data => {
+            this.edTime = e
+            this.page=1
+            let sendData = {
+                startTime: this.bgTime,
+                endTime: this.edTime,
+                page: this.page,
+                rows: this.rows
+            }
+            deal.history(sendData).then(data => {
+                let that = this
                 if (data.data.code == 200) {
-                    toast(data.data.message)
-                    this.isShow2Button = false
+                    if (!data.data.data.rows) return
+                    this.historyLists=[]
+                    data.data.data.rows.forEach(function (element) {
+                        this.historyLists.push(element)
+                    }, this);
+                    if (data.data.data.rows.length == 0) {
+                        this.isNomoreShow = true
+                        document.querySelector('.orderContent').removeEventListener('scroll', that.handleScroll)
+                    }
+                    this.page++
                 } else {
                     toast(data.data.message)
-                    this.isShow2Button = false
                 }
             })
         },
-        toastRight() {
-            console.log('toastRight')
-            this.isShow2Button = false
-        },
-        toastConfirm() {
-            console.log('toastConfirm')
-            this.isShow1Button = false
-        },
-        killOrder(i) {
-            console.log('killOrder')
-            console.log(i)
-            this.entrustId = i.id
-            if (i.dealNumber == 0) {
-                this.isShow2Button = true
-            } else if (i.dealNumber < i.number) {
-                this.msg = '您已成功成交部分产品，仅可对剩余部分进行撤单，是否确认'
-                this.leftText = '撤单'
-                this.isShow2Button = true
-            } else if (i.dealNumber == i.number) {
-                this.isShow1Button = true
-                return
-            }
+        formateTime(v) {
+            if (!v) return
+            return v.replace(/\-/g, "\/")
         }
     },
     filters: {
@@ -138,22 +143,44 @@ export default {
     mounted() {
         let that = this
         if (this.page == 1) {
-            this.loadOrderLists()
+            this.loadhistoryLists()
             document.querySelector('.orderContent').addEventListener('scroll', that.handleScroll)
         }
     },
+    beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = '历史委托'
+        next()
+    },
     components: {
-        WhiteToastButton2,
-        WhiteToastButton1,
-         Nomore
+        Nomore,
+        DateTimePicker
     }
 }
 </script>
-
 <style lang="less" scoped>
 @import '../../less/config.less';
-.orderWrap {
-    padding-top: 0.2667rem;
+.dayTransactionWrap {
+    .timeSelectWrap {
+        height: 1.7333rem;
+        color: #999;
+        font-size: 0;
+        margin-bottom: 0.26667rem;
+        background-color: #20212a;
+        .left {
+            display: inline-block;
+            width: 50%;
+            font-size: 0.37333rem;
+            text-align: center;
+            padding-top: 0.4rem;
+        }
+        .right {
+            display: inline-block;
+            width: 50%;
+            font-size: 0.37333rem;
+            text-align: center;
+            padding: @p30;
+        }
+    }
     .topWrap {
         height: 1.06667rem;
         padding: 0 0.26667rem;
@@ -169,7 +196,7 @@ export default {
     }
     .orderContent {
         position: absolute;
-        top: 1.33333rem;
+        top: 3.06667rem;
         left: 0;
         right: 0;
         bottom: 0;
@@ -184,9 +211,6 @@ export default {
             border-bottom: solid 1px @bordercolor;
             span {
                 flex: 1 1 2rem;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
             }
             .up {
                 color: #eee;
@@ -204,15 +228,8 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                .button {
-                    width: 1.86667rem;
-                    height: 0.72rem;
-                    line-height: 0.72rem;
-                    text-align: center;
-                    background-color: #999;
-                    font-size: 0.37333rem;
-                    color: #eee;
-                    border-radius: 0.08rem;
+                .buyTypes {
+                    font-size: 0.373333rem;
                 }
                 .active {
                     color: #191a22;
@@ -223,4 +240,3 @@ export default {
     }
 }
 </style>
-

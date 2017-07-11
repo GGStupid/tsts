@@ -1,12 +1,12 @@
 <template>
-    <div class="msgList" @click="toNext(path)">
+    <div class="msgList" @click="toNext()">
         <div class="informations">
             <div class="left">
                 <h3>{{title}}</h3>
-                <span>{{subtitle}}</span>
+                <span v-html='content'></span>
             </div>
             <div class="right">
-                <span>{{time}}</span>
+                <span>{{createTime | formateDate}}</span>
             </div>
         </div>
     </div>
@@ -14,25 +14,37 @@
 <script>
 export default {
     props: {
-        src: {
-            type: String
-        },
+        // src: {
+        //     type: String
+        // },
         title: {
             type: String
         },
-        subtitle: {
+        content: {
             typs: String
         },
-        time: {
-            type: String
-        },
-        path: {
+        createTime: {
             type: String
         }
     },
     methods: {
         toNext() {
             this.$emit('toNext')
+        }
+    },
+    filters: {
+        formateDate(v) {
+            if (!v) return
+            let date = new Date()
+            let month = (date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : `0${date.getMonth() + 1}`
+            let day = date.getDate() >= 10 ? date.getDate() : `0${date.getDate()}`
+            let today = `${date.getFullYear()}-${month}-${day}`
+            let istoday = v.substring(0, 10)
+            if (istoday == today) {
+                return `今天 ${v.substring(11, 16)}`
+            } else {
+                return v.substring(5, 16)
+            }
         }
     }
 }
@@ -71,7 +83,7 @@ export default {
         }
         .right {
             position: absolute;
-            top:0.1rem;
+            top: 0.1rem;
             right: 0;
             color: @subTitleColor;
             font-size: @subTitleFontSize;

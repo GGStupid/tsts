@@ -36,11 +36,14 @@ export default {
     },
     mounted() {
         console.log('newDetail')
-        let id = this.$route.params.product_id
+        let id = this.$route.params.productId
         let sendData = {
             newsId: id
         }
-        market.newsId(sendData).then(data => {
+        let config={
+        loading:false
+      }
+        market.newsId(sendData,config).then(data => {
             this.title = data.data.data.title
             this.author = data.data.data.author
             this.updateTime = data.data.data.updateTime

@@ -15,15 +15,19 @@ export default {
     methods:{
         dayTransaction(){
             console.log('dayTransaction')
+            this.$router.push('/dayTransaction')
         },
         dayCommission(){
             console.log('dayCommission')
+             this.$router.push('/dayCommission')
         },
         historicalTransaction(){
             console.log('historicalTransaction')
+             this.$router.push('/historicalTransaction')
         },
         historicalCommission(){
             console.log('historicalCommission')
+             this.$router.push('/historicalCommission')
         }
     },
     components: {

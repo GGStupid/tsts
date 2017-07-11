@@ -2,13 +2,13 @@
     <div class="releaseCommentsWrap">
         <textarea name="" maxlength="200" v-model="comment" id="" rows="8" placeholder="请在此最多输入200字"></textarea>
         <div class="imgLists">
-            <div class="imgContent" v-show="imgLists.length>0" v-for="(imgTeam,index) in imageList" :key="index" :data-index="index">
-                <img :src="imgTeam.url" alt="" @click="open($event)">
+            <div class="imgContent" v-show="imgLists.length>0" v-for="(imgTeam,index) in imgLists" :key="index">
+                <img :src="imgTeam.src" alt="" @click="open(imgTeam)">
                 <img class="del" src="../../assets/quotes_forum_comment_pic_delete.png" @click="delImg(imgTeam)" alt="">
             </div>
             <div class="upImgWrap" v-show="imgLists.length<3">
                 <img src="../../assets/quotes_forum_comment_upload.png" alt="">
-                <input id="upImg" type="file" accept="*.jpg,*.gif,*.png" @change="onFileChange">
+                <input id="upImg" ref="upImg" type="file" accept="*.jpg,*.gif,*.png" @change="onFileChange">
             </div>
         </div>
         <v-Button title='发送' :isActive='isActive' topNum='0.6667rem' @toNext='toSave'></v-Button>
@@ -18,14 +18,13 @@
 import Button from '@/components/buttons/Button690'
 import market from '@/api/market/index'
 import { toast } from '@/util/index'
-import fancyBox from 'vue-fancybox';
 export default {
     data() {
         return {
+            baseImgUrl: this.$store.state.baseImgUrl,
             comment: '',
             imgLists: [],
-            imageList:[],
-            picPathes:[],
+            picPathes: [],
             isActive: true
         }
     },
@@ -49,13 +48,7 @@ export default {
                         market.upload(sendData).then(data => {
                             if (data.data.code == 200) {
                                 vm.imgLists.push({ src: rst.base64, upImg: data.data.data });
-                                vm.imageList.push(
-                                    {
-                                        width:100,
-                                        height:100,
-                                        url:rst.base64
-                                    }
-                                )
+                                vm.$refs.upImg.value = null;
                             } else {
                                 toast(data.data.message)
                             }
@@ -68,33 +61,48 @@ export default {
             console.log('delImg')
             this.imgLists.shift(imgTeam)
         },
-        open(e){
+        open(e) {
             console.log('open')
-            console.log(e)
-            var that=this
-            fancyBox(e.target,that.imageList)
-            console.log(fancyBox)
+            let imgs=[];
+            let current=this.baseImgUrl+e.upImg
+            this.imgLists.map(item=>{
+               imgs.push(this.baseImgUrl+item.upImg)
+            })
+            WeixinJSBridge.invoke("imagePreview", {
+                "urls": imgs,
+                "current": current
+            })
         },
         toSave() {
             console.log('toComments')
-            this.imgLists.map((item,index)=>{
-                if(item.upImg==this.picPathes[index])return
+            this.imgLists.map((item, index) => {
+                if (item.upImg == this.picPathes[index]) return
                 this.picPathes.push(item.upImg)
             })
-            if(!this.comment && this.picPathes.length==0) {
-                toast('请检查评论内容') 
+            if (!this.comment && this.picPathes.length == 0) {
+                toast('请检查评论内容')
                 return;
             }
-            if(this.comment.length>200){
+            if (this.comment.length > 200) {
                 toast('内容最多输入200字')
-                return 
+                return
             }
-            let sendData={
-                content:this.comment,
-                picPathes: this.picPathes,
-                productId:this.$store.state.productId
+            let picString = this.picPathes.join(',')
+
+            let sendData = {
+                content: this.comment,
+                picPathes: picString,
+                productId: this.$store.state.productId
             }
             console.log(sendData)
+            market.postforums(sendData).then(data => {
+                if (data.data.code == 200) {
+                    this.$router.go(-1)
+                    toast('发送成功')
+                } else {
+                    toast(data.data.message)
+                }
+            })
         }
     },
     components: {

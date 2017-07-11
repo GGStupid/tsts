@@ -4,11 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-
 // css
 import 'normalize.css'
 import 'flex.css'
-
 
 Vue.config.productionTip = false
 

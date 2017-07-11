@@ -14,7 +14,8 @@ const news = resolve => require(['@/views/news/news'], resolve)
 const newDetail = resolve => require(['@/views/news/newDetail'], resolve)
 //market
 const market = resolve => require(['@/views/market/market'], resolve)
-const releaseComments=resolve=>require(['@/views/market/releaseComments'], resolve)
+const releaseComments = resolve => require(['@/views/market/releaseComments'], resolve)
+const commentReport = resolve => require(['@/views/market/commentReport'], resolve)
 const toSearch = resolve => require(['@/views/market/toSearch'], resolve)
 const hot = resolve => require(['@/views/market/hot'], resolve)
 const personList = resolve => require(['@/views/market/personList'], resolve)
@@ -23,7 +24,10 @@ const marketNewsDeatil = resolve => require(['@/views/market/marketNewsDeatil'],
 const detailsTribune = resolve => require(['@/views/market/detailsTribune'], resolve)
 //deal
 const deal = resolve => require(['@/views/deal/deal'], resolve)
-
+const dayTransaction=resolve=>require(['@/views/deal/dayTransaction'],resolve)
+const dayCommission=resolve=>require(['@/views/deal/dayCommission'],resolve)
+const historicalTransaction=resolve=>require(['@/views/deal/historicalTransaction'],resolve)
+const historicalCommission=resolve=>require(['@/views/deal/historicalCommission'],resolve)
 //messages
 const messages = resolve => require(['@/views/messages/messages'], resolve)
 const notices = resolve => require(['@/views/messages/notices'], resolve)
@@ -99,7 +103,7 @@ const router = new Router({
     {
       path: '/newDetail/:id',
       component: newDetail,
-      
+
     },
     //messages
     {
@@ -175,8 +179,15 @@ const router = new Router({
       component: toSearch,
     },
     {
-      path:'/releaseComments',
-      component:releaseComments,
+      path: '/releaseComments',
+      component: releaseComments,
+      meta: {
+        requireAuth: true
+      }
+    },
+    {
+      path: '/commentReport',
+      component: commentReport,
       meta: {
         requireAuth: true
       }
@@ -196,6 +207,38 @@ const router = new Router({
     {
       path: '/detailsTribune',
       component: detailsTribune,
+      meta: {
+        requireAuth: true
+      }
+    },
+    //deal
+    {
+      path:'/dayTransaction',
+      component:dayTransaction,
+      meta:{
+        requireAuth:true
+      }
+    },
+    {
+      path:'/dayCommission',
+      component:dayCommission,
+      meta:{
+        requireAuth:true
+      }
+    },
+    {
+      path:'/historicalTransaction',
+      component:historicalTransaction,
+      meta:{
+        requireAuth:true
+      }
+    },
+    {
+      path:'/historicalCommission',
+      component:historicalCommission,
+      meta:{
+        requireAuth:true
+      }
     },
     //mine
     {
@@ -392,7 +435,14 @@ const router = new Router({
         requireAuth: true
       }
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  }
 })
 
 router.beforeEach((to, from, next) => {

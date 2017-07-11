@@ -1,4 +1,8 @@
 export default {
+    //loadShow
+    loadShow({commit},payload){
+        commit('loadShow',payload)
+    },
     //baseImgUrl
     baseImgUrl({commit},payload){
         commit('baseImgUrl',payload)
@@ -42,5 +46,9 @@ export default {
     //title
     title({commit},payload){
         commit('title', payload)
+    },
+    //commentSendData
+    commentSendData({commit},payload){
+        commit('commentSendData', payload)
     },
 }

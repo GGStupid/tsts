@@ -3,7 +3,7 @@
         <div class="content">
             <div class="top">
                 <div class="big">
-                  {{lastPrice | toFiexed}}
+                    {{lastPrice | toFiexed}}
                     <img :src="growth>=0?require('../../assets/quotes_details_arrow_up.png'):require('../../assets/quotes_details_arrow_down.png')" alt="">
                 </div>
                 <span class="first">{{growth | toFiexed}}</span>
@@ -76,19 +76,20 @@ import BriefIntroduction from '@/components/market/BriefIntroduction'
 import News from '@/components/market/News'
 import Notice from '@/components/market/Notice'
 import market from '@/api/market/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
-            lastPrice:'',
-            growth:'',
-            growthRatio:'',
-            topPrice:'',
-            openPrice:'',
-            bottomPrice:'',
-            exchangeRate:'',
-            averagePrice:'',
-            lastPrice:'',
-            tradeAmount:'',
+            lastPrice: '',
+            growth: '',
+            growthRatio: '',
+            topPrice: '',
+            openPrice: '',
+            bottomPrice: '',
+            exchangeRate: '',
+            averagePrice: '',
+            lastPrice: '',
+            tradeAmount: '',
             optional: false,
             list: [
                 {
@@ -135,7 +136,7 @@ export default {
                     component: 'Notice'
                 }
             ],
-            publisherId:'',
+            publisherId: '',
             currentView: 'Tribune'
         }
     },
@@ -149,9 +150,9 @@ export default {
         Collection() {
             console.log('自选')
             let sendData = {
-                productId: this.$route.params.product_id
+                productId: this.$route.params.productId
             }
-            market.optional(sendData).then(data=>{
+            market.optional(sendData).then(data => {
                 console.log(data)
             })
             this.optional = !this.optional
@@ -164,8 +165,8 @@ export default {
             console.log('分享')
             alert('该功能暂未开放')
         },
-        toCurrentView(mainToptab){
-            this.currentView=mainToptab.component
+        toCurrentView(mainToptab) {
+            this.currentView = mainToptab.component
         }
     },
     mounted() {
@@ -174,26 +175,30 @@ export default {
             productId: this.$route.params.productId,
         }
         market.quotation(sendData).then(data => {
-            let title= `${data.data.data.name} (${data.data.data.code})`
-            this.$store.dispatch('title',title)
-            document.querySelector('title').innerText = `${data.data.data.name} (${data.data.data.code})`
-            this.optional = data.data.data.optional
-              this.lastPrice=data.data.data.lastPrice
-              this.growth=data.data.data.growth
-              this.growthRatio=data.data.data.growthRatio
-              this.topPrice=data.data.data.topPrice
-              this.openPrice=data.data.data.openPrice
-              this.bottomPrice=data.data.data.bottomPrice
-              this.exchangeRate=data.data.data.exchangeRate
-              this.averagePrice=data.data.data.averagePrice
-              this.tradeAmount=data.data.data.tradeAmount
-            this.$store.dispatch('productId',data.data.data.productId)
+            if (data.data.code == 200) {
+                let title = `${data.data.data.name} (${data.data.data.code})`
+                this.$store.dispatch('title', title)
+                document.querySelector('title').innerText = `${data.data.data.name} (${data.data.data.code})`
+                this.optional = data.data.data.optional
+                this.lastPrice = data.data.data.lastPrice
+                this.growth = data.data.data.growth
+                this.growthRatio = data.data.data.growthRatio
+                this.topPrice = data.data.data.topPrice
+                this.openPrice = data.data.data.openPrice
+                this.bottomPrice = data.data.data.bottomPrice
+                this.exchangeRate = data.data.data.exchangeRate
+                this.averagePrice = data.data.data.averagePrice
+                this.tradeAmount = data.data.data.tradeAmount
+                this.$store.dispatch('productId', data.data.data.productId)
+            }else{
+                toast(data.data.message)
+            }
         })
     },
-    filters:{
-        toFiexed(t){
-            if(t==0)return '0.00'
-            if(!t)return
+    filters: {
+        toFiexed(t) {
+            if (t == 0) return '0.00'
+            if (!t) return
             return t.toFixed(2)
         }
     },

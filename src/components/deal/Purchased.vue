@@ -8,7 +8,7 @@
             </div>
             <div class="down">
                 <span>53.00</span>
-                <span>100.25</span>
+                <span>{{availableBalance?availableBalance.toFixed(2):'0.00'}}</span>
                 <span class="red">+100</span>
             </div>
         </div>
@@ -19,154 +19,92 @@
             <span>盈亏(元)</span>
         </div>
         <div class="purchasedContentWrap">
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
+            <div class="scrollWrap">
+                <div class="purchasedList" v-for="(purchased,index) in PurchasedLists" :key="index">
+                    <div class="up">
+                        <span>{{purchased.publisherName}}</span>
+                        <span>{{purchased.quantity}}</span>
+                        <span>5.3</span>
+                        <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
+                    </div>
+                    <div class="down">
+                        <span>{{purchased.publisherCode}}</span>
+                        <span>{{purchased.availableQuantity}}</span>
+                        <span>{{purchased.costPrice}}</span>
+                        <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
+                    </div>
                 </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
+                <Nomore :isNomoreShow='isNomoreShow'></Nomore>
             </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            <div class="purchasedList">
-                <div class="up">
-                    <span>Momo</span>
-                    <span>120</span>
-                    <span>5.3</span>
-                    <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
-                </div>
-                <div class="down">
-                    <span>800001</span>
-                    <span>120</span>
-                    <span>4.3</span>
-                    <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
-                </div>
-            </div>
-            
         </div>
     </div>
 </template>
 
 <script>
+import deal from '@/api/deal'
+import Nomore from '@/components/Nomore'
+import { toast } from '@/util/index'
 export default {
-
+    data() {
+        return {
+            availableBalance:'',
+            page: 1,
+            rows: 10,
+            PurchasedLists: [],
+            isNomoreShow: false
+        }
+    },
+    methods: {
+        loadNewsPrices() {
+            deal.latestPrice().then(data => {
+                console.log(data)
+            })
+        },
+        loadPurchasedLists() {
+            let sendData = {
+                page: this.page,
+                rows: this.rows
+            }
+            deal.positions(sendData).then(data => {
+                console.log(data)
+                let that = this
+                if (data.data.code == 200) {
+                    if (!data.data.data.rows) return
+                    data.data.data.rows.forEach(function (element) {
+                        this.PurchasedLists.push(element)
+                    }, this);
+                    if (data.data.data.rows.length == 0) {
+                        document.querySelector('.purchasedContentWrap').removeEventListener('scroll', that.handleScroll)
+                    }
+                    this.page++
+                } else {
+                    toast(data.data.message)
+                }
+            })
+        },
+        handleScroll() {
+            let scrollTop = document.querySelector('.purchasedContentWrap').scrollTop;
+            let pageHeight = document.querySelector('.purchasedContentWrap').offsetHeight;
+            let allHeight = document.querySelector('.scrollWrap').offsetHeight;
+            if (scrollTop + pageHeight == allHeight) {
+                this.loadPurchasedLists()
+            }
+        },
+    },
+    mounted() {
+        let that = this
+        if (this.page == 1) {
+            this.loadPurchasedLists()
+            this.loadNewsPrices()
+            document.querySelector('.purchasedContentWrap').addEventListener('scroll', that.handleScroll)
+        }
+        deal.available().then(data => {
+            this.availableBalance = data.data.data.available
+        })
+    },
+    components: {
+        Nomore
+    }
 }
 </script>
 
@@ -213,8 +151,8 @@ export default {
         overflow: auto;
         -webkit-overflow-scrolling: touch;
         background-color: #191a22;
-        .purchasedList{
-             height: 2.13333rem;
+        .purchasedList {
+            height: 2.13333rem;
             background-color: #20212a;
             padding: 0.5rem 0.26667rem;
             border-bottom: solid 1px @bordercolor;

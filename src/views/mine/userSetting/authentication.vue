@@ -9,7 +9,7 @@
             </div>
             <div class="list">
                 <span>身份证号</span>
-                <input type="tel" maxlength="18" v-model="cardId" placeholder='请输入您的身份证号码' @keyup="isCardIdClean">
+                <input type="text" maxlength="18" v-model="cardId" placeholder='请输入您的身份证号码' @keyup="isCardIdClean">
                 <img class="rIcon" v-show="isCardId" src="../../../assets/icon_clean.png" alt="" @click="cleanCardId">
             </div>
         </div>

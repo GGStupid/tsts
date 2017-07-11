@@ -8,13 +8,7 @@
 <script>
 import Content from '@/components/Content'
 import Footer from '@/components/Footer'
-import mine from '@/api/mine/index'
 export default {
-    mounted() {
-        mine.getUserInforPost().then((data) => {
-            this.$store.dispatch('userInfor', data.data.data)
-        })
-    },
     components: {
         'v-Content': Content,
         'v-Footer': Footer
