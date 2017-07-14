@@ -44,8 +44,13 @@ export default {
     }
   },
   beforeRouteEnter(to,from,next){
-    document.querySelector('title').innerText='行情'
+    document.querySelector('title').innerText='买卖'
     next()
+  },
+  mounted(){
+    if(this.$store.state.currentView){
+      this.currentView=this.$store.state.currentView
+    }
   },
   components: {
     'v-Content': Content,

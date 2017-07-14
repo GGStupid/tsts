@@ -2,7 +2,7 @@
     <div class="msgList" @click="toNext(path)">
         <div class="imgs">
             <img :src="src" alt="">
-            <span class="count">{{count}}</span>
+            <span class="count" v-show='count>0'>{{count}}</span>
         </div>
         <div class="informations">
             <div class="left">
@@ -28,7 +28,8 @@ export default {
             type: String
         },
         subtitle: {
-            typs: String
+            typs: String,
+            default:'暂无通知'
         },
         time: {
             type: String

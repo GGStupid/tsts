@@ -56,4 +56,19 @@ export default {
         state.commentSendData = payload
         localStorage.setItem('commentSendData', JSON.stringify(payload))
     },
+    //currentView
+    currentView(state, payload) {
+        state.currentView = payload
+        localStorage.setItem('currentView', JSON.stringify(payload))
+    },
+    //code
+    code(state, payload) {
+        state.code = payload
+        localStorage.setItem('code', JSON.stringify(payload))
+    },
+    //attorncode
+     attorncode(state, payload) {
+        state.attorncode = payload
+        localStorage.setItem('attorncode', JSON.stringify(payload))
+    },
 }

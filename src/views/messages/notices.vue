@@ -45,6 +45,7 @@ export default {
             })
         },
         handleScroll() {
+            console.log(2222222)
             let scrollTop = document.querySelector('#app').scrollTop;
             let pageHeight = document.querySelector('#app').offsetHeight;
             let allHeight = document.querySelector('.noticesWrap').offsetHeight;
@@ -62,6 +63,9 @@ export default {
             this.loadannounces()
             document.querySelector('#app').addEventListener('scroll', that.handleScroll)
         }
+    },
+    beforeDestroy(){
+      document.querySelector('#app').removeEventListener('scroll', this.handleScroll)
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '通知';

@@ -19,7 +19,6 @@ export default {
     },
     methods:{
         toNewDetail(){
-            console.log('list')
             this.$emit('toNewDetail')
         }
     }

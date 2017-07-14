@@ -4,9 +4,9 @@
         <div class="list" v-for="(list,index) in lists" :key='index' @click="toDetails(list)">
             <div class="left">
                 <span class="count" v-if="index<3">
-                    <img v-show="index==0" src="../../assets/quotes_hot_icon_NO1.png" alt="">
-                    <img v-show="index==1" src="../../assets/quotes_hot_icon_NO2.png" alt="">
-                    <img v-show="index==2" src="../../assets/quotes_hot_icon_NO3.png" alt="">
+                    <img v-show="index==0" :src="firstImg" alt="">
+                    <img v-show="index==1" :src="secondeImg" alt="">
+                    <img v-show="index==2" :src="thirdImg" alt="">
                 </span>
                 <span class="count" v-else>{{index+1}}</span>
                 <span class="headImg">
@@ -26,6 +26,9 @@ export default {
     data(){
         return {
             baseImgUrl:this.$store.state.baseImgUrl,
+            firstImg:require('../../assets/quotes_hot_icon_NO1.png'),
+            secondeImg:require('../../assets/quotes_hot_icon_NO2.png'),
+            thirdImg:require('../../assets/quotes_hot_icon_NO3.png')
         }
     },
     props: {

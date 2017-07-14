@@ -1,5 +1,5 @@
 <template>
-  <div class="nomoreWrap">
+  <div class="nomoreWrap" v-show="isNomoreShow">
       暂无数据
   </div>
 </template>

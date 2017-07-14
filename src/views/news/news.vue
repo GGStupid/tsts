@@ -7,6 +7,7 @@
         </a>
       </v-Swiper>
       <v-NewsList v-for="list in lists" :title="list.title" :picPath="baseImgUrl+list.picPath" :id="list.id" @toNewDetail="toNewDetail(list.id)" :key="list.index"></v-NewsList>
+      <Nomore :isNomoreShow='isNomoreShow'></Nomore>
     </div>
   </div>
 </template>
@@ -16,6 +17,7 @@ import Content from '@/components/Content'
 import Footer from '@/components/Footer'
 import Swiper from '@/components/swiper/Swiper.vue'
 import NewsList from '@/components/news/NewsList.vue'
+import Nomore from '@/components/Nomore'
 import news from '@/api/news/index'
 import { toast } from '@/util/index'
 export default {
@@ -23,58 +25,46 @@ export default {
     return {
       baseImgUrl: this.$store.state.baseImgUrl,
       page: 1,
-      rows: 6,
+      rows: 12,
       swiper: '',
-      tops: [
-        // { image: require('@/assets/zixun_banner.png'), href: 'https://www.baidu.com/' },
-        // { image: require('@/assets/zixun_banner.png'), href: 'https://www.baidu.com/' },
-        // { image: require('@/assets/zixun_banner.png'), href: 'http://localhost:8080/#/' },
-        // { image: require('@/assets/zixun_banner.png'), href: 'http://localhost:8080/#/' }
-      ],
-      lists: [
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 3 },
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 4 },
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 5 },
-        // { title: '阿萨德发射点发岁的发达省份撒旦法阿斯蒂芬安德森阿萨德发射点发岁的发达省份撒旦法阿斯蒂芬安德森', picPath: require('@/assets/zixun_pic_default.png'), id: 36 },
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 33 },
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 36 },
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 26 },
-        // { title: '阿萨德发射点发岁的发达省份撒旦法阿斯蒂芬安德森阿萨德发射点发岁的发达省份撒旦法阿斯蒂芬安德森', picPath: require('@/assets/zixun_pic_default.png'), id: 31 },
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 13 },
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 12 },
-        // { title: '阿萨德发射点发大散发的说法', picPath: require('@/assets/zixun_pic_default.png'), id: 36 },
-        // { title: '阿萨德发射点发岁的发达省份撒旦法阿斯蒂芬安德森阿萨德发射点发岁的发达省份撒旦法阿斯蒂芬安德森', picPath: require('@/assets/zixun_pic_default.png'), id: 23 }
-      ],
+      tops: [],
+      lists: [],
+      isNomoreShow: false,
+      loading:false
     }
   },
   methods: {
     loadNews() {
       var that = this
+      this.loading=true
       let sendData = {
         page: this.page,
         rows: this.rows
       }
       news.informations(sendData).then(data => {
-
         if (data.data.code == 200) {
-          if(!data.data.data.rows)return
+          this.loading=false
+          if (!data.data.data.rows) return
           data.data.data.rows.forEach(function (element) {
             that.lists.push(element)
           }, this);
           if (data.data.data.rows.length == 0) {
+            this.isNomoreShow = true
             document.querySelector('.homeWrap').removeEventListener('scroll', that.handleScroll)
           }
           this.page++
-        }else{
+        } else {
           toast(data.data.message)
         }
       })
     },
     handleScroll() {
-      let scrollTop = document.querySelector('.homeWrap').scrollTop;
-      let pageHeight = document.querySelector('.homeWrap').offsetHeight;
-      let allHeight = document.querySelector('.newsWrap').offsetHeight;
-      if (scrollTop + pageHeight == allHeight) {
+      let scrollTop = Math.round(document.querySelector('.homeWrap').scrollTop)
+      let pageHeight = Math.round(document.querySelector('.homeWrap').offsetHeight)
+      let allHeight = Math.round(document.querySelector('.newsWrap').scrollHeight);
+      let a=allHeight-scrollTop-pageHeight
+      if (a>=0 && a<=50){
+        if(this.loading)return
         this.loadNews();
       }
     },
@@ -105,7 +95,8 @@ export default {
     'v-Content': Content,
     'v-Footer': Footer,
     'v-Swiper': Swiper,
-    'v-NewsList': NewsList
+    'v-NewsList': NewsList,
+    Nomore
   },
 }
 </script>

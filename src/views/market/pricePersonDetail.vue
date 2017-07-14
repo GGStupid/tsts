@@ -2,15 +2,37 @@
     <div class="pricePersonDetailWrap">
         <div class="content">
             <div class="top">
+                <div class="rule" @click="rule">
+                    交易规则
+                </div>
+                <div class="shop" @click="shop">
+                    <img src="../../assets/icon_mall.png" alt="">
+                    商城
+                </div>
                 <div class="big">
                     {{lastPrice | toFiexed}}
                     <img :src="growth>=0?require('../../assets/quotes_details_arrow_up.png'):require('../../assets/quotes_details_arrow_down.png')" alt="">
                 </div>
                 <span class="first">{{growth | toFiexed}}</span>
                 <span>{{growthRatio*100 | toFiexed}}%</span>
+                <div class="count">
+                    <div class="scount">
+                        <span>10000</span><br>
+                        <span class="sign">阅读量</span>
+                    </div>
+                    <div class="scount">
+                        <span>10000</span><br>
+                        <span class="sign">注册量</span>
+                    </div>
+                    <div class="scount">
+                        <span>10000</span><br>
+                        <span class="sign">贡献量</span>
+                    </div>
+                </div>
             </div>
             <div class="charts">
-                <img src="../../assets/echats.png" alt="">
+                <!-- <img src="../../assets/echats.png" alt=""> -->
+                <TabChart></TabChart>
                 <div class="aboutsPrices">
                     <div class="chartstop">
                         <div class="box">
@@ -72,6 +94,7 @@
 
 <script>
 import Tribune from '@/components/market/Tribune'
+import TabChart from '@/components/market/TabChart'
 import BriefIntroduction from '@/components/market/BriefIntroduction'
 import News from '@/components/market/News'
 import Notice from '@/components/market/Notice'
@@ -141,11 +164,22 @@ export default {
         }
     },
     methods: {
+        rule(){
+            console.log('rule')
+        },
+        shop(){
+            console.log('shop')
+            window.location.href='https://www.baidu.com/'
+        },
         toBuy() {
             console.log('购买')
+            this.$store.dispatch('currentView', 'Buy')
+            this.$router.push('/home/deal')
         },
         toTransfer() {
             console.log('转让')
+            this.$store.dispatch('currentView', 'Attorn')
+            this.$router.push('/home/deal')
         },
         Collection() {
             console.log('自选')
@@ -170,7 +204,6 @@ export default {
         }
     },
     mounted() {
-        console.log(this.$route.params.productId)
         let sendData = {
             productId: this.$route.params.productId,
         }
@@ -190,7 +223,9 @@ export default {
                 this.averagePrice = data.data.data.averagePrice
                 this.tradeAmount = data.data.data.tradeAmount
                 this.$store.dispatch('productId', data.data.data.productId)
-            }else{
+                this.$store.dispatch('code', data.data.data.code)
+                this.$store.dispatch('attorncode', data.data.data.code)
+            } else {
                 toast(data.data.message)
             }
         })
@@ -202,6 +237,10 @@ export default {
             return t.toFixed(2)
         }
     },
+    beforeDestroy(){
+          this.$store.dispatch('code','')
+                this.$store.dispatch('attorncode', '')
+    },
     beforeRouteEnter(to, from, next) {
         next()
     },
@@ -209,7 +248,8 @@ export default {
         Tribune,
         BriefIntroduction,
         News,
-        Notice
+        Notice,
+        TabChart
     }
 }
 </script>
@@ -229,12 +269,48 @@ export default {
         background-color: #191a22;
         .top {
             width: 100%;
-            height: 3.2rem;
+            // height: 3.2rem;
             background-color: #202129;
             color: #f20624;
             text-align: center;
-            padding: 0.8rem 0;
+            padding: .4rem 0 0.2rem;
             margin-bottom: 0.26667rem;
+            position: relative;
+            .rule{
+                position: absolute;
+                left: 0;
+                top: .666667rem;
+                width: 2rem;
+                height: .773333rem;
+                line-height: .773333rem;
+                background-color: #353641;
+                color: #eee;
+                font-size: .373333rem;
+                text-align: left;
+                padding-left: .16rem;
+                border-top-right-radius: .533333rem;
+                border-bottom-right-radius: .533333rem;
+            }
+            .shop{
+                position: absolute;
+                right: 0;
+                top: .666667rem;
+                width: 2rem;
+                height: .773333rem;
+                line-height: .773333rem;
+                background-color: #353641;
+                color: #eee;
+                font-size: .373333rem;
+                text-align: right;
+                padding-right: .16rem;
+                border-top-left-radius: .533333rem;
+                border-bottom-left-radius: .533333rem;
+                img{
+                    width: .426667rem;
+                    height: .426667rem;
+                    vertical-align: text-bottom;
+                }
+            }
             .big {
                 font-size: 1.06667rem;
                 img {
@@ -248,6 +324,20 @@ export default {
             .first {
                 margin-right: 0.3rem;
             }
+            .count{
+                margin-top: 0.2rem;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                color:#eee;
+                .scount{
+                    .sign{
+                        line-height: 1.8;
+                        color:#acacac;
+                        font-size: 0.32rem;
+                    }
+                }
+            }
         }
         .charts {
             width: 100%;
@@ -260,7 +350,6 @@ export default {
             }
             .aboutsPrices {
                 padding: 0 @p30;
-                height: 3.28rem;
                 color: #999;
                 .chartstop {
                     height: 1.81333rem;

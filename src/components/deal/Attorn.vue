@@ -5,7 +5,7 @@
     <div class="buyBoxWrap">
       <div class="left">
         <div class="inputBOx">
-          <input type="text" placeholder="发行人姓名/代码" :class="{'active':searchName.length>0}" v-model="searchName" @keyup="search">
+          <input type="text" placeholder="发行人姓名/代码" :class="{'active':searchName.length>0}" v-model="searchName" @focus="focus" @keyup="search(searchName)">
           <div class="searchLists" v-show="searchLists.length>0">
             <div class="listItem" v-for="(item,index) in searchLists" :key="index" @click="selectCode(item)">
               <span class="listName">{{item.name}}</span>
@@ -148,11 +148,14 @@ export default {
     }
   },
   methods: {
-    search() {
+    focus(){
+      this.$store.dispatch('attorncode','')
+    },
+    search(v) {
       console.log('search')
       this.searchLists = []
       let sendData = {
-        s: this.searchName,
+        s: v,
         n: 5
       }
       let config = {
@@ -162,6 +165,9 @@ export default {
         if (data.data.code == 200) {
           if (!data.data.data) return this.searchLists = []
           this.searchLists = data.data.data
+          if(this.$store.state.attorncode){
+            this.selectCode(this.searchLists[0])
+          }
         } else {
           toast(data.data.message)
         }
@@ -377,12 +383,16 @@ export default {
       this.loadNewsPrices()
       document.querySelector('.dealContentWrap').addEventListener('scroll', that.handleScroll)
     }
+    if(this.$store.state.attorncode){
+      this.search(this.$store.state.attorncode)
+    }
     deal.available().then(data => {
       this.availableBalance = data.data.data.available
     })
   },
   beforeDestroy() {
     clearInterval(this.timer10)
+    this.$store.dispatch('attorncode','')
   },
   components: {
     OrderConfirm,

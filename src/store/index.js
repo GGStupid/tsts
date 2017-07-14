@@ -20,6 +20,9 @@ const state={
     productId:localStorage.getItem('productId'),
     title:'',
     commentSendData:JSON.parse(localStorage.getItem('commentSendData')),
+    currentView:'Buy',
+    code:JSON.parse(localStorage.getItem('code'))||'',
+    attorncode:JSON.parse(localStorage.getItem('code'))||'',
 }
 
 export default new Vuex.Store({

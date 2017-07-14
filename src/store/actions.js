@@ -51,4 +51,16 @@ export default {
     commentSendData({commit},payload){
         commit('commentSendData', payload)
     },
+    //currentView
+    currentView({commit},payload){
+        commit('currentView', payload)
+    },
+    //code
+    code({commit},payload){
+        commit('code', payload)
+    },
+    //attorncode
+    attorncode({commit},payload){
+        commit('attorncode', payload)
+    },
 }

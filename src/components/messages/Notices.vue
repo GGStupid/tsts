@@ -24,7 +24,7 @@ export default {
         //     type: String
         // },
         content: {
-            typs: String
+            typs: String,
         },
         createTime: {
             type: String

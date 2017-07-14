@@ -2,52 +2,87 @@
   <div class="transactionRecordWrap">
     <div class="transactionRecordList" v-for="(transactionRecordList,index) in transactionRecordLists" :key="index">
       <div class="left">
-        <div class="name">交割-{{transactionRecordList.name}} ({{transactionRecordList.code}})</div>
-        <div class="time">{{transactionRecordList.time}}</div>
+        <div class="name">交割-{{transactionRecordList.publisherName}} ({{transactionRecordList.publisherCode}})</div>
+        <div class="time">{{transactionRecordList.createTime}}</div>
       </div>
       <div class="right">
-        - {{transactionRecordList.dealTime}}s
+        - {{transactionRecordList.number}}s
       </div>
     </div>
+    <Nomore :isNomoreShow='isNomoreShow'></Nomore>
   </div>
 </template>
 
 <script>
 import mine from '@/api/mine/index'
+import Nomore from '@/components/Nomore'
+import { toast } from '@/util/index'
 export default {
   data() {
     return {
-      transactionRecordLists: [
-        // {
-        //   name: '阿道夫',
-        //   code: 800011,
-        //   time: '2017-03-01 15:20:30',
-        //   dealTime: 36000
-        // }, {
-        //   name: '阿道夫',
-        //   code: 800011,
-        //   time: '2017-03-01 15:20:30',
-        //   dealTime: 36000
-        // },
-      ]
+      page: 1,
+      rows: 12,
+      transactionRecordLists: [],
+      isNomoreShow: false,
+      loading: false
     }
   },
+  methods: {
+    loadPositions() {
+      var that = this
+      this.loading = true
+      let sendData = {
+        page: this.page,
+        rows: this.rows
+      }
+      mine.records(sendData).then(data => {
+        if (data.data.code == 200) {
+          this.loading = false
+          if (!data.data.data.rows) return
+          data.data.data.rows.forEach(function (element) {
+            that.transactionRecordLists.push(element)
+          }, this);
+          if (data.data.data.rows.length == 0) {
+            this.isNomoreShow = true
+            document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+          }
+          this.page++
+        } else {
+          toast(data.data.message)
+        }
+      })
+    },
+    handleScroll() {
+      let scrollTop = Math.round(document.querySelector('#app').scrollTop)
+      let pageHeight = Math.round(document.querySelector('#app').offsetHeight)
+      let allHeight = Math.round(document.querySelector('.transactionRecordWrap').scrollHeight);
+      let a = allHeight - scrollTop - pageHeight
+      if (a >= 0 && a <= 50) {
+        if (this.loading) return
+        this.loadPositions();
+      }
+    },
+  },
   mounted() {
-    mine.records().then(data => {
-      console.log(data)
-      this.transactionRecordLists=data.data.data.rows
-    })
+    let that = this
+    if (that.page === 1) {
+      that.loadPositions();
+      document.querySelector('#app').addEventListener('scroll', that.handleScroll);
+    }
   },
   beforeRouteEnter(to, from, next) {
     document.querySelector('title').innerText = '交割记录'
     next()
+  },
+  components: {
+    Nomore
   }
 }
 </script>
 <style lang="less" scoped>
 @import '../../../less/config.less';
 .transactionRecordWrap {
-  margin-top: 0.26667rem;
+  margin-top: .266667rem;
   .transactionRecordList {
     height: 1.6rem;
     border-bottom: 1px solid @bordercolor;

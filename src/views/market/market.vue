@@ -47,7 +47,6 @@ export default {
       this.$router.push('/toSearch')
     },
     totrunTab(payload) {
-      console.log(payload)
       if(payload.name=='热门'){
           this.typeId='热门'
           this.tabtitle = payload.name;

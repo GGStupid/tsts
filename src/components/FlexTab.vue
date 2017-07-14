@@ -2,6 +2,7 @@
     <div class="commonTab">
         <div class="tabWrap" v-for="(item,index) in tabTitles" @click='toActive(index,item)' :key="index">
             <span v-if="item.path" :class="{'active':indexFlag==index}">{{item.title}}</span>
+            <span v-if="item.component" :class="{'active':comtitle==item.component}">{{item.title}}</span>
             <span v-else :class="{'active':flag==index}">{{item.title}}</span>
         </div>
     </div>
@@ -9,9 +10,9 @@
 
 <script>
 export default {
-    data() {
+    data(){
         return {
-            flag: 0
+            flag:0
         }
     },
     props: {
@@ -20,16 +21,18 @@ export default {
         }
     },
     computed: {
-        indexFlag() {
-            return this.$store.state.indexFlag
+        comtitle() {
+            return this.$store.state.currentView
         }
     },
     methods: {
         toActive(index, item) {
             if (item.path) {
                 this.$store.dispatch('upindexFlag', index)
-            } else {
-                this.flag = index
+            } else if (item.component) {
+                this.$store.dispatch('currentView', item.component)
+            }else{
+                this.flag=index
             }
             this.$emit('toNext', item)
         }
@@ -55,6 +58,7 @@ export default {
     align-items: center;
     background-color: @bgcolor;
 }
+
 .tabWrap {
     flex: 0 0 auto;
     height: @height;

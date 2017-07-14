@@ -7,14 +7,14 @@
             </div>
         </div>
         <div class="listsWrap">
-            <div class="fundDetails" v-for="(fundDetails,index) in fundDetailsLists" :key="index">
+            <div class="fundDetails" v-for="(fundDetails,index) in fundDetailsLists" :key="index" @click="toBig(index)">
                 <div class="top">
-                    <span>{{fundDetails.type}}</span>
-                    <span class="defalut" :class="{'Withdrawals':fundDetails.isAdd}">{{fundDetails.number}}</span>
+                    <span :class="{'topLeft':toflag!=index}">{{fundDetails.remark}}</span>
+                    <span class="defalut" :class="{'Withdrawals':fundDetails.direction==2}">{{fundDetails.direction==2?'+':'-'}}{{fundDetails.totalLeft}}</span>
                 </div>
                 <div class="middle">
-                    <span>{{fundDetails.time}}</span>
-                    <span>{{fundDetails.isFinish}}</span>
+                    <span>{{fundDetails.createTime}}</span>
+                    <span>{{fundDetails.typeFormatter}}</span>
                 </div>
                 <div class="end" v-show="fundDetails.isWithdrawals">
                     <div>申请时间：{{fundDetails.time}}</div>
@@ -22,91 +22,99 @@
                     <span>{{fundDetails.remarks}}</span>
                 </div>
             </div>
+            <Nomore  :isNomoreShow='isNomoreShow'></Nomore>
         </div>
     </div>
 </template>
 
 <script>
 import mine from '@/api/mine/index'
+import Nomore from '@/components/Nomore'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
             page: 1,
-            rows: 22,
+            rows: 12,
             flag: 0,
             tabTitles: [
-                { title: '全部' },
-                { title: '时间买卖' },
-                { title: '充值提现' }
+                { title: '全部', type: '' },
+                { title: '时间买卖', type: 'time' },
+                { title: '充值提现', type: 'pay' }
             ],
+            type: '',
+            toflag: 0,
             fundDetailsLists: [
-                // {
-                //     type: '提现',
-                //     number: '-1000.00',
-                //     time: '2017-03-01 15:20:30',
-                //     isFinish: '提现失败',
-                //     isAdd: false,
-                //     isWithdrawals: true,
-                //     remarks: 'asdfasdfasdfasdf'
-                // },
-                // {
-                //     type: '银行卡充值',
-                //     number: '+1000.00',
-                //     time: '2017-03-01 15:20:30',
-                //     isFinish: '充值成功',
-                //     isAdd: true,
-                //     isWithdrawals: false,
-                //     remarks: 'asdfasdfasdfasdf'
-                // },
-                // {
-                //     type: '购买 - 某某 (80001)',
-                //     number: '+100.00',
-                //     time: '2017-03-01 15:20:30',
-                //     isFinish: '撤销成功',
-                //     isAdd: true,
-                //     isWithdrawals: false,
-                //     remarks: 'asdfasdfasdfasdf'
-                // },
-                // {
-                //     type: '购买 - 某某 (80001)',
-                //     number: '-100.00',
-                //     time: '2017-03-01 15:20:30',
-                //     isFinish: '委托成功',
-                //     isAdd: false,
-                //     isWithdrawals: false,
-                //     remarks: 'asdfasdfasdfasdf'
-                // },
-            ]
+            ],
+            isNomoreShow: false,
+            loading: false
         }
     },
     methods: {
         loadAccountLog() {
             var that = this
+            this.loading = true
             let sendData = {
                 page: this.page,
-                rows: this.rows
+                rows: this.rows,
+                type: this.type
             }
             mine.accountLog(sendData).then(data => {
-                data.data.data.rows.forEach(function (element) {
-                    that.fundDetailsLists.push(element)
-                }, this);
-                if (data.data.data.rows.length == 0) {
-                    document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+                if (data.data.code == 200) {
+                    this.loading = false
+                    if (!data.data.data.rows) return
+                    data.data.data.rows.forEach(function (element) {
+                        that.fundDetailsLists.push(element)
+                    }, this);
+                    if (data.data.data.rows.length == 0) {
+                        this.isNomoreShow = true
+                        document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+                    }
+                    this.page++
+                } else {
+                    toast(data.data.message)
                 }
-                this.page++
             })
         },
         handleScroll() {
             let scrollTop = document.querySelector('#app').scrollTop;
             let pageHeight = window.innerHeight;
             let allHeight = document.querySelector('.fundDetailsWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
                 this.loadAccountLog();
             }
+        },
+        toBig(i) {
+            if (this.toflag == i) {
+                this.toflag = 0
+                return
+            }
+            this.toflag = i
         },
         toActive(index, item) {
             console.log('toActive')
             this.flag = index
+            this.type = item.type
+        }
+    },
+    filters: {
+        formateTime(v) {
+            if (!v) return
+            return new Date(v).toLocaleString()
+        }
+    },
+    watch: {
+        type() {
+            let that = this
+            this.page = 1
+            this.fundDetailsLists = []
+            this.isNomoreShow = false
+            if (that.page === 1) {
+                that.loadAccountLog();
+                document.querySelector('#app').addEventListener('scroll', that.handleScroll);
+            }
         }
     },
     mounted() {
@@ -119,6 +127,9 @@ export default {
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '资金明细'
         next()
+    },
+    components: {
+        Nomore
     }
 }
 </script>
@@ -160,7 +171,15 @@ export default {
                 justify-content: space-between;
                 color: #eee;
                 font-size: 0.42667rem;
+                .topLeft {
+                    flex: 1 1 2rem;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
                 .defalut {
+                    flex: 0 0 2rem;
+                    text-align: right;
                     color: #4affa5
                 }
                 .Withdrawals {

@@ -44,6 +44,11 @@
                                 {{friend.createTime}}
                             </span>
                         </div>
+                        <div class="list" style="text-align: center;
+        display: block;
+        line-height: 1.01333rem" v-show="friends.length==0">
+                            <span>暂无数据</span>
+                        </div>
                         <div class="end" @click="moreFriends" v-text="endTitle">
                         </div>
                     </div>
@@ -77,27 +82,27 @@ export default {
                 //     createTime: '2017-4-2'
                 // },
             ],
-            endTitle:' 查看更多'
+            endTitle: ' 查看更多'
         }
     },
-    methods:{
-        moreFriends(){
+    methods: {
+        moreFriends() {
             console.log('moreFriends')
             this.$router.push('/moreFriends')
         }
     },
-    mounted(){
-        let sendData={
-            page:1,
-            rows:8
+    mounted() {
+        let sendData = {
+            page: 1,
+            rows: 8
         }
-        mine.inviteUser(sendData).then(data=>{
+        mine.inviteUser(sendData).then(data => {
             console.log(data.data)
-            this.friends=data.data.data.rows
+            this.friends = data.data.data.rows
         })
     },
-    beforeRouteEnter(to,from,next){
-        document.querySelector('title').innerText="邀请好友"
+    beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = "邀请好友"
         next()
     }
 }
@@ -140,7 +145,7 @@ export default {
             .main {
                 text-align: center;
                 background-color: #ffbe26;
-                padding-bottom:0.88rem; 
+                padding-bottom: 0.88rem;
                 img {
                     width: 8.9333rem;
                     margin-top: 0.3rem;
@@ -185,13 +190,13 @@ export default {
                             text-align: left;
                         }
                     }
-                    .end{
+                    .end {
                         width: 7.89333rem;
                         margin: 0 auto;
                         height: 1.01333rem;
                         line-height: 1.01333rem;
-                         font-size: 0.37333rem;
-                         color: #666
+                        font-size: 0.37333rem;
+                        color: #666
                     }
                 }
             }

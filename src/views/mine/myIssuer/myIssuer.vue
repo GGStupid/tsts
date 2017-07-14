@@ -14,12 +14,12 @@
             </div>
             <div class="issuerList" v-for="(issuer,index) in issuersLists" :key="index">
                 <div class="left">
-                    <span>{{issuer.name}}</span>
-                    <span>{{issuer.code}}</span>
-                    <span>{{issuer.time}}秒</span>
+                    <span>{{issuer.publisherName}}</span>
+                    <span>{{issuer.publisherCode}}</span>
+                    <span>{{issuer.availableQuantity}}秒</span>
                 </div>
                 <div class="right">
-                    <span class="delivery" v-show="issuer.isDone" @click="delivery">
+                    <span class="delivery" v-show="issuer.availableQuantity>issuer.deliveryLimit" @click="delivery(issuer)">
                         交割
                     </span>
                     <span v-show="!issuer.isDone">
@@ -27,67 +27,86 @@
                     </span>
                 </div>
             </div>
+            <Nomore :isNomoreShow='isNomoreShow'></Nomore>
         </div>
     </div>
 </template>
 
 <script>
 import IconTextArrow from '@/components/mine/IconTextArrow'
+import Nomore from '@/components/Nomore'
 import mine from '@/api/mine/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
+             page: 1,
+             rows: 12,
             transactionRecordIcon: require('../../../assets/issuer_icon_record.png'),
-            issuersLists: [
-                // {
-                //     name: '阿斗',
-                //     code: '800001',
-                //     time: 36046,
-                //     isDone: false
-                // },
-                // {
-                //     name: '阿斗',
-                //     code: '800001',
-                //     time: 36046,
-                //     isDone: true
-                // },
-                // {
-                //     name: '阿斗',
-                //     code: '800001',
-                //     time: 36046,
-                //     isDone: false
-                // },
-                // {
-                //     name: '阿斗',
-                //     code: '800001',
-                //     time: 36046,
-                //     isDone: true
-                // },
-            ]
+            issuersLists: [],
+            isNomoreShow: false,
+            loading:false
         }
     },
     methods: {
+        loadPositions() {
+      var that = this
+      this.loading=true
+      let sendData = {
+        page: this.page,
+        rows: this.rows
+      }
+      mine.positions(sendData).then(data => {
+        if (data.data.code == 200) {
+          this.loading=false
+          if (!data.data.data.rows) return
+          data.data.data.rows.forEach(function (element) {
+            that.issuersLists.push(element)
+          }, this);
+          if (data.data.data.rows.length == 0) {
+            this.isNomoreShow = true
+            document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+          }
+          this.page++
+        } else {
+          toast(data.data.message)
+        }
+      })
+    },
+     handleScroll() {
+      let scrollTop = Math.round(document.querySelector('#app').scrollTop)
+      let pageHeight = Math.round(document.querySelector('#app').offsetHeight)
+      let allHeight = Math.round(document.querySelector('.myIssuerWrap').scrollHeight);
+      let a=allHeight-scrollTop-pageHeight
+      if (a>=0 && a<=50){
+        if(this.loading)return
+        this.loadPositions();
+      }
+    },
         toTransactionRecord() {
             console.log('toTransactionRecord')
             this.$router.push('/transactionRecord')
         },
-        delivery(){
+        delivery(issuer){
             console.log('delivery')
-            this.$router.push('/delivery')
+            console.log(issuer)
+            this.$router.push('/delivery/'+issuer.id)
         }
     },
     mounted(){
-        mine.positions().then(data=>{
-            console.log(data)
-            this.issuersLists=data.data.data.rows
-        })
+        let that=this
+        if (that.page === 1) {
+      that.loadPositions();
+      document.querySelector('#app').addEventListener('scroll', that.handleScroll);
+    }
     },
     beforeRouteEnter(to,from,next){
         document.querySelector('title').innerText='我投资的发行人'
         next()
     },
     components: {
-        'v-IconTextArrow': IconTextArrow
+        'v-IconTextArrow': IconTextArrow,
+         Nomore
     }
 }
 </script>

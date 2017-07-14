@@ -1,7 +1,7 @@
 <template>
-    <div class="systemNotices">
+    <div class="systemNoticesWrap">
         <v-SytemNotices v-for="list in noticeLoglists" :title="list.title" :content="list.content" :createTime="list.createTime" :key="list.index"></v-SytemNotices>
-        <Nomore v-show="announceslists.length>10 || announceslists.length==0" :isNomoreShow='isNomoreShow'></Nomore>
+        <Nomore v-show="noticeLoglists.length>10 || noticeLoglists.length==0" :isNomoreShow='isNomoreShow'></Nomore>
     </div>
 </template>
 
@@ -37,7 +37,7 @@ export default {
                     }, this);
                     if (data.data.data.rows.length == 0) {
                         this.isNomoreShow = true
-                        document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+                        document.querySelector('#app').removeEventListener('scroll', that.handleScrollsy)
                     }
                     this.page++
                 } else {
@@ -45,10 +45,12 @@ export default {
                 }
             })
         },
-        handleScroll() {
+        handleScrollsy() {
             let scrollTop = document.querySelector('#app').scrollTop;
-            let pageHeight = document.querySelector('#app').offsetHeight;
-            let allHeight = document.querySelector('.systemNotices').offsetHeight;
+            //246
+            let pageHeight = document.querySelector('#app').offsetHeight; //1334
+            //1540
+            let allHeight = document.querySelector('.systemNoticesWrap').offsetHeight+20;
             if (scrollTop + pageHeight == allHeight) {
                 this.loadnoticeLog()
             }
@@ -61,8 +63,11 @@ export default {
         let that = this
         if (this.page == 1) {
             this.loadnoticeLog()
-            document.querySelector('#app').addEventListener('scroll', that.handleScroll)
+            document.querySelector('#app').addEventListener('scroll', that.handleScrollsy)
         }
+    },
+    beforeDestroy(){
+      document.querySelector('#app').removeEventListener('scroll', this.handleScrollsy)
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '系统通知';

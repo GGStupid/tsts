@@ -17,37 +17,21 @@
                 {{friend.createTime}}
             </span>
         </div>
-    
+        <Nomore :isNomoreShow='isNomoreShow'></Nomore>
     </div>
 </template>
 
 <script>
 import mine from '@/api/mine/index'
+import Nomore from '@/components/Nomore'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
             page: 1,
             rows: 22,
-            friends: [
-                // {
-                //     nickName: '啊打发',
-                //     mobilePhone: '135****1234',
-                //     createTime: '2017-4-2'
-                // },
-                // {
-                //     nickName: '啊打发',
-                //     mobilePhone: '135****1234',
-                //     createTime: '2017-4-2'
-                // }, {
-                //     nickName: '啊打发',
-                //     mobilePhone: '135****1234',
-                //     createTime: '2017-4-2'
-                // }, {
-                //     nickName: '啊打发',
-                //     mobilePhone: '135****1234',
-                //     createTime: '2017-4-2'
-                // },
-            ],
+            friends: [],
+            isNomoreShow: false,
         }
     },
     methods: {
@@ -62,13 +46,14 @@ export default {
                     that.friends.push(element)
                 }, this);
                 if (data.data.data.rows.length == 0) {
-                   document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+                    this.isNomoreShow = true
+                    document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
                 }
                 this.page++
             })
         },
         handleScroll() {
-            let scrollTop = document.querySelector('#app').scrollTop;   
+            let scrollTop = document.querySelector('#app').scrollTop;
             let pageHeight = window.innerHeight;
             let allHeight = document.querySelector('.moreFriendsWrap').offsetHeight;
             if (scrollTop + pageHeight == allHeight) {
@@ -83,6 +68,9 @@ export default {
             document.querySelector('#app').addEventListener('scroll', that.handleScroll);
         }
     },
+    components: {
+        Nomore
+    }
 }
 </script>
 

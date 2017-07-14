@@ -53,6 +53,9 @@
     <div class="moreComments" v-show="commentLists.length>5" @click="moreComments">
       查看更多
     </div>
+    <div class="moreComments" style="color:#acacac" v-show="commentLists.length==0">
+      暂无数据
+    </div>
   </div>
 </template>
 
@@ -225,7 +228,12 @@ export default {
       rows: 5
     }
     market.getforums(sendData).then(data => {
-      this.commentLists = data.data.data.rows
+      if(data.data.code==200){
+        if(data.data.data.rows.length==0)return
+         this.commentLists = data.data.data.rows
+      }else{
+        toast(data.data.message)
+      }
     })
     if (this.$store.state.isLogin) {
       mine.getUserInforPost().then((data) => {

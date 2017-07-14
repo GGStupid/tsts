@@ -21,38 +21,7 @@ export default {
   data() {
     return {
       swiper: '',
-      ranks: [
-        // {
-        //   // title: '买卖榜',
-        //   // lists: [
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
-        //   // ],
-        // },
-        // {
-        //   // title: '换手榜',
-        //   // lists: [
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
-        //   // ],
-        // },
-        // {
-        //   // title: '身价榜',
-        //   // lists: [
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' },
-        //   //   { avatarPath: require('@/assets/quotes_hot_avatar.png'), name: ' ', dataStr: ' ' }
-        //   // ],
-        // },
-      ],
+      ranks: [],
       tabTitles: [
         { title: '新人预告' },
         { title: '增发预告' }

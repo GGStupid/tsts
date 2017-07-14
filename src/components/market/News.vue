@@ -11,6 +11,11 @@
           </div>
         </div>
       </div>
+      <div style="color:#acacac;padding: 0.4rem;
+      text-align: center;
+      font-size: 0.4rem;" v-show="newsList.length==0">
+        暂无数据
+      </div>
     </div>
   </div>
 </template>

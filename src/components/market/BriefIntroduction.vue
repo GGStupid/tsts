@@ -16,7 +16,7 @@
         <div class="worth">
           <span>身价</span>
           &nbsp;
-          <span class="price">{{informationObj.social/10000}}万元</span>
+          <span class="price">{{informationObj.social/10000 | toFiexed}}万元</span>
         </div>
         <div class="rules">
           身价计算方式：
@@ -93,15 +93,22 @@ export default {
   },
   methods: {
     replacePx(str) {
-      console.log(typeof str)
+      // console.log(typeof str)
       if (!str) return
-      let reg = /font-size: 14px/
-      let dpr = document.querySelector('html').getAttribute('data-dpr')
-      console.log(dpr)
-      str.replace(reg, ' ')
+      // let reg = /font-size: 14px/
+      // let dpr = document.querySelector('html').getAttribute('data-dpr')
+      // console.log(dpr)
+      // str.replace(reg, ' ')
       return str
     }
   },
+  filters: {
+        toFiexed(t) {
+            if (t == 0) return '0.00'
+            if (!t) return
+            return t.toFixed(2)
+        }
+    },
   mounted() {
     let sendData = {
       productId: this.$store.state.productId

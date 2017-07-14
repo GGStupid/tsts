@@ -66,7 +66,6 @@ export default {
                 rows: this.rows
             }
             deal.positions(sendData).then(data => {
-                console.log(data)
                 let that = this
                 if (data.data.code == 200) {
                     if (!data.data.data.rows) return

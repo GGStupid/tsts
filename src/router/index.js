@@ -280,20 +280,20 @@ const router = new Router({
       }
     },
     {
-      path: '/delivery',
+      path: '/delivery/:positionId',
       name: 'delivery',
       component: delivery,
       meta: {
         requireAuth: true
       }
     },
-    {
-      path: '/deliveryagreement',
-      component: deliveryagreement,
-      meta: {
-        requireAuth: true
-      }
-    },
+    // {
+    //   path: '/deliveryagreement',
+    //   component: deliveryagreement,
+    //   meta: {
+    //     requireAuth: true
+    //   }
+    // },
     {
       path: '/fundDetails',
       name: 'fundDetails',

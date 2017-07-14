@@ -100,7 +100,7 @@ export default {
     },
     //我投资的发行人列表
     positions(data) {
-        return instance.get(wrapUrl + '/member/positions', qs.stringify(data))
+        return instance.get(wrapUrl + '/member/positions?'+qs.stringify(data))
     },
     //交割
     delivery(data) {
@@ -108,7 +108,7 @@ export default {
     },
     //交割记录
     records(data) {
-        return instance.get(wrapUrl + '/member/positions/delivery/records', qs.stringify(data))
+        return instance.get(wrapUrl + '/member/positions/delivery/records?'+qs.stringify(data))
     },
     //帮助中心分类列表
     classes(data) {

@@ -95,7 +95,8 @@ export default {
                         document.querySelector('.perlistWrap').removeEventListener('scroll', that.handleScroll)
                         return
                     }
-                    data.data.data.forEach(function (element) {
+                    data.data.data.rows.forEach(function (element) {
+                        if(!element)return
                         that.personLists.push(element)
                     }, this);
                     this.page++
@@ -135,12 +136,12 @@ export default {
                 }
             }
             market.list(sendData).then(data => {
-                if (!data.data.data) return
-                if (data.data.data.length == 0) {
+                if (!data.data.data.rows) return
+                if (data.data.data.rows.length == 0) {
                     document.querySelector('.perlistWrap').removeEventListener('scroll', that.handleScroll)
                     return
                 }
-                data.data.data.forEach(function (element) {
+                data.data.data.rows.forEach(function (element) {
                     that.personLists.push(element)
                 }, this);
                 this.page++

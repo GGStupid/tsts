@@ -2,7 +2,7 @@
     <div class="deliveryWrap">
         <div class="countWrap">
             <span class="button" @click="reduce">-</span>
-            <span>{{totalNum}}</span>
+            <span>{{deliveryNum}}</span>
             <span class="button" @click="add">+</span>
         </div>
         <div class="tips">
@@ -13,31 +13,46 @@
         </div>
         <div class="deliveryagreement">
             点击“确定交割”,即表示同意
-            <router-link class="todeliveryagreement" to="/deliveryagreement">《交割协议》</router-link>
+            <span class="todeliveryagreement" >《交割协议》</span>
         </div>
     </div>
 </template>
 <script>
+import mine from '@/api/mine/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
             baseNum: 10,
-            totalNum: 0
+            deliveryNum: 0,
+            positionId:this.$route.params.positionId
         }
     },
     methods: {
         reduce() {
             console.log('reduce')
-            if (this.totalNum == 0) return
-            this.totalNum -= this.baseNum
+            if (this.deliveryNum == 0) return
+            this.deliveryNum -= this.baseNum
         },
         add() {
             console.log('add')
-            this.totalNum += this.baseNum
+            this.deliveryNum += this.baseNum
         },
         confirmDelivery() {
             console.log('confirmDelivery')
-
+            if(this.deliveryNum==0)return toast('交割数量必须大于零')
+            let sendData={
+                positionId:this.positionId,
+                deliveryNum:this.deliveryNum
+            }
+            mine.delivery(sendData).then(data=>{
+                if(data.data.code==200){
+                    toast(data.data.message)
+                    this.$router.go(-1)
+                }else{
+                    toast(data.data.message)
+                }
+            })
         }
     },
     beforeRouteEnter(to, from, next) {
