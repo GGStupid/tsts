@@ -81,10 +81,6 @@ export default {
 @import '../../less/config.less';
 .noticeWrap {
   background-color: #191a22;
-  width: 100%;
-  height: 15.46667rem;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
   .noticesList {
     width: 100%;
     padding: @p30;

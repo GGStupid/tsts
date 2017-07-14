@@ -24,7 +24,7 @@ export const isUserName=(username)=>{
 }
 //2-30位包含点的真实姓名
 export const isRealName = (realName) => {
-    if (!/^[\u4e00-\u9fa5,\.]{2,30}$/.test(realName)) {
+    if (!/^[\u4e00-\u9fa5\.]{2,30}$/.test(realName)) {
         return false
     } else {
         return true;

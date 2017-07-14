@@ -49,7 +49,7 @@
         line-height: 1.01333rem" v-show="friends.length==0">
                             <span>暂无数据</span>
                         </div>
-                        <div class="end" @click="moreFriends" v-text="endTitle">
+                        <div class="end" v-show="friends.length>8" @click="moreFriends" v-text="endTitle">
                         </div>
                     </div>
                 </div>

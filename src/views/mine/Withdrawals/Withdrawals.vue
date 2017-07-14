@@ -100,7 +100,10 @@ export default {
         mine.getUserInforPost().then((data) => {
             this.$store.dispatch('userInfor', data.data.data)
         })
-        mine.userBank().then(data => {
+        let sendData={
+            status:2
+        }
+        mine.userBank(sendData).then(data => {
             this.banks = data.data.data
         })
     },

@@ -91,34 +91,38 @@ export default {
             document.querySelector('title').innerText = '添加银行卡'
         },
         getphoneCode() {
-            let sendData = {
-                code: 'userBank'
-            }
-            if (this.count != 60) {
-                return false
-            }
-            mine.phoneCode(sendData).then(data => {
-                if (data.data.code == 200) {
-                    toast('手机验证码已发送请注意查收')
-                    let timer = setInterval(() => {
-                        this.iscount = true
-                        this.count--
-                        this.phoneCodetitle = `${this.count}s`
-                        if (this.count == 0) {
-                            clearInterval(timer)
-                            this.phoneCodetitle = '重新获取验证码'
-                            this.count = 60
-                            this.iscount = false
-                        }
-                    }, 1000)
-                } else {
-                    toast(data.data.message)
+            if (isPhone(this.mobilePhone)) {
+                let sendData = {
+                    code: 'userBank'
                 }
-            })
+                if (this.count != 60) {
+                    return false
+                }
+                mine.phoneCode(sendData).then(data => {
+                    if (data.data.code == 200) {
+                        toast('手机验证码已发送请注意查收')
+                        let timer = setInterval(() => {
+                            this.iscount = true
+                            this.count--
+                            this.phoneCodetitle = `${this.count}s`
+                            if (this.count == 0) {
+                                clearInterval(timer)
+                                this.phoneCodetitle = '重新获取验证码'
+                                this.count = 60
+                                this.iscount = false
+                            }
+                        }, 1000)
+                    } else {
+                        toast(data.data.message)
+                    }
+                })
+            } else {
+                toast('请输入正确的手机号')
+            }
         },
         toNext() {
             console.log('toNext---bank')
-            if (!isBankNumber(this.bankNo)) return toast('请输入正确的银行卡号')
+            if (this.bankNo.length < 16 || this.bankNo.length > 30) return toast('请输入正确的银行卡号')
             if (!isPhone(this.mobilePhone)) return toast('请输入正确的手机号')
             if (!this.bankCode) return toast('请选择银行类型')
             if (this.phoneCode.length != 6) return toast('请输入验证码')

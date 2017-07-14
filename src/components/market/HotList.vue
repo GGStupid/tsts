@@ -10,14 +10,14 @@
             </span>
         </div>
         <div class="contentWrap">
-            <div class="details" v-for="(list,index) in hotlists" @click="toNext" :key="index">
+            <div class="details" v-for="(list,index) in hotlists" @click="toNext(list)" :key="index">
                 <div class="avatar">
                     <img :src="baseImgUrl+list.avatarPath" alt="">
                     <img class="icon" src="../../assets/quotes_hot_label_notice.png" alt="">
                 </div>
                 <div class="informations">
                     <div class="aboutNames">
-                        <div>{{list.name}}</div>
+                        <div class="nametitle">{{list.name}}</div>
                         <div class="nameCode">{{list.code}}</div>
                         <div v-show="list.status==1" class="times" v-html="list.purchaseStart">
                         </div>
@@ -30,10 +30,15 @@
                     </div>
                     <div class="aboutPrices">
                         <div class="prices">{{list.purchasePrice | toFixed}}</div>
-                        <div v-show="list.status==2" class="button">申购</div>
-                        <div v-show="list.status==3" class="button">- -</div>
+                        <div v-show="list.status==2" class="button" @click="applyPurchase(list.productId)">申购</div>
+                        <div v-show="list.status==3" class="nobutton">- -</div>
                     </div>
                 </div>
+            </div>
+            <div style="color:#acacac;padding: 0.4rem;
+          text-align: center;
+          font-size: 0.4rem;" v-show="hotlists.length==0">
+                暂无数据
             </div>
         </div>
     </div>
@@ -96,7 +101,7 @@ export default {
                     }, 1000)
                     this.page++
                 })
-                return 
+                return
             } else {
                 market.inc(sendData).then(data => {
                     // this.hotlists = data.data.data.rows
@@ -121,7 +126,7 @@ export default {
                     }, 1000)
                     this.page++
                 })
-                return 
+                return
             }
         },
         handleScroll() {
@@ -166,8 +171,12 @@ export default {
                 return purchaseStart
             }
         },
-        toNext() {
-            this.$emit('toNext')
+        applyPurchase(id) {
+            console.log('applayPurchase')
+            this.$router.push('/applyPurchase/' + id)
+        },
+        toNext(e) {
+            this.$emit('toNext',e)
         }
     },
     watch: {
@@ -194,7 +203,7 @@ export default {
             document.querySelector('.routeWrap').addEventListener('scroll', that.handleScroll);
         }
     },
-    activated(){
+    activated() {
         console.log(111111)
     },
     filters: {
@@ -247,6 +256,12 @@ export default {
         .informations {
             flex: 0 0 7.06667rem;
             position: relative;
+            .nametitle {
+                width: 4rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
             .nameCode {
                 font-size: 0.32rem;
                 color: #999;
@@ -276,6 +291,16 @@ export default {
                     background-color: @yellow;
                     border-radius: 0.08rem;
                     color: #191a22;
+                    font-size: 0.37333rem;
+                    text-align: center;
+                    line-height: 0.7733rem;
+                }
+                .nobutton {
+                    width: 1.86667rem;
+                    height: 0.7733rem;
+                    margin-top: 0.32rem; // background-color: @yellow;
+                    border-radius: 0.08rem;
+                    color: #eee;
                     font-size: 0.37333rem;
                     text-align: center;
                     line-height: 0.7733rem;

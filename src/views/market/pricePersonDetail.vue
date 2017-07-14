@@ -5,9 +5,9 @@
                 <div class="rule" @click="rule">
                     交易规则
                 </div>
+                <BarChart :isBarChartShow="isBarChartShow" @cancel="cancel"></BarChart>
                 <div class="shop" @click="shop">
-                    <img src="../../assets/icon_mall.png" alt="">
-                    商城
+                    <img src="../../assets/icon_mall.png" alt=""> 商城
                 </div>
                 <div class="big">
                     {{lastPrice | toFiexed}}
@@ -17,15 +17,18 @@
                 <span>{{growthRatio*100 | toFiexed}}%</span>
                 <div class="count">
                     <div class="scount">
-                        <span>10000</span><br>
+                        <span>10000</span>
+                        <br>
                         <span class="sign">阅读量</span>
                     </div>
                     <div class="scount">
-                        <span>10000</span><br>
+                        <span>10000</span>
+                        <br>
                         <span class="sign">注册量</span>
                     </div>
                     <div class="scount">
-                        <span>10000</span><br>
+                        <span>10000</span>
+                        <br>
                         <span class="sign">贡献量</span>
                     </div>
                 </div>
@@ -74,7 +77,7 @@
                         {{mainToptab.title}}
                     </span>
                 </div>
-                <component :is="currentView"></component>
+                <component class="currentView" :is="currentView"></component>
             </div>
         </div>
         <div class="footer">
@@ -93,6 +96,7 @@
 </template>
 
 <script>
+import BarChart from '@/components/market/BarChart'
 import Tribune from '@/components/market/Tribune'
 import TabChart from '@/components/market/TabChart'
 import BriefIntroduction from '@/components/market/BriefIntroduction'
@@ -103,6 +107,7 @@ import { toast } from '@/util/index'
 export default {
     data() {
         return {
+            isBarChartShow:false,
             lastPrice: '',
             growth: '',
             growthRatio: '',
@@ -164,12 +169,16 @@ export default {
         }
     },
     methods: {
-        rule(){
+        rule() {
             console.log('rule')
+            this.isBarChartShow=true
         },
-        shop(){
+        cancel(){
+            this.isBarChartShow=false
+        },
+        shop() {
             console.log('shop')
-            window.location.href='https://www.baidu.com/'
+            window.location.href = 'http://m.53fxp.com/wap/index.html'
         },
         toBuy() {
             console.log('购买')
@@ -237,14 +246,15 @@ export default {
             return t.toFixed(2)
         }
     },
-    beforeDestroy(){
-          this.$store.dispatch('code','')
-                this.$store.dispatch('attorncode', '')
-    },
+    // beforeDestroy() {
+    //     this.$store.dispatch('code', '')
+    //     this.$store.dispatch('attorncode', '')
+    // },
     beforeRouteEnter(to, from, next) {
         next()
     },
     components: {
+        BarChart,
         Tribune,
         BriefIntroduction,
         News,
@@ -268,15 +278,14 @@ export default {
         -webkit-overflow-scrolling: touch;
         background-color: #191a22;
         .top {
-            width: 100%;
-            // height: 3.2rem;
+            width: 100%; // height: 3.2rem;
             background-color: #202129;
             color: #f20624;
             text-align: center;
             padding: .4rem 0 0.2rem;
             margin-bottom: 0.26667rem;
             position: relative;
-            .rule{
+            .rule {
                 position: absolute;
                 left: 0;
                 top: .666667rem;
@@ -291,7 +300,7 @@ export default {
                 border-top-right-radius: .533333rem;
                 border-bottom-right-radius: .533333rem;
             }
-            .shop{
+            .shop {
                 position: absolute;
                 right: 0;
                 top: .666667rem;
@@ -305,7 +314,7 @@ export default {
                 padding-right: .16rem;
                 border-top-left-radius: .533333rem;
                 border-bottom-left-radius: .533333rem;
-                img{
+                img {
                     width: .426667rem;
                     height: .426667rem;
                     vertical-align: text-bottom;
@@ -324,16 +333,16 @@ export default {
             .first {
                 margin-right: 0.3rem;
             }
-            .count{
+            .count {
                 margin-top: 0.2rem;
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
-                color:#eee;
-                .scount{
-                    .sign{
+                color: #eee;
+                .scount {
+                    .sign {
                         line-height: 1.8;
-                        color:#acacac;
+                        color: #acacac;
                         font-size: 0.32rem;
                     }
                 }
@@ -411,6 +420,13 @@ export default {
                 .active {
                     color: @yellow;
                 }
+            }
+            .currentView {
+                background-color: #191a22;
+                width: 100%;
+                height: 15.46667rem;
+                overflow: auto;
+                -webkit-overflow-scrolling: touch;
             }
         }
     }

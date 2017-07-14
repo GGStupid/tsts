@@ -78,10 +78,6 @@ export default {
 @import '../../less/config.less';
 .newsWrap {
   background-color: #191a22;
-  width: 100%;
-  height: 15.46667rem;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
   .newsList {
     height: 2.4rem;
     padding: 0 @p30;

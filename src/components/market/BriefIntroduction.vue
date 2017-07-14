@@ -111,7 +111,7 @@ export default {
     },
   mounted() {
     let sendData = {
-      productId: this.$store.state.productId
+      productId: this.$route.params.productId
     }
     market.detail(sendData).then(data => {
       console.log(data)
@@ -129,10 +129,6 @@ export default {
 @import '../../less/config.less';
 .briefIntroductionWrap {
   background-color: #191a22;
-  width: 100%;
-  height: 15.46667rem;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
   .video {
     height: 5.62667rem;
     .swiper-slide img {

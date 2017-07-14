@@ -22,12 +22,14 @@ const personList = resolve => require(['@/views/market/personList'], resolve)
 const pricePersonDetail = resolve => require(['@/views/market/pricePersonDetail'], resolve)
 const marketNewsDeatil = resolve => require(['@/views/market/marketNewsDeatil'], resolve)
 const detailsTribune = resolve => require(['@/views/market/detailsTribune'], resolve)
+const applyPurchase = resolve => require(['@/views/market/applyPurchase'], resolve)
+const BriefIntroduction=resolve => require(['@/components/market/BriefIntroduction'], resolve)
 //deal
 const deal = resolve => require(['@/views/deal/deal'], resolve)
-const dayTransaction=resolve=>require(['@/views/deal/dayTransaction'],resolve)
-const dayCommission=resolve=>require(['@/views/deal/dayCommission'],resolve)
-const historicalTransaction=resolve=>require(['@/views/deal/historicalTransaction'],resolve)
-const historicalCommission=resolve=>require(['@/views/deal/historicalCommission'],resolve)
+const dayTransaction = resolve => require(['@/views/deal/dayTransaction'], resolve)
+const dayCommission = resolve => require(['@/views/deal/dayCommission'], resolve)
+const historicalTransaction = resolve => require(['@/views/deal/historicalTransaction'], resolve)
+const historicalCommission = resolve => require(['@/views/deal/historicalCommission'], resolve)
 //messages
 const messages = resolve => require(['@/views/messages/messages'], resolve)
 const notices = resolve => require(['@/views/messages/notices'], resolve)
@@ -211,33 +213,44 @@ const router = new Router({
         requireAuth: true
       }
     },
+    {
+      path: '/applyPurchase/:productId',
+      component: applyPurchase,
+      meta: {
+        requireAuth: true
+      }
+    },
+    {
+      path:'/BriefIntroduction/:productId',
+      component:BriefIntroduction
+    },
     //deal
     {
-      path:'/dayTransaction',
-      component:dayTransaction,
-      meta:{
-        requireAuth:true
+      path: '/dayTransaction',
+      component: dayTransaction,
+      meta: {
+        requireAuth: true
       }
     },
     {
-      path:'/dayCommission',
-      component:dayCommission,
-      meta:{
-        requireAuth:true
+      path: '/dayCommission',
+      component: dayCommission,
+      meta: {
+        requireAuth: true
       }
     },
     {
-      path:'/historicalTransaction',
-      component:historicalTransaction,
-      meta:{
-        requireAuth:true
+      path: '/historicalTransaction',
+      component: historicalTransaction,
+      meta: {
+        requireAuth: true
       }
     },
     {
-      path:'/historicalCommission',
-      component:historicalCommission,
-      meta:{
-        requireAuth:true
+      path: '/historicalCommission',
+      component: historicalCommission,
+      meta: {
+        requireAuth: true
       }
     },
     //mine

@@ -135,16 +135,16 @@ export default {
   },
   computed: {
     topStopPrice() {
-      return this.topPrice ? `跌停<span style="color:#4affa5">${this.topPrice}</span>` : '--'
+      return this.topPrice ? `跌停<span style="color:#4affa5">${this.topPrice}</span>` : '跌停 0.00'
     },
     bottomStopPrice() {
-      return this.bottomPrice ? `跌停<span style="color:#f20624">${this.bottomPrice}</span>` : '--'
+      return this.bottomPrice ? `涨停<span style="color:#f20624">${this.bottomPrice}</span>` : '涨停 0.00 '
     },
     availableCountFormat() {
-      return this.availableCount ? `可买 <span style="color:#F8CC00">${this.availableCount.toFixed(0)}</span> 秒` : '--'
+      return this.availableCount ? `可买 <span style="color:#F8CC00">${this.availableCount}</span> 秒` : '可买 0 秒'
     },
     availableBalanceFormat() {
-      return this.availableBalance ? `余额 <span style="color:#F8CC00">${this.availableBalance.toFixed(0)}</span> 元` : '--'
+      return this.availableBalance ? `余额 <span style="color:#F8CC00">${this.availableBalance.toFixed(0)}</span> 元` : '余额 0.00 元'
     }
   },
   methods: {
@@ -180,7 +180,6 @@ export default {
       return b
     },
     selectCode(i) {
-      console.log(i)
       if (!i) return
       this.searchName = `${i.name}  ${i.code}`
       this.pricesNum = i.lastPrice
@@ -188,7 +187,7 @@ export default {
       this.code = i.code
       this.topPrice = i.topStopPrice
       this.bottomPrice = i.bottomStopPrice
-      this.availableCount = this.availableBalance / this.pricesNum
+      this.availableCount =parseInt(this.availableBalance / this.pricesNum)
       this.searchLists = []
       let sendData = {
         code: 10023
@@ -199,6 +198,7 @@ export default {
       this.timer10 = setInterval(() => {
         deal.tend(sendData, config).then(data => {
           if (data.data.code == 200) {
+            if(!data.data.data)return clearInterval(this.timer10)
             let sArry = data.data.data.slist
             let bArry = data.data.data.blist
             this.slist = [
@@ -378,6 +378,9 @@ export default {
   },
   mounted() {
     let that = this
+    deal.available().then(data => {
+      this.availableBalance = data.data.data.available
+    })
     if (this.page == 1) {
       this.loadPurchasedLists()
       this.loadNewsPrices()
@@ -386,9 +389,7 @@ export default {
     if(this.$store.state.code){
       this.search(this.$store.state.code)
     }
-    deal.available().then(data => {
-      this.availableBalance = data.data.data.available
-    })
+    
   },
   beforeDestroy() {
     clearInterval(this.timer10)

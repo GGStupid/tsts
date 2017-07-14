@@ -74,4 +74,12 @@ export default {
     announces(data) {
         return instance.get(wrapUrl + '/announces?' + qs.stringify(data))
     },
+    //买卖-申购-详情
+    detail(data) {
+        return instance.post(wrapUrl + '/member/purchase/detail', qs.stringify(data))
+    },
+    //买卖-申购-下单
+    purchase(data) {
+        return instance.post(wrapUrl + '/member/purchase', qs.stringify(data))
+    },
 }

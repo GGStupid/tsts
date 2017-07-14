@@ -18,7 +18,7 @@
                         <span>****&nbsp;{{bank.bankNo | bankEnd}}</span>
                     </div>
                 </div>
-                <div class="select" v-show="selectBankName==bank.bankName">
+                <div class="select" v-show="selectBankName==bank.bankNo">
                     <img src="../../assets/select card_s.png" alt="">
                 </div>
             </div>
@@ -57,7 +57,7 @@ export default {
     methods: {
         selectBank(bank) {
             this.$emit('selectBank', bank)
-            this.selectBankName = bank.bankName
+            this.selectBankName = bank.bankNo
             this.$emit('cancelLists')
         },
         cancelLists() {

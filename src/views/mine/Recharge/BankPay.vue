@@ -135,7 +135,10 @@ export default {
         }
     },
     mounted() {
-        mine.userBank().then(data => {
+        let sendData={
+            status:2
+        }
+        mine.userBank(sendData).then(data => {
             this.banks = data.data.data
         })
     },

@@ -91,7 +91,7 @@ export default {
           }
         })
       }else{
-         toast('请输入手机号和短信验证码')
+         toast('请输入正确的手机号和短信验证码')
       }
     }
   }

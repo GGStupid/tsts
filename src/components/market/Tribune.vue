@@ -70,32 +70,7 @@ export default {
       baseImgUrl: this.$store.state.baseImgUrl,
       title: this.$store.state.title,
       userId: this.$store.state.userInfor.id,
-      commentLists: [
-        // {
-        //     avatarImg: require('../../assets/quotes_forum_avatar.png'),
-        //     name: 'a阿道夫',
-        //     isAuthentication: true,
-        //     zansNum: 0,
-        //     reportNum: 10,
-        //     time: '06-01',
-        //     content: '大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食 大师傅阿道夫嗷嗷待食',
-        //     answerLists: '阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发',
-        //     answerName: '我',
-        //     answerContent: '买水电费阿斯蒂芬啊速达阿斯蒂芬阿萨德发送到啊速达发射点发苏打撒旦法地方a卖',
-        // },
-        // {
-        //     avatarImg: require('../../assets/quotes_forum_avatar.png'),
-        //     name: 'a阿道夫',
-        //     isAuthentication: false,
-        //     zansNum: 2,
-        //     reportNum: 2,
-        //     time: '06-01',
-        //     content: '大师傅阿道夫嗷嗷待食',
-        //     answerLists: '阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发,阿萨德发',
-        //     answerName: '我',
-        //     answerContent: '买水电费阿斯蒂芬啊速达阿斯蒂芬阿萨德发送到啊速达发射点发苏打撒旦法地方a卖',
-        // }
-      ],
+      commentLists: [],
     }
   },
   computed: {
@@ -223,7 +198,7 @@ export default {
   },
   mounted() {
     let sendData = {
-      productId: this.$store.state.productId,
+      productId: this.$route.params.productId,
       page: 1,
       rows: 5
     }

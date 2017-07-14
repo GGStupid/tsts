@@ -6,7 +6,7 @@
     </v-SwiperBar>
     <div class="tabWrap">
       <v-FlexTab :tabTitles='tabTitles' @toNext="toCheckTab"></v-FlexTab>
-      <v-HotList :isNews="isNews"></v-HotList>
+      <v-HotList :isNews="isNews" @toNext="toNext"></v-HotList>
     </div>
   </div>
 </template>
@@ -45,8 +45,9 @@ export default {
         this.isNews = false
       }
     },
-    toNext() {
+    toNext(e) {
       console.log('toNextlit')
+      this.$router.push('/BriefIntroduction/'+e.productId)
     }
   },
   components: {

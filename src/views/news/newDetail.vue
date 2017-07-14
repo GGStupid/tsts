@@ -16,6 +16,7 @@
 </template>
 <script>
 import news from '@/api/news/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
@@ -41,10 +42,15 @@ export default {
             informationId: id
         }
         news.informationId(sendData).then(data => {
-            this.title = data.data.data.title
-            this.author = data.data.data.author
-            this.updateTime = data.data.data.updateTime
-            this.content = data.data.data.content
+            if (data.data.code == 200) {
+                this.title = data.data.data.title
+                this.author = data.data.data.author
+                this.updateTime = data.data.data.updateTime
+                this.content = data.data.data.content
+            }else{
+                toast(data.data.message)
+                this.$router.go(-1)
+            }
         })
         document.querySelector('#app').addEventListener('scroll', () => {
             var that = this
@@ -70,7 +76,7 @@ export default {
 <style lang="less" scoped>
 @import '../../less/config.less';
 .newDetailWrap {
-    padding: 0.32rem 0.26667rem 0.32rem;
+    padding: 30px 20px 30px;
     background-color: #20212a;
     .top {
         .title {

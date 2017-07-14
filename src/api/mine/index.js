@@ -68,7 +68,7 @@ export default {
     },
     //我的银行卡
     userBank(data) {
-        return instance.get(wrapUrl + '/member/user/userBank', qs.stringify(data))
+        return instance.post(wrapUrl + '/member/user/userBank',qs.stringify(data))
     },
     //是否能添加银行卡
     verifyBank(data) {
