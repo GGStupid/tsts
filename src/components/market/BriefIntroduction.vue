@@ -113,7 +113,7 @@ export default {
     let sendData = {
       productId: this.$route.params.productId
     }
-    market.detail(sendData).then(data => {
+    market.detailget(sendData).then(data => {
       console.log(data)
       this.informationObj = data.data.data
       this.personBaners = data.data.data.picPaths

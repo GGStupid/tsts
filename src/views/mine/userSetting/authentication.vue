@@ -53,7 +53,7 @@ export default {
             isname: false,
             cardId: '',
             isCardId: false,
-            realFailCount: 0,
+            realNameFail: 0,
             isUpImg: false,
             cardOppositePic: '',
             cardOppositeUp: require('../../../assets/bank card_add_pic.png'),
@@ -64,7 +64,7 @@ export default {
     },
     computed: {
         realNameFailCount() {
-            return this.realFailCount >= 3
+            return this.realNameFail==2
         },
         buttonTitle() {
             return this.realNameFailCount ? '提交审核' : '确定'
@@ -147,7 +147,7 @@ export default {
         },
         toConfirm() {
             console.log('toConfirm')
-            if (this.realFailCount >= 3) {
+            if (this.realNameFail >= 3) {
                 if (isRealName(this.name) && isIdCard(this.cardId) && this.cardOppositePic && this.cardPositivePic) {
                     let senddata = {
                         realName: this.name,
@@ -157,11 +157,11 @@ export default {
                     }
                     mine.userVerified(senddata).then((data) => {
                         if (data.data.code == 200) {
-                            this.realFailCount = 4
+                            this.realNameFail = data.data.data
                             this.isShow = true
                             this.msg = data.data.message
                         } else {
-                            this.realFailCount = data.data.data
+                            this.realNameFail = data.data.data
                             this.isShow = true
                             this.msg = data.data.message
                             // toast(data.data.message)
@@ -180,11 +180,11 @@ export default {
                     }
                     mine.userVerified(senddata).then((data) => {
                         if (data.data.code == 200) {
-                            this.realFailCount = 4
+                            this.realNameFail = data.data.data
                             this.isShow = true
                             this.msg = data.data.message
                         } else {
-                            this.realFailCount = data.data.data
+                            this.realNameFail = data.data.data
                             this.isShow = true
                             this.msg = data.data.message
                             // toast(data.data.message)
@@ -198,7 +198,7 @@ export default {
         },
         toastConfirm() {
             console.log('toastConfirm')
-            if (this.realFailCount <= 3) {
+            if (this.realNameFail <= 3) {
                 this.isShow = false
                 return
             } else {
@@ -208,7 +208,7 @@ export default {
     },
     mounted() {
         mine.getUserInforPost().then((data) => {
-            this.realFailCount = data.data.data.realNameFailCount
+            this.realNameFail = data.data.data.realNameFailCount
         })
     },
     components: {

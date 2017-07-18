@@ -1,6 +1,8 @@
 <template>
     <div class="invitingFriendsWrap">
-        <img src="../../assets/invite_QR code_bg.png" alt="">
+        <div class="invite_QR">
+            <img :src="invite_QR" alt="">
+        </div>
         <div class="content">
             <div class="introduce">
                 <div>
@@ -59,9 +61,11 @@
 </template>
 <script>
 import mine from '@/api/mine/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
+            invite_QR:'',
             friends: [
                 // {
                 //     nickName: '啊打发',
@@ -100,6 +104,15 @@ export default {
             console.log(data.data)
             this.friends = data.data.data.rows
         })
+        mine.inviteCode().then(data => {
+            console.log(data.data)
+            if(data.data.code==200){
+                this.invite_QR=data.data.data
+            }else{
+                toast(data.data.message)
+            }
+            
+        })
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = "邀请好友"
@@ -114,9 +127,22 @@ export default {
     width: 100%;
     height: 100%;
     background-color: #ffbe26;
-    img {
-        width: 100%;
-    }
+    .invite_QR{
+        width: 10rem;
+        height: 7.706667rem;
+        background-image: url('../../assets/invite_QR code_bg.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        img{
+            width:3.263333rem;
+            height: 3.263333rem;
+            position: absolute;
+            top: 1.2rem;
+            left: 3.36rem;
+        }
+    }  
     .content {
         margin-top: -0.8rem;
         .introduce {

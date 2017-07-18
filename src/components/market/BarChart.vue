@@ -3,22 +3,19 @@
         <div class="mask" @click="cancel">
         </div>
         <div class="barChartContent">
-            <div class="title">交易规则</div>
+            <div class="title">升值规则</div>
             <div class="rulesContent">
                 <div class="barWrap">
                     <div id="barmain"></div>
                 </div>
                 <p>
-                    1.申购数量需为100秒或其整数倍，最多可申购108000秒
+                    1.阅读量升值按2000倍数升值，每满足2000即可升值1%，未满足2000基数则不升值。
                 </p>
                 <p>
-                    2.您可在6月8日20：00前进行申购，支付成功后冻结相应资金
+                    2.注册量升值按300倍数升值，每满足300即可升值2%。未满足300倍数则不升值。
                 </p>
                 <p>
-                    3.申购结束后进行摇号抽签，中签处理（6月9日9：25-9:29）,最小中签数量为100秒或其整数倍
-                </p>
-                <p>
-                    4.申购成功用户获得相应时间，未成功用户申购时间退回
+                    3.贡献量升值按5万消费金额倍数升值，每满足5万消费金额倍数即可升值6%。未满不升值。礼包消费除外！
                 </p>
             </div>
         </div>
@@ -78,7 +75,8 @@ export default {
                 grid: {
                     top: '5%',
                     left: '17%',
-                    right: '5%'
+                    right: '5%',
+                    bottom:'12%'
                 },
                 xAxis: {
                     axisTick: {
@@ -127,7 +125,7 @@ export default {
                     type: 'bar',
                     barWidth: this.barWidth,
                     data: [{
-                        value: 580,
+                        value: 0,
                         label: {
                             normal: {
                                 show: true,
@@ -144,7 +142,7 @@ export default {
                             }
                         }
                     }, {
-                        value: 810,
+                        value: 0,
                         label: {
                             normal: {
                                 show: true,
@@ -161,7 +159,7 @@ export default {
                             }
                         }
                     }, {
-                        value: 300,
+                        value: 0,
                         label: {
                             normal: {
                                 show: true,
@@ -236,7 +234,7 @@ export default {
         text-align: left;
         #barmain {
             width: 8rem;
-            height: 3.44rem;
+            height: 5.44rem;
         }
         p {
             padding: 0 .4rem;

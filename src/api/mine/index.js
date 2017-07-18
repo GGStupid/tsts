@@ -50,6 +50,10 @@ export default {
     inviteUser(data) {
         return instance.post(wrapUrl + '/member/user/inviteUser', qs.stringify(data))
     },
+    //用户中心-我的-二维码
+     inviteCode(data) {
+        return instance.get(wrapUrl + '/member/user/inviteCode', qs.stringify(data))
+    },
     //上传图片
     upload(data) {
         return instance.post(wrapUrl + '/file/upload', qs.stringify(data))

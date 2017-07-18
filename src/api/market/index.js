@@ -59,7 +59,7 @@ export default {
         return instance.post(wrapUrl + '/member/forums/commentDelete', qs.stringify(data))
     },
     //发行人简介
-    detail(data) {
+    detailget(data) {
         return instance.get(wrapUrl + '/publisher/detail?' + qs.stringify(data))
     },
     //前台新闻列表

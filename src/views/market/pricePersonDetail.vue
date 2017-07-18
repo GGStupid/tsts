@@ -3,7 +3,7 @@
         <div class="content">
             <div class="top">
                 <div class="rule" @click="rule">
-                    交易规则
+                    升值规则
                 </div>
                 <BarChart :isBarChartShow="isBarChartShow" @cancel="cancel"></BarChart>
                 <div class="shop" @click="shop">
@@ -17,17 +17,17 @@
                 <span>{{growthRatio*100 | toFiexed}}%</span>
                 <div class="count">
                     <div class="scount">
-                        <span>10000</span>
+                        <span>0</span>
                         <br>
                         <span class="sign">阅读量</span>
                     </div>
                     <div class="scount">
-                        <span>10000</span>
+                        <span>0</span>
                         <br>
                         <span class="sign">注册量</span>
                     </div>
                     <div class="scount">
-                        <span>10000</span>
+                        <span>0</span>
                         <br>
                         <span class="sign">贡献量</span>
                     </div>
@@ -165,7 +165,8 @@ export default {
                 }
             ],
             publisherId: '',
-            currentView: 'Tribune'
+            currentView: 'Tribune',
+            shopUrl:''
         }
     },
     methods: {
@@ -178,7 +179,7 @@ export default {
         },
         shop() {
             console.log('shop')
-            window.location.href = 'http://m.53fxp.com/wap/index.html'
+            window.location.href = this.shopUrl
         },
         toBuy() {
             console.log('购买')
@@ -231,6 +232,7 @@ export default {
                 this.exchangeRate = data.data.data.exchangeRate
                 this.averagePrice = data.data.data.averagePrice
                 this.tradeAmount = data.data.data.tradeAmount
+                this.shopUrl=data.data.data.shopUrl
                 this.$store.dispatch('productId', data.data.data.productId)
                 this.$store.dispatch('code', data.data.data.code)
                 this.$store.dispatch('attorncode', data.data.data.code)
