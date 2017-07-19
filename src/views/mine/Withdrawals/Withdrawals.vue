@@ -9,7 +9,7 @@
                 <img class="rIcon" src="../../../assets/arrow_right.png" alt="">
             </div>
             <div class="list" style="margin:0.266667rem 0">
-                <span>充值金额</span>
+                <span>提现金额</span>
                 <input type="tel" v-model="amount" placeholder="请输入提现金额">
             </div>
             <div class="end">

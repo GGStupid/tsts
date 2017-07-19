@@ -204,7 +204,7 @@ export default {
     }
     market.getforums(sendData).then(data => {
       if(data.data.code==200){
-        if(data.data.data.rows.length==0)return
+        if(data.data.data.rows.length==0)return ;
          this.commentLists = data.data.data.rows
       }else{
         toast(data.data.message)
@@ -301,6 +301,7 @@ export default {
           margin-top: 0.2rem;
           line-height: 1.5;
           position: relative;
+          width: 7.866667rem;
           &:before {
             content: '';
             position: absolute;
@@ -313,6 +314,7 @@ export default {
           }
           .answer {
             color: #2379bd;
+            word-wrap:break-word;
           }
           .zans {
             margin-bottom: 0.2rem;

@@ -62,6 +62,10 @@ export default {
     detailget(data) {
         return instance.get(wrapUrl + '/publisher/detail?' + qs.stringify(data))
     },
+    //分时图
+    getTimes (data) {
+        return instance.get(wrapUrl + '/getTimes?'+ qs.stringify(data))
+    },
     //前台新闻列表
     news(data) {
         return instance.get(wrapUrl + '/news?' + qs.stringify(data))

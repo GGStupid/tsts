@@ -5,9 +5,20 @@
 </template>
 <script>
 var echarts = require('echarts');
+import market from '@/api/market/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
+            myChart: '',
+            topPrice: '15.5',//最高价
+            bottomPrice: '0',//最低价
+            openPrice: '15.5',//开盘价
+            rawData: [],
+            ChatRespBody: '',
+            arrCurTime: [],
+            line_data: [],
+            bar_data: []
         }
     },
     computed: {
@@ -21,268 +32,76 @@ export default {
                 return 36;
             }
         },
+        maxDif() {
+            let d1 = this.topPrice - this.openPrice
+            let d2 = this.openPrice - this.bottomPrice
+            return d1 >= d2 ? d1 : d2
+        },
+        top() {
+            return this.maxDif + parseFloat(this.openPrice)
+        },
+        bottom() {
+            return this.openPrice - this.maxDif
+        }
     },
-    props: {
-
-    },
+    // props: {
+    //     topPrice: '',
+    //     bottomPrice: '',
+    //     openPrice: '',
+    //     code: ''
+    // },
     methods: {
-        inittimemain() {
-            var echarts = require('echarts/lib/echarts');
-            require('echarts/lib/chart/bar');
-            require('echarts/lib/chart/line');
-            require('echarts/lib/component/axis');
-            require('echarts/lib/component/axisPointer');
-            require('echarts/lib/component/dataZoom');
-            let mainTime = document.getElementById('timemain')
-            // let dpr = document.getElementsByTagName('html')[0].getAttribute('data-dpr')
-            // if (dpr == '2') {
-            //   mainTime.style.width = '480px'
-            //   mainTime.style.height = '500px'
-            // }
-            var myChart = echarts.init(mainTime)
-            function splitData(rawData) {
-                var categoryData = [];
-                var values = [];
-                var volumns = [];
-                for (var i = 0; i < rawData.length; i++) {
-                    categoryData.push(rawData[i].splice(0, 1)[0]);
-                    values.push(rawData[i]);
-                    volumns.push(rawData[i][4]);
+        addZero(val, len, top) {
+            if (!arguments[1]) len = 2;
+            if (!arguments[2]) top = true;
+            if (val.toString().length < len) {
+                while (len != val.toString().length) {
+                    if (top) val = "0" + val.toString();
+                    else val = val.toString() + "0";
                 }
-                return {
-                    categoryData: categoryData,
-                    values: values,
-                    volumns: volumns
-                };
             }
-
-            function calculateMA(dayCount, data) {
-                var result = [];
-                for (var i = 0, len = data.values.length; i < len; i++) {
-                    if (i < dayCount) {
-                        result.push('-');
-                        continue;
-                    }
-                    var sum = 0;
-                    for (var j = 0; j < dayCount; j++) {
-                        sum += data.values[i - j][1];
-                    }
-                    result.push(+(sum / dayCount).toFixed(3));
+            return val.toString();
+        },
+        getDataPos(item, arry) {
+            if (!arry) return
+            let len = arry.length
+            for (var i = 0; i < arry.length; i++) {
+                if (item.ts == arry[i].ts) {
+                    arry.splice(i, 1, item)
                 }
-                return result;
             }
-            var getDpr = function getDpr() {
-                var dpr = $('html').attr('data-dpr');
-                if (dpr == 1) {
-                    return 12;
-                } else if (dpr == 2) {
-                    return 24;
-                } else {
-                    return 36;
-                }
-            };
-            var borderDpr = function getDpr() {
-                var dpr = $('html').attr('data-dpr');
-                if (dpr == 1) {
-                    return 1;
-                } else if (dpr == 2) {
-                    return 2;
-                } else {
-                    return 3;
-                }
-            };
-            var rawData = [["2016-05-03", 17870.75, 17750.91, 17670.88, 17870.75, 97060000], ["2016-05-04", 17735.02, 17651.26, 17609.01, 17738.06, 95020000], ["2016-05-05", 17664.48, 17660.71, 17615.82, 17736.11, 81530000], ["2016-05-06", 17650.3, 17740.63, 17580.38, 17744.54, 80020000], ["2016-05-09", 17743.85, 17705.91, 17668.38, 17783.16, 85590000], ["2016-05-10", 17726.66, 17928.35, 17726.66, 17934.61, 75790000], ["2016-05-11", 17919.03, 17711.12, 17711.05, 17919.03, 87390000], ["2016-05-12", 17711.12, 17720.5, 17625.38, 17798.19, 88560000], ["2016-05-13", 17711.12, 17535.32, 17512.48, 17734.74, 86640000], ["2016-05-16", 17531.76, 17710.71, 17531.76, 17755.8, 88440000], ["2016-05-17", 17701.46, 17529.98, 17469.92, 17701.46, 103260000], ["2016-05-18", 17501.28, 17526.62, 17418.21, 17636.22, 79120000], ["2016-05-19", 17514.16, 17435.4, 17331.07, 17514.16, 95530000], ["2016-05-20", 17437.32, 17500.94, 17437.32, 17571.75, 111990000], ["2016-05-23", 17507.04, 17492.93, 17480.05, 17550.7, 87790000], ["2016-05-24", 17525.19, 17706.05, 17525.19, 17742.59, 86480000], ["2016-05-25", 17735.09, 17851.51, 17735.09, 17891.71, 79180000], ["2016-05-26", 17859.52, 17828.29, 17803.82, 17888.66, 68940000], ["2016-05-27", 17826.85, 17873.22, 17824.73, 17873.22, 73190000], ["2016-05-31", 17891.5, 17787.2, 17724.03, 17899.24, 147390000], ["2016-06-01", 17754.55, 17789.67, 17664.79, 17809.18, 78530000], ["2016-06-02", 17789.05, 17838.56, 17703.55, 17838.56, 75560000], ["2016-06-03", 17799.8, 17807.06, 17689.68, 17833.17, 82270000], ["2016-06-06", 17825.69, 17920.33, 17822.81, 17949.68, 71870000], ["2016-06-07", 17936.22, 17938.28, 17936.22, 18003.23, 78750000], ["2016-06-08", 17931.91, 18005.05, 17931.91, 18016, 71260000], ["2016-06-09", 17969.98, 17985.19, 17915.88, 18005.22, 69690000], ["2016-06-10", 17938.82, 17865.34, 17812.34, 17938.82, 90540000], ["2016-06-13", 17830.5, 17732.48, 17731.35, 17893.28, 101690000], ["2016-06-14", 17710.77, 17674.82, 17595.79, 17733.92, 93740000], ["2016-06-15", 17703.65, 17640.17, 17629.01, 17762.96, 94130000], ["2016-06-16", 17602.23, 17733.1, 17471.29, 17754.91, 91950000], ["2016-06-17", 17733.44, 17675.16, 17602.78, 17733.44, 248680000], ["2016-06-20", 17736.87, 17804.87, 17736.87, 17946.36, 99380000], ["2016-06-21", 17827.33, 17829.73, 17799.8, 17877.84, 85130000], ["2016-06-22", 17832.67, 17780.83, 17770.36, 17920.16, 89440000]]
-            var data = splitData(rawData);
-            var option;
-            myChart.setOption(option = {
-                animation: false,
-                grid: [
-                    {
-                        top: '1%',
-                        left: '1%',
-                        right: '1%',
-                        bottom: '35%',
-                        show: true,
-                        // borderWidth: borderDpr(),
-                        // borderColor: '#777'
-                    },
-                    {
-                        show: true,
-                        left: '1%',
-                        right: '1%',
-                        top: '70%',
-                        height: '20%',
-                        // borderWidth: borderDpr(),
-                        // borderColor: '#777'
-                    }
-                ],
-                axisPointer: {
-                    link: { xAxisIndex: 'all' }
-                },
-                xAxis: [
-                    {
-                        type: 'category',
-                        data: data.categoryData,
-                        boundaryGap: false,
-                        splitLine: { show: false, lineStyle: { color: '#777' } },
-                        axisLine: { onZero: false, show: false, lineStyle: { color: '#777' } },
-                        axisLabel: { show: false },
-                        axisTick: {
-                            show: false
-                        }
-                    },
-                    {
-                        type: 'category',
-                        gridIndex: 1,
-                        data: data.categoryData,
-                        scale: true,
-                        boundaryGap: false,
-                        axisLine: { onZero: false },
-                        axisTick: { show: false },
-                        splitLine: { show: false },
-                        axisLabel: {
-                            textStyle: {
-                                fontSize: getDpr(),
-                                color: '#fff',
-                                align: 'left'
-                            },
-                        }
-                    }
-                ],
-                yAxis: [
-                    {
-                        scale: false,
-                        position: 'right',
-                        splitNumber: 2,
-                        min: 'dataMin',
-                        max: 'dataMax',
-                        splitLine: { show: false, lineStyle: { color: '#777' } },
-                        axisLine: {
-                            show: false,
-                            onZero: false,
-                            lineStyle: { color: '#777' }
-                        },
-                        axisLabel: {
-                            inside: true,
-                            formatter: '{value}\n',
-                            textStyle: {
-                                fontSize: getDpr(),
-                                color: '#56627c'
-                            },
-                            showMinLabel: false,
-                            showMaxLabel: false
-                        },
-                        axisTick: {
-                            show: false
-                        }
-                    },
-                    {
-                        scale: true,
-                        gridIndex: 1,
-                        axisLabel: { show: false },
-                        axisLine: { show: false },
-                        axisTick: { show: false },
-                        splitLine: { show: false }
-                    }
-                ],
-                dataZoom: [
-                    {
-                        type: 'inside',
-                        xAxisIndex: [0, 0],
-                        start: 0,
-                        end: 100
-                    },
-                    {
-                        show: true,
-                        xAxisIndex: [0, 0],
-                        type: 'inside',
-                        start: 0,
-                        end: 100
-                    }
-                ],
-                calculable: true,
-                series: [
-                    {
-                        type: 'line',
-                        smooth: true,
-                        symbolSize: 5,
-                        showSymbol: false,
-                        lineStyle: {
-                            normal: {
-                                width: 2
-                            }
-                        },
-                        areaStyle: {
-                            normal: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                    offset: 0,
-                                    color: 'rgba(0, 136, 212, 0.8)'
-                                }, {
-                                    offset: 1,
-                                    color: 'rgba(0, 136, 212, 0.2)'
-                                }], false),
-                                shadowColor: 'rgba(0, 0, 0, 0.1)',
-                                shadowBlur: 10
-                            }
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: 'rgb(0,136,212)',
-                                borderColor: 'rgba(0,136,212,0.2)',
-                                borderWidth: 12
-
-                            }
-                        },
-                        data: data.volumns
-                    },
-                    {
-                        name: 'Volumn',
-                        type: 'bar',
-                        xAxisIndex: 1,
-                        yAxisIndex: 1,
-                        itemStyle: {
-                            normal: {
-                                color: function (params) {
-                                    var colorList;
-                                    if (data.values[params.dataIndex][1] > data.values[params.dataIndex][0]) {
-                                        colorList = '#FD1050';
-                                    } else {
-                                        colorList = '#0CF49B';
-                                    }
-                                    return colorList;
-                                },
-                            }
-                        },
-                        data: data.volumns
-                    }
-                ]
-            })
-            // window.onresize = myChart.resize;
+        },
+        splitData(rawData) {
+            for (var i = 0; i < rawData.length; i++) {
+                this.line_data.push(rawData[i].p);
+                this.bar_data.push(rawData[i].q);
+            }
+        },
+        initDate() {
+            // 初始化 x轴 
+            //***************************************************************//
+            var dtCurDate = new Date();
+            var dtTimeAM = new Date(dtCurDate.getFullYear(), dtCurDate.getMonth(), dtCurDate.getDate(), 9, 30, 0, 0)
+            for (var i = 0; i <= 120; i++) {
+                this.arrCurTime.push([this.addZero(dtTimeAM.getHours()), this.addZero(dtTimeAM.getMinutes())].join(":"));
+                dtTimeAM = new Date(dtTimeAM.getTime() + 60 * 1000);
+            }
+            var dtTimePM = new Date(dtCurDate.getFullYear(), dtCurDate.getMonth(), dtCurDate.getDate(), 13, 0, 0, 0)
+            for (var i = 0; i <= 480; i++) {
+                this.arrCurTime.push([this.addZero(dtTimePM.getHours()), this.addZero(dtTimePM.getMinutes())].join(":"));
+                dtTimePM = new Date(dtTimePM.getTime() + 60 * 1000);
+            }
+            //***************************************************************//
+            for (var i = 0; i < this.arrCurTime.length; i++) {
+                this.line_data.push("-");
+            }
+            for (var i = 0; i < this.arrCurTime.length; i++) {
+                this.bar_data.push("-");
+            }
         },
         loadTimeChart() {
-            var myChart = echarts.init(document.getElementById('timemain'));
-            function splitData(rawData) {
-                var categoryData = [];
-                var values = [];
-                var volumns = [];
-                for (var i = 0; i < rawData.length; i++) {
-                    categoryData.push(rawData[i].splice(0, 1)[0]);
-                    values.push(rawData[i]);
-                    volumns.push(rawData[i][4]);
-                }
-                return {
-                    categoryData: categoryData,
-                    values: values,
-                    volumns: volumns
-                };
-            }
-            var rawData = [
-                ["09:30", 870.75, 750.91, 670.88, 70.75, 10.75], ["09:40", 735.02, 651.26, 609.01, 38.06, 30.75], ["09:50", 664.48, 660.71, 615.82, 40.11, 60.75],
-                ["10:10", 650.3, 740.63, 580.38, 44.54, 40.75],
-                ["10:20", 870.75, 750.91, 670.88, 70.75, 10.75], ["10:30", 735.02, 651.26, 609.01, 38.06, 30.75], ["11:30/13:30", 664.48, 660.71, 615.82, 40.11, 70.75], ["13:30", 735.02, 651.26, 609.01, 38.06, 30.75], ["13:40", 664.48, 660.71, 615.82, 40.11, 70.75], ["14:30", 650.3, 740.63, 580.38, 44.54, 40.75],
-                ["14:50", 870.75, 750.91, 670.88, 70.75, 10.75], ["15:00/18:00", 735.02, 651.26, 609.01, 38.06, 30.75], ["21:00", 650.3, 740.63, 580.38, 44.54, 40.75]
-            ]
-            var data = splitData(rawData);
+            this.myChart = echarts.init(document.getElementById('timemain'));
+            var data = this.splitData(this.rawData);
             var option = {
                 grid: [
                     {
@@ -298,6 +117,9 @@ export default {
                         height: '20%',
                     },
                 ],
+                textStyle: {
+                    fontSize: this.fontSize
+                },
                 xAxis: [
                     {
                         gridIndex: 0,
@@ -308,70 +130,102 @@ export default {
                             show: false,
                             textStyle: {
                                 color: '#eee',
-                                fontSize: this.fontSize
+                            },
+                            interval: function (index, value) {
+                                if (value == "09:30"
+                                    || value == "11:30"
+                                    || value == "18:00"
+                                    || value == "21:00") {
+                                    return true;
+                                }
+                                else return false;
+                            },
+                            formatter: function (value, index) {
+                                if (value == "11:30") {
+                                    return "11:30/13:30"
+                                } else {
+                                    return value
+                                }
                             }
                         },
-                        // min:0,
-                        // max:2,
-                        data: data.categoryData,
-                        // data: ['09:30', '11:30/13:30', '15:00/18:00', '21:00']
+                        data: this.arrCurTime
                     },
                     {
                         gridIndex: 1,
                         type: 'category',
                         boundaryGap: false,
-                        axisLine: { onZero: false },
+                        axisLine: { onZero: true },
                         axisLabel: {
                             textStyle: {
                                 color: '#eee',
                                 fontSize: this.fontSize
+                            },
+                            interval: function (index, value) {
+                                if (value == "09:30"
+                                    || value == "11:30"
+                                    || value == "18:00"
+                                    || value == "21:00") {
+                                    return true;
+                                }
+                                else return false;
+                            },
+                            formatter: function (value, index) {
+                                if (value == "11:30") {
+                                    return "11:30/13:30"
+                                } else {
+                                    return value
+                                }
                             }
                         },
-                        boundaryGap: true,
-                        // min:0,
-                        // max:2,
-                        data: data.categoryData,
-                        // data: ['09:30', '11:30/13:30',  '21:00']
+                        data: this.arrCurTime
                     }
                 ],
                 yAxis: [
                     {
-                        gridIndex: 0,
                         type: 'value',
+                        position: 'left',
                         splitLine: { show: false },
                         splitNumber: 1,
-                        // name: '0.13',
-                        // nameTextStyle: {
-                        //     color: '#f20462',
-                        //     fontSize: this.fontSize
-                        // },
+                        name: this.top,
+                        nameTextStyle: {
+                            color: '#f20462',
+                            fontSize: this.fontSize
+                        },
                         axisLabel: {
+                            show: false,
                             showMinLabel: false,
+                            showMaxLabel: true,
+                            inside: true,
                             textStyle: {
                                 color: '#f20462',
                                 fontSize: this.fontSize
                             },
                         },
-                        max: 100,
-                        min: 0,
+                        max: this.top,
+                        min: this.bottom
                     },
                     {
-                        gridIndex: 0,
                         type: 'value',
                         position: 'right',
                         splitLine: { show: false },
                         splitNumber: 1,
+                        name: '30.00%',
+                        nameTextStyle: {
+                            color: '#f20462',
+                            fontSize: this.fontSize
+                        },
                         axisLabel: {
-                            showMaxLabel: true,
+                            show: false,
                             showMinLabel: false,
+                            inside: true,
                             textStyle: {
                                 color: '#f20462',
                                 fontSize: this.fontSize
                             },
-                            formatter: '{value} %',
+                            // formatter: '{value} %',
                         },
-                        max: 100,
-                        min: 0
+                        max: this.top,
+                        min: this.bottom
                     },
                     {
                         gridIndex: 1,
@@ -402,10 +256,12 @@ export default {
                 series: [
                     {
                         type: 'line',
-                        data: data.volumns,
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        data: data.valuesline,
                         lineStyle: {
                             normal: {
-                                color: '#fff'
+                                color: '#fff',
                             }
                         },
                         areaStyle: {
@@ -440,30 +296,57 @@ export default {
                                 }
                             },
                             data: [
+                                // {
+                                //     name: '0.1',
+                                //     // 支持 'average', 'min', 'max'
+                                //     type: 'max',
+                                //     valueIndex: 1,
+                                //     yAxis: this.top,
+                                //     label: {
+                                //         normal: {
+                                //             position: 'start',
+                                //             // formatter:'{b}'
+                                //         }
+                                //     },
+                                //     lineStyle: {
+                                //         normal: {
+                                //             type: 'solid',
+                                //             color: '#27282d'
+                                //         }
+                                //     }
+                                // },
                                 {
-                                    name: '0.1',
+                                    name: this.openPrice,
                                     // 支持 'average', 'min', 'max'
                                     type: 'average',
                                     valueIndex: 1,
+                                    yAxis: this.openPrice,
                                     label: {
                                         normal: {
-                                            position: 'start',
-                                            // formatter:'{b}'
-                                        }
-                                    }
-                                },
-                                {
-                                    name: '50%',
-                                    // 支持 'average', 'min', 'max'
-                                    type: 'average',
-                                    valueIndex: 1,
-                                    label: {
-                                        normal: {
-                                            position: 'end',
+                                            position: 'middle',
                                             formatter: '{b}'
                                         }
                                     }
-                                }
+                                },
+                                // {
+                                //     name: this.bottom,
+                                //     // 支持 'average', 'min', 'max'
+                                //     type: 'min',
+                                //     valueIndex: 1,
+                                //     yAxis: this.bottom,
+                                //     label: {
+                                //         normal: {
+                                //             position: 'start',
+                                //             formatter: '{b}'
+                                //         }
+                                //     },
+                                //     lineStyle: {
+                                //         normal: {
+                                //             type: 'solid',
+                                //             color: '#27282d'
+                                //         }
+                                //     }
+                                // }
                             ]
                         }
                     },
@@ -475,7 +358,7 @@ export default {
                             normal: {
                                 color: function (params) {
                                     var colorList;
-                                    if (data.values[params.dataIndex][1] > data.values[params.dataIndex][0]) {
+                                    if (data.valuesline[params.dataIndex] > data.valueap[params.dataIndex]) {
                                         colorList = '#FD1050';
                                     } else {
                                         colorList = '#0CF49B';
@@ -484,27 +367,33 @@ export default {
                                 },
                             }
                         },
-                        data: data.volumns,
+                        data: data.lolumnsbar,
                     }
                 ]
             }
-            myChart.setOption(option);
+            this.myChart.setOption(option);
         }
     },
     mounted() {
-        var ws = new WebSocket("wss://echo.websocket.org");
-        ws.onopen = function (evt) {
-            console.log("Connection open ...");
-            ws.send("Hello WebSockets!");
-        };
-        ws.onmessage = function (evt) {
-            console.log("Received Message: " + evt.data);
-            // ws.close();
-        };
-        ws.onclose = function (evt) {
-            console.log("Connection closed.");
-        };
-        this.loadTimeChart()
+        //群组
+        // TIMED=`TIMED_${this.code}`
+        let sendData = {
+            code: '10023'
+        }
+        this.initDate()
+        market.getTimes(sendData).then(data => {
+            if (data.data.code == 200) {
+                this.rawData = data.data.data
+                this.loadTimeChart()
+            } else {
+                toast(data.data.message)
+            }
+        }).catch(error => {
+            console.log(error)
+        });
+        // initWs('ws://127.0.0.1:9999/', (e) => {
+        //     this.rawData.push(JSON.parse(e.text))
+        // });
     }
 }
 </script>
