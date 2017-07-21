@@ -37,12 +37,14 @@ export default {
             rows: 10,
             dayCommissionLists: [],
             isShowShort: false,
-            isNomoreShow: false
+            isNomoreShow: false,
+            loading: false
         }
     },
     methods: {
         loaddayCommissionLists() {
             console.log('loaddayCommissionLists')
+            this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
@@ -50,12 +52,13 @@ export default {
             deal.entrusts(sendData).then(data => {
                 let that = this
                 if (data.data.code == 200) {
+                    this.loading = false
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
                         this.dayCommissionLists.push(element)
                     }, this);
                     if (data.data.data.rows.length == 0) {
-                          this.isNomoreShow=true
+                        this.isNomoreShow = true
                         document.querySelector('.orderContent').removeEventListener('scroll', that.handleScroll)
                     }
                     this.page++
@@ -65,11 +68,13 @@ export default {
             })
         },
         handleScroll() {
-            let scrollTop = document.querySelector('.orderContent').scrollTop;
-            let pageHeight = document.querySelector('.orderContent').offsetHeight;
-            let allHeight = document.querySelector('.scrollWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
-                this.loaddayCommissionLists()
+            let scrollTop = Math.round(document.querySelector('.orderContent').scrollTop)
+            let pageHeight = Math.round(document.querySelector('.orderContent').offsetHeight)
+            let allHeight = Math.round(document.querySelector('.scrollWrap').scrollHeight);
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
+                this.loaddayCommissionLists();
             }
         },
         //是否确认撤单
@@ -105,7 +110,7 @@ export default {
         document.querySelector('title').innerText = '当日委托'
         next()
     },
-    components:{
+    components: {
         Nomore
     }
 }

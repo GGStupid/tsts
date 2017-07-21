@@ -130,7 +130,8 @@ export default {
       page: 1,
       rows: 10,
       PurchasedLists: [],
-      isNomoreShow: false
+      isNomoreShow: false,
+      loading: false
     }
   },
   computed: {
@@ -148,8 +149,8 @@ export default {
     }
   },
   methods: {
-    focus(){
-      this.$store.dispatch('code','')
+    focus() {
+      this.$store.dispatch('code', '')
     },
     search(v) {
       console.log('search')
@@ -165,7 +166,7 @@ export default {
         if (data.data.code == 200) {
           if (!data.data.data) return this.searchLists = []
           this.searchLists = data.data.data
-          if(this.$store.state.code){
+          if (this.$store.state.code) {
             this.selectCode(this.searchLists[0])
           }
         } else {
@@ -187,7 +188,7 @@ export default {
       this.code = i.code
       this.topPrice = i.topStopPrice
       this.bottomPrice = i.bottomStopPrice
-      this.availableCount =parseInt(this.availableBalance / this.pricesNum)
+      this.availableCount = parseInt(this.availableBalance / this.pricesNum)
       this.searchLists = []
       let sendData = {
         code: 10023
@@ -198,7 +199,7 @@ export default {
       this.timer10 = setInterval(() => {
         deal.tend(sendData, config).then(data => {
           if (data.data.code == 200) {
-            if(!data.data.data)return clearInterval(this.timer10)
+            if (!data.data.data) return clearInterval(this.timer10)
             let sArry = data.data.data.slist
             let bArry = data.data.data.blist
             this.slist = [
@@ -346,6 +347,7 @@ export default {
       })
     },
     loadPurchasedLists() {
+      this.loading = true
       let sendData = {
         page: this.page,
         rows: this.rows
@@ -353,12 +355,13 @@ export default {
       deal.positions(sendData).then(data => {
         let that = this
         if (data.data.code == 200) {
+          this.loading = false
           if (!data.data.data.rows) return
           data.data.data.rows.forEach(function (element) {
             this.PurchasedLists.push(element)
           }, this);
           if (data.data.data.rows.length == 0) {
-            this.isNomoreShow=true
+            this.isNomoreShow = true
             document.querySelector('.dealContentWrap').removeEventListener('scroll', that.handleScroll)
           }
           this.page++
@@ -368,13 +371,15 @@ export default {
       })
     },
     handleScroll() {
-      let scrollTop = document.querySelector('.dealContentWrap').scrollTop;
-      let pageHeight = document.querySelector('.dealContentWrap').offsetHeight;
-      let allHeight = document.querySelector('.buyWrap').offsetHeight;
-      if (scrollTop + pageHeight == allHeight) {
-        this.loadPurchasedLists()
+      let scrollTop = Math.round(document.querySelector('.dealContentWrap').scrollTop)
+      let pageHeight = Math.round(document.querySelector('.dealContentWrap').offsetHeight)
+      let allHeight = Math.round(document.querySelector('.buyWrap').scrollHeight);
+      let a = allHeight - scrollTop - pageHeight
+      if (a >= 0 && a <= 50) {
+        if (this.loading) return
+        this.loadPurchasedLists();
       }
-    },
+    }
   },
   mounted() {
     let that = this
@@ -386,14 +391,14 @@ export default {
       this.loadNewsPrices()
       document.querySelector('.dealContentWrap').addEventListener('scroll', that.handleScroll)
     }
-    if(this.$store.state.code){
+    if (this.$store.state.code) {
       this.search(this.$store.state.code)
     }
-    
+
   },
   beforeDestroy() {
     clearInterval(this.timer10)
-    this.$store.dispatch('code','')
+    this.$store.dispatch('code', '')
   },
   components: {
     OrderConfirm,

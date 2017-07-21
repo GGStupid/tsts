@@ -11,7 +11,13 @@ function resolve (dir) {
 
 const webpackConfig={
   entry: {
-    app: './src/main.js'
+    app: './src/main.js',
+    vendor:[
+      'vue',
+      'vuex',
+      'vue-router',
+      'axios'
+    ]
   },
   output: {
     path: config.build.assetsRoot,

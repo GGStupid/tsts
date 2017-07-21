@@ -86,6 +86,7 @@ export default {
                         this.$router.go(-1)
                     } else {
                         toast(data.data.message)
+                        this.payPassword=''
                     }
                 })
             }

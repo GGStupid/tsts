@@ -1,7 +1,7 @@
 import axios from 'axios'
 import app from '../../main'
 const instance = axios.create();
-instance.defaults.timeout = 5000
+instance.defaults.timeout = 10000
 instance.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.interceptors.request.use = instance.interceptors.request.use
 instance.interceptors.request.use(config => {

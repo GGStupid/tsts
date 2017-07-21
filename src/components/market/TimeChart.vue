@@ -4,13 +4,13 @@
     </div>
 </template>
 <script>
-var echarts = require('echarts');
 import market from '@/api/market/index'
 import { toast } from '@/util/index'
 export default {
     data() {
         return {
             myChart: '',
+            option: '',
             topPrice: '15.5',//最高价
             bottomPrice: '0',//最低价
             openPrice: '15.5',//开盘价
@@ -42,6 +42,9 @@ export default {
         },
         bottom() {
             return this.openPrice - this.maxDif
+        },
+        maxPercent() {
+            return `${this.maxDif * 100}%`
         }
     },
     // props: {
@@ -73,8 +76,10 @@ export default {
         },
         splitData(rawData) {
             for (var i = 0; i < rawData.length; i++) {
-                this.line_data.push(rawData[i].p);
-                this.bar_data.push(rawData[i].q);
+                if (this.line_data[i].name == rawData[i].ts) {
+                    this.line_data[i].value = rawData[i].p
+                    this.bar_data[i].value = rawData[i].q
+                }
             }
         },
         initDate() {
@@ -86,35 +91,35 @@ export default {
                 this.arrCurTime.push([this.addZero(dtTimeAM.getHours()), this.addZero(dtTimeAM.getMinutes())].join(":"));
                 dtTimeAM = new Date(dtTimeAM.getTime() + 60 * 1000);
             }
-            var dtTimePM = new Date(dtCurDate.getFullYear(), dtCurDate.getMonth(), dtCurDate.getDate(), 13, 0, 0, 0)
+            var dtTimePM = new Date(dtCurDate.getFullYear(), dtCurDate.getMonth(), dtCurDate.getDate(), 13, 30, 0, 0)
             for (var i = 0; i <= 480; i++) {
                 this.arrCurTime.push([this.addZero(dtTimePM.getHours()), this.addZero(dtTimePM.getMinutes())].join(":"));
                 dtTimePM = new Date(dtTimePM.getTime() + 60 * 1000);
             }
             //***************************************************************//
             for (var i = 0; i < this.arrCurTime.length; i++) {
-                this.line_data.push("-");
+                this.line_data.push({ name: this.arrCurTime[i], value: "-" });
             }
             for (var i = 0; i < this.arrCurTime.length; i++) {
-                this.bar_data.push("-");
+                this.bar_data.push({ name: this.arrCurTime[i], value: "-" });
             }
         },
         loadTimeChart() {
             this.myChart = echarts.init(document.getElementById('timemain'));
-            var data = this.splitData(this.rawData);
-            var option = {
+            this.splitData(this.rawData);
+            this.option = {
                 grid: [
                     {
-                        top: '10%',
-                        bottom: '35%',
-                        left: '10%',
-                        right: '10%'
+                        top: '10',
+                        bottom: '70',
+                        left: '5',
+                        right: '15'
                     },
                     {
-                        bottom: '10%',
-                        left: '10%',
-                        right: '10%',
-                        height: '20%',
+                        bottom: '30',
+                        left: '5',
+                        right: '15',
+                        height: '30',
                     },
                 ],
                 textStyle: {
@@ -125,6 +130,47 @@ export default {
                         gridIndex: 0,
                         type: 'category',
                         boundaryGap: false,
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: { onZero: false },
+                        axisLabel: {
+                            show: false,
+                            textStyle: {
+                                color: '#eee',
+                            },
+                            interval: function (index, value) {
+                                if (value == "09:30"
+                                    || value == "11:30"
+                                    || value == "18:00"
+                                    || value == "21:00") {
+                                    return true;
+                                }
+                                else return false;
+                            },
+                            formatter: function (value, index) {
+                                if (value == "11:30") {
+                                    return "11:30/13:30"
+                                } else {
+                                    return value
+                                }
+                            }
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: '#333'
+                            }
+                        },
+                        data: this.arrCurTime
+                    },
+                    {
+                        gridIndex: 0,
+                        type: 'category',
+                        boundaryGap: false,
+                        axisTick: {
+                            show: false
+                        },
                         axisLine: { onZero: false },
                         axisLabel: {
                             show: false,
@@ -153,12 +199,16 @@ export default {
                     {
                         gridIndex: 1,
                         type: 'category',
-                        boundaryGap: false,
-                        axisLine: { onZero: true },
+                        boundaryGap: true,
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: { onZero: false },
                         axisLabel: {
                             textStyle: {
                                 color: '#eee',
-                                fontSize: this.fontSize
+                                fontSize: this.fontSize,
+                                align: 'left'
                             },
                             interval: function (index, value) {
                                 if (value == "09:30"
@@ -177,6 +227,31 @@ export default {
                                 }
                             }
                         },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: '#333'
+                            }
+                        },
+                        data: this.arrCurTime
+                    },
+                    {
+                        gridIndex: 1,
+                        type: 'category',
+                        boundaryGap: true,
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: { onZero: false },
+                        axisLabel: {
+                            show: false
+                        },
+                        splitLine: {
+                            show: false,
+                            lineStyle: {
+                                color: '#333'
+                            }
+                        },
                         data: this.arrCurTime
                     }
                 ],
@@ -184,21 +259,24 @@ export default {
                     {
                         type: 'value',
                         position: 'left',
-                        splitLine: { show: false },
+                        splitLine: {
+                            show: false,
+                            lineStyle: {
+                                color: '#333'
+                            }
+                        },
                         splitNumber: 1,
-                        name: this.top,
-                        nameTextStyle: {
-                            color: '#f20462',
-                            fontSize: this.fontSize
+                        axisTick: {
+                            show: false
                         },
                         axisLabel: {
-                            show: false,
                             showMinLabel: false,
                             showMaxLabel: true,
                             inside: true,
                             textStyle: {
                                 color: '#f20462',
-                                fontSize: this.fontSize
+                                fontSize: this.fontSize,
+                                align: 'center'
                             },
                         },
                         max: this.top,
@@ -209,20 +287,18 @@ export default {
                         position: 'right',
                         splitLine: { show: false },
                         splitNumber: 1,
-                        name: '30.00%',
-                        nameTextStyle: {
-                            color: '#f20462',
-                            fontSize: this.fontSize
+                        axisTick: {
+                            show: false
                         },
                         axisLabel: {
-                            show: false,
                             showMinLabel: false,
+                            showMaxLabel: true,
                             inside: true,
                             textStyle: {
                                 color: '#f20462',
-                                fontSize: this.fontSize
+                                fontSize: this.fontSize,
+                                align: 'center'
                             },
-                            // formatter: '{value} %',
                         },
                         max: this.top,
                         min: this.bottom
@@ -230,15 +306,18 @@ export default {
                     {
                         gridIndex: 1,
                         type: 'value',
-                        name: '万秒',
                         splitLine: { show: false },
                         splitNumber: 1,
+                        name: '万秒',
                         nameLocation: 'middle',
                         nameRotate: 0,
-                        nameGap: '-55',
+                        nameGap: '-30',
                         nameTextStyle: {
                             color: '#eee',
                             fontSize: this.fontSize
+                        },
+                        axisTick: {
+                            show: false
                         },
                         axisLabel: {
                             inside: true,
@@ -248,9 +327,31 @@ export default {
                                 fontSize: this.fontSize
                             }
                         },
-                        // axisLine:{
-                        //     show:false
-                        // }
+                    },
+                    {
+                        gridIndex: 1,
+                        type: 'value',
+                        splitLine: { show: false },
+                        splitNumber: 1,
+                        // name: '万秒',
+                        // nameLocation: 'middle',
+                        // nameRotate: 0,
+                        // nameGap: '-30',
+                        // nameTextStyle: {
+                        //     color: '#eee',
+                        //     fontSize: this.fontSize
+                        // },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            inside: true,
+                            showMinLabel: false,
+                            textStyle: {
+                                color: '#eee',
+                                fontSize: this.fontSize
+                            }
+                        },
                     }
                 ],
                 series: [
@@ -258,10 +359,11 @@ export default {
                         type: 'line',
                         xAxisIndex: 0,
                         yAxisIndex: 0,
-                        data: data.valuesline,
+                        data: this.line_data,
                         lineStyle: {
                             normal: {
                                 color: '#fff',
+                                width: 1
                             }
                         },
                         areaStyle: {
@@ -284,7 +386,9 @@ export default {
                         smooth: true,
                         showSymbol: false,
                         markPoint: {
-                            animation: false
+                            animation: true,
+                            symbol: 'rect',
+                            symbolSize: 50
                         },
                         markLine: {
                             silent: false,
@@ -296,25 +400,6 @@ export default {
                                 }
                             },
                             data: [
-                                // {
-                                //     name: '0.1',
-                                //     // 支持 'average', 'min', 'max'
-                                //     type: 'max',
-                                //     valueIndex: 1,
-                                //     yAxis: this.top,
-                                //     label: {
-                                //         normal: {
-                                //             position: 'start',
-                                //             // formatter:'{b}'
-                                //         }
-                                //     },
-                                //     lineStyle: {
-                                //         normal: {
-                                //             type: 'solid',
-                                //             color: '#27282d'
-                                //         }
-                                //     }
-                                // },
                                 {
                                     name: this.openPrice,
                                     // 支持 'average', 'min', 'max'
@@ -327,73 +412,173 @@ export default {
                                             formatter: '{b}'
                                         }
                                     }
-                                },
-                                // {
-                                //     name: this.bottom,
-                                //     // 支持 'average', 'min', 'max'
-                                //     type: 'min',
-                                //     valueIndex: 1,
-                                //     yAxis: this.bottom,
-                                //     label: {
-                                //         normal: {
-                                //             position: 'start',
-                                //             formatter: '{b}'
-                                //         }
-                                //     },
-                                //     lineStyle: {
-                                //         normal: {
-                                //             type: 'solid',
-                                //             color: '#27282d'
-                                //         }
-                                //     }
-                                // }
+                                }
                             ]
                         }
                     },
                     {
                         type: 'bar',
-                        xAxisIndex: 1,
+                        xAxisIndex: 2,
                         yAxisIndex: 2,
                         itemStyle: {
                             normal: {
                                 color: function (params) {
                                     var colorList;
-                                    if (data.valuesline[params.dataIndex] > data.valueap[params.dataIndex]) {
-                                        colorList = '#FD1050';
-                                    } else {
-                                        colorList = '#0CF49B';
-                                    }
+                                    // if (data.valuesline[params.dataIndex] > data.valueap[params.dataIndex]) {
+                                    //     colorList = '#FD1050';
+                                    // } else {
+                                    colorList = '#0CF49B';
+                                    //}
                                     return colorList;
                                 },
                             }
                         },
-                        data: data.lolumnsbar,
+                        data: this.bar_data
+                    },
+                    {
+                        type: 'effectScatter',
+                        coordinateSystem: 'cartesian2d',
+                        zlevel: 1,
+                        symbolSize: 3,
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        showEffectOn: 'render',
+                        rippleEffect: {
+                            brushType: 'fill',
+                            scale: 3.5
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: '#f4e925',
+                                shadowBlur: 2,
+                                shadowColor: '#333'
+                            }
+                        }
                     }
                 ]
             }
-            this.myChart.setOption(option);
+            this.myChart.setOption(this.option);
         }
     },
     mounted() {
         //群组
         // TIMED=`TIMED_${this.code}`
+        let that = this
         let sendData = {
             code: '10023'
         }
         this.initDate()
+        let time;
+        let t11
         market.getTimes(sendData).then(data => {
             if (data.data.code == 200) {
                 this.rawData = data.data.data
                 this.loadTimeChart()
+                initWs('ws://10.0.0.245:9999/', (e) => {
+                    let t = JSON.parse(e.text)
+                    if (t.ts >= "11:30" && t.ts < '13:30') {
+                        if (!t11) {
+                            t11 = t
+                        }
+                        this.line_data.map((i, v) => {
+                            if (i.name == t11.ts) {
+                                i.value = t11.p
+                            }
+                        })
+                        this.bar_data.map((i, v) => {
+                            if (i.name == t11.ts) {
+                                i.value = t11.q
+                            }
+                        })
+                        that.myChart.setOption({
+                            series: [
+                                {
+                                    type: 'line',
+                                    data: that.line_data
+                                },
+                                {
+                                    type: 'bar',
+                                    data: that.bar_data
+                                },
+                                {
+                                    type: 'effectScatter',
+                                    data: [[t11.ts, t11.p]]
+                                }
+                            ]
+                        });
+                        return
+                    }
+                    if (!time) {
+                        time = t.ts
+                        this.line_data.map((i, v) => {
+                            if (i.name == t.ts) {
+                                i.value = t.p
+                                console.log(i)
+                            }
+                        })
+                        this.bar_data.map((i, v) => {
+                            if (i.name == t.ts) {
+                                i.value = t.q
+                            }
+                        })
+                        that.myChart.setOption({
+                            series: [{
+                                type: 'line',
+                                data: that.line_data
+                            },
+                            {
+                                type: 'bar',
+                                data: that.bar_data
+                            },
+                            {
+                                type: 'effectScatter',
+                                data: [[t.ts, t.p]]
+                            }
+                            ]
+                        });
+                        return
+                    } else if (time == t.ts) {
+                        return
+                    } else if (time != t.ts) {
+                        time = t.ts
+                        that.line_data.map((i, v) => {
+                            if (i.name == t.ts) {
+                                i.value = t.p
+                                console.log(i)
+                            }
+                        })
+                        that.bar_data.map((i, v) => {
+                            if (i.name == t.ts) {
+                                i.value = t.q
+                            }
+                        })
+                        that.myChart.setOption({
+                            series: [{
+                                type: 'line',
+                                data: that.line_data
+                            },
+                            {
+                                type: 'bar',
+                                data: that.bar_data
+                            },
+                            {
+                                type: 'effectScatter',
+                                data: [[t.ts, t.p]]
+                            }
+                            ]
+                        });
+                        return
+                    }
+                });
             } else {
                 toast(data.data.message)
             }
         }).catch(error => {
             console.log(error)
         });
-        // initWs('ws://127.0.0.1:9999/', (e) => {
-        //     this.rawData.push(JSON.parse(e.text))
-        // });
+    },
+    beforeDestroy() {
+
     }
 }
 </script>

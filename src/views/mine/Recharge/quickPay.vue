@@ -21,8 +21,8 @@
             </div>
             <div class="list">
                 <span>验证码&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <input type="tel" maxlength="6" v-model='phoneCode' placeholder='输入验证码'>
-                <span @click='getphoneCode' v-text='phoneCodetitle' class="rIcon cdspan" :class="{unactive:iscount}"></span>
+                <input type="tel" maxlength="6" v-model='smsCode' placeholder='输入验证码'>
+                <span @click='getsmsCode' v-text='smsCodetitle' class="rIcon cdspan" :class="{unactive:iscount}"></span>
             </div>
         </div>
         <div class="button">
@@ -56,8 +56,8 @@ export default {
             bankLists: [],
             bankNo: '',
             mobilePhone: '',
-            phoneCode: '',
-            phoneCodetitle: '获取验证码',
+            smsCode: '',
+            smsCodetitle: '获取验证码',
             count: 60,
             iscount: false,
             isActive: true
@@ -85,14 +85,14 @@ export default {
             this.isbankNames = false
             document.querySelector('title').innerText = '快捷支付'
         },
-        getphoneCode() {
+        getsmsCode() {
             let senddata = {
                 amount: this.amount,
                 bankCode: this.bankCode,
                 bankName: this.bankName,
                 bankNo: this.bankNo,
                 mobilePhone: this.mobilePhone,
-                phoneCode: this.phoneCode
+                smsCode: this.smsCode
             }
             if (this.count != 60) {
                 return false
@@ -107,10 +107,10 @@ export default {
                     let timer = setInterval(() => {
                         this.iscount = true
                         this.count--
-                        this.phoneCodetitle = `${this.count}s`
+                        this.smsCodetitle = `${this.count}s`
                         if (this.count == 0) {
                             clearInterval(timer)
-                            this.phoneCodetitle = '重新获取验证码'
+                            this.smsCodetitle = '重新获取验证码'
                             this.count = 60
                             this.iscount = false
                         }
@@ -128,15 +128,15 @@ export default {
                 bankName: this.bankName,
                 bankNo: this.bankNo,
                 mobilePhone: this.mobilePhone,
-                phoneCode: this.phoneCode
+                smsCode: this.smsCode
             }
             // this.isShow = true
             if (!this.amount) return toast('请输入充值金额')
             if (!this.bankCode) return toast('请选择充值银行')
             if (!isBankNumber(this.bankNo)) return toast('请输入正确的充值银行卡号')
             if (!isPhone(this.mobilePhone)) return toast('请输入正确的充值银行手机号')
-            if (this.phoneCode.length != 6) return toast('请输入正确的验证码')
-            mine.rechargeMsg(senddata).then((data) => {
+            if (this.smsCode.length != 6) return toast('请输入正确的验证码')
+            mine.recharge(senddata).then((data) => {
                 if (data.data.code == 200) {
                     toast(data.data.message)
                       this.$router.go(-2)  

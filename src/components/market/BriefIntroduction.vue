@@ -103,12 +103,12 @@ export default {
     }
   },
   filters: {
-        toFiexed(t) {
-            if (t == 0) return '0.00'
-            if (!t) return
-            return t.toFixed(2)
-        }
-    },
+    toFiexed(t) {
+      if (t == 0) return '0.00'
+      if (!t) return
+      return t.toFixed(2)
+    }
+  },
   mounted() {
     let sendData = {
       productId: this.$route.params.productId
@@ -225,6 +225,7 @@ export default {
       font-size: 0.35rem;
       line-height: 1.5;
       padding: @p30;
+      word-wrap: break-word;
     }
   }
 }

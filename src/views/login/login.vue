@@ -19,7 +19,7 @@
 		</div>
 		<v-button title='登录' :isActive='isActive' topNum='0.6667rem' @toNext='login'></v-button>
 		<div class="tips">
-			<router-link class="register" to='/register1'>注册淘刻</router-link>
+			<!-- <router-link class="register" to='/register1'>注册淘刻</router-link> -->
 			<router-link class="forget" to='/forget1'>忘记密码？</router-link>
 		</div>
 	</div>

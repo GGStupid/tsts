@@ -25,7 +25,7 @@
                         <span v-else class="button" :class="{'active':order.cancel}" style="flex:0 0 1.92rem;">{{order.statusMap.statusStr}}</span>
                     </div>
                 </div>
-                 <Nomore :isNomoreShow='isNomoreShow'></Nomore>
+                <Nomore :isNomoreShow='isNomoreShow'></Nomore>
             </div>
         </div>
     </div>
@@ -48,12 +48,14 @@ export default {
             entrustId: '',
             msg: '是否确认撤单',
             leftText: '确定',
-             isNomoreShow: false
+            isNomoreShow: false,
+            loading: false
         }
     },
     methods: {
         loadOrderLists() {
             console.log('loadOrderLists')
+            this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
@@ -61,12 +63,13 @@ export default {
             deal.entrusts(sendData).then(data => {
                 let that = this
                 if (data.data.code == 200) {
+                    this.loading = false
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
                         this.orderLists.push(element)
                     }, this);
                     if (data.data.data.rows.length == 0) {
-                         this.isNomoreShow=true
+                        this.isNomoreShow = true
                         document.querySelector('.orderContent').removeEventListener('scroll', that.handleScroll)
                     }
                     this.page++
@@ -76,11 +79,13 @@ export default {
             })
         },
         handleScroll() {
-            let scrollTop = document.querySelector('.orderContent').scrollTop;
-            let pageHeight = document.querySelector('.orderContent').offsetHeight;
-            let allHeight = document.querySelector('.scrollWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
-                this.loadOrderLists()
+            let scrollTop = Math.round(document.querySelector('.orderContent').scrollTop)
+            let pageHeight = Math.round(document.querySelector('.orderContent').offsetHeight)
+            let allHeight = Math.round(document.querySelector('.scrollWrap').scrollHeight);
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
+                this.loadOrderLists();
             }
         },
         //是否确认撤单
@@ -145,7 +150,7 @@ export default {
     components: {
         WhiteToastButton2,
         WhiteToastButton1,
-         Nomore
+        Nomore
     }
 }
 </script>

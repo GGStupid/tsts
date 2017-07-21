@@ -50,11 +50,13 @@ export default {
             isNomoreShow: false,
             bgTime: '',
             edTime: '',
+            loading: false
         }
     },
     methods: {
         loadhistoryLists() {
             console.log('loadhistoryLists')
+            this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
@@ -62,6 +64,7 @@ export default {
             deal.history(sendData).then(data => {
                 let that = this
                 if (data.data.code == 200) {
+                    this.loading = false
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
                         this.historyLists.push(element)
@@ -77,11 +80,13 @@ export default {
             })
         },
         handleScroll() {
-            let scrollTop = document.querySelector('.orderContent').scrollTop;
-            let pageHeight = document.querySelector('.orderContent').offsetHeight;
-            let allHeight = document.querySelector('.scrollWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
-                this.loadhistoryLists()
+            let scrollTop = Math.round(document.querySelector('.orderContent').scrollTop)
+            let pageHeight = Math.round(document.querySelector('.orderContent').offsetHeight)
+            let allHeight = Math.round(document.querySelector('.scrollWrap').scrollHeight);
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
+                this.loadhistoryLists();
             }
         },
         bgchange(v) {
@@ -98,7 +103,7 @@ export default {
                 return
             }
             this.edTime = e
-            this.page=1
+            this.page = 1
             let sendData = {
                 startTime: this.bgTime,
                 endTime: this.edTime,
@@ -109,7 +114,7 @@ export default {
                 let that = this
                 if (data.data.code == 200) {
                     if (!data.data.data.rows) return
-                    this.historyLists=[]
+                    this.historyLists = []
                     data.data.data.rows.forEach(function (element) {
                         this.historyLists.push(element)
                     }, this);

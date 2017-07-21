@@ -12,7 +12,9 @@
                 <span class="headImg">
                     <img :src="baseImgUrl+list.avatarPath" alt="">
                 </span>
-                {{list.name}}
+                <span class="name">
+                    {{list.name}}
+                </span>
             </div>
             <div class="right">
                 {{list.dataStr}}
@@ -23,12 +25,12 @@
 
 <script>
 export default {
-    data(){
+    data() {
         return {
-            baseImgUrl:this.$store.state.baseImgUrl,
-            firstImg:require('../../assets/quotes_hot_icon_NO1.png'),
-            secondeImg:require('../../assets/quotes_hot_icon_NO2.png'),
-            thirdImg:require('../../assets/quotes_hot_icon_NO3.png')
+            baseImgUrl: this.$store.state.baseImgUrl,
+            firstImg: require('../../assets/quotes_hot_icon_NO1.png'),
+            secondeImg: require('../../assets/quotes_hot_icon_NO2.png'),
+            thirdImg: require('../../assets/quotes_hot_icon_NO3.png')
         }
     },
     props: {
@@ -39,9 +41,9 @@ export default {
             type: Array
         }
     },
-    methods:{
-        toDetails(data){
-            this.$emit('toDetails',data)
+    methods: {
+        toDetails(data) {
+            this.$emit('toDetails', data)
         }
     }
 }
@@ -76,9 +78,14 @@ export default {
         justify-content: space-between;
         align-items: center;
         .left {
+            flex: 1 1 3rem;
             display: flex;
             align-items: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
             .count {
+                flex: 0 0  0.48rem;
                 display: inline-block;
                 width: 0.48rem;
                 height: 0.613333rem;
@@ -93,6 +100,7 @@ export default {
                 }
             }
             .headImg {
+                flex: 0 0 @listImgWidth;
                 display: inline-block;
                 width: @listImgWidth;
                 height: @listImgWidth;
@@ -107,9 +115,23 @@ export default {
                     height: @listImgWidth;
                 }
             }
+            .name {
+                height: @listImgWidth;
+                line-height: @listImgWidth;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: normal;
+            }
         }
         .right {
+            flex: 0 0 3rem;
+            text-align: right;
+            height: @listImgWidth;
+            line-height: @listImgWidth;
             color: @listSubColor;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
         }
     }
 }

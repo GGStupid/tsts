@@ -52,17 +52,7 @@ export default {
             baseImgUrl: this.$store.state.baseImgUrl,
             page: 1,
             rows: 4,
-            hotlists: [
-                // {
-                //   avatar: require('@/assets/quotes_hot_notice_avatar.png'),
-                //   name: '阿斯蒂芬',
-                //   code: '546545',
-                //   prices: '135.00',
-                //   isTimes: false,
-                //   isSaleShow: true,
-                //   isSale: true,
-                // },
-            ],
+            hotlists: [],
             timer: ''
         }
     },

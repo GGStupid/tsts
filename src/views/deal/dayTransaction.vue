@@ -13,7 +13,7 @@
                         <span>{{order.publisherName}}</span>
                         <span>{{order.createTime | formateTime}}</span>
                         <span>{{order.price | formateNumber2}}</span>
-                        <span  style="text-align:right;flex:0 0 1.92rem;">{{order.price*order.number | formateNumber0}}</span>
+                        <span style="text-align:right;flex:0 0 1.92rem;">{{order.price*order.number | formateNumber0}}</span>
                     </div>
                     <div class="down">
                         <span>{{order.publisherCode}}</span>
@@ -37,12 +37,14 @@ export default {
             rows: 10,
             dayTransactionLists: [],
             isShowShort: false,
-            isNomoreShow:false
+            isNomoreShow: false,
+            loading: false
         }
     },
     methods: {
         loaddayTransactionLists() {
             console.log('loaddayTransactionLists')
+            this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
@@ -50,12 +52,13 @@ export default {
             deal.transactions(sendData).then(data => {
                 let that = this
                 if (data.data.code == 200) {
+                    this.loading = false
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
                         this.dayTransactionLists.push(element)
                     }, this);
                     if (data.data.data.rows.length == 0) {
-                        this.isNomoreShow=true
+                        this.isNomoreShow = true
                         document.querySelector('.orderContent').removeEventListener('scroll', that.handleScroll)
                     }
                     this.page++
@@ -65,11 +68,13 @@ export default {
             })
         },
         handleScroll() {
-            let scrollTop = document.querySelector('.orderContent').scrollTop;
-            let pageHeight = document.querySelector('.orderContent').offsetHeight;
-            let allHeight = document.querySelector('.scrollWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
-                this.loaddayTransactionLists()
+            let scrollTop = Math.round(document.querySelector('.orderContent').scrollTop)
+            let pageHeight = Math.round(document.querySelector('.orderContent').offsetHeight)
+            let allHeight = Math.round(document.querySelector('.scrollWrap').scrollHeight);
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
+                this.loaddayTransactionLists();
             }
         },
         //是否确认撤单
@@ -87,7 +92,7 @@ export default {
             if (!v) return
             return v.toFixed(0)
         },
-        formateNumber2(v){
+        formateNumber2(v) {
             if (!v) return
             return v.toFixed(2)
         },
@@ -103,11 +108,11 @@ export default {
             document.querySelector('.orderContent').addEventListener('scroll', that.handleScroll)
         }
     },
-    beforeRouteEnter(to,from,next){
-        document.querySelector('title').innerText='当日成交'
+    beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = '当日成交'
         next()
     },
-    components:{
+    components: {
         Nomore
     }
 }
@@ -152,8 +157,7 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 0.2rem;
-                // .buyTypes {
+                margin-bottom: 0.2rem; // .buyTypes {
                 //     color: #999;
                 // }
             }
@@ -164,7 +168,7 @@ export default {
                 align-items: center;
                 .button {
                     text-align: right;
-                   color: #007aff;
+                    color: #007aff;
                 }
                 .active {
                     color: @yellow;

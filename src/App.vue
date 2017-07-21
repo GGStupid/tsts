@@ -16,9 +16,9 @@ export default {
     }
   },
   mounted() {
-    login.getToken().then((data) => {
-      this.$store.dispatch('saveToken', data.data.data)
-    })
+    // login.getToken().then((data) => {
+    //   this.$store.dispatch('saveToken', data.data.data)
+    // })
   },
   components: {
     Loading

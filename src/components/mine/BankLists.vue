@@ -24,7 +24,7 @@
             </div>
             <div class="list" v-if="banks.length<3" @click="addBank">
                 <div class="bankinfor">
-                    <img src="../../assets/select card_add.png" alt="">
+                    <img class="addicon" src="../../assets/select card_add.png" alt="">
                     <div class="bank">
                         添加银行卡
                     </div>
@@ -141,7 +141,7 @@ export default {
                     height: 0.64rem;
                 }
             }
-            img {
+            .addicon {
                 width: 0.64rem;
                 margin: 0 0.45333rem;
             }

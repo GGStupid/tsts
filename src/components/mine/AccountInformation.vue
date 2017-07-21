@@ -24,6 +24,7 @@ export default {
         return {
             isShow: false,
             realnameStatus: '',
+            payPassword:'',
             Recharge: '充值',
             Withdrawals: '提现'
         }
@@ -67,6 +68,11 @@ export default {
                 this.isShow = true
                 return
             }
+             if(!this.payPassword){
+                  toast('您未设置支付密码，请设置支付密码')
+                  this.$router.push('/paypassword')
+                  return 
+            }
             this.$router.push('/Withdrawals')
         }
     },
@@ -74,6 +80,7 @@ export default {
         mine.getUserInforPost().then((data) => {
             this.$store.dispatch('userInfor', data.data.data)
             this.realnameStatus = data.data.data.userIdentify.realnameStatus
+            this.payPassword=data.data.data.payPassword
         })
     },
     components: {

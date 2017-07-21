@@ -10,7 +10,7 @@
             <div class="fundDetails" v-for="(fundDetails,index) in fundDetailsLists" :key="index" @click="toBig(index)">
                 <div class="top">
                     <span :class="{'topLeft':toflag!=index}">{{fundDetails.remark}}</span>
-                    <span class="defalut" :class="{'Withdrawals':fundDetails.direction==2}">{{fundDetails.direction==2?'+':'-'}}{{fundDetails.totalLeft}}</span>
+                    <span class="defalut" :class="{'Withdrawals':fundDetails.direction==2}">{{fundDetails.direction==2?'+':'-'}}{{fundDetails.amount}}</span>
                 </div>
                 <div class="middle">
                     <span>{{fundDetails.createTime}}</span>

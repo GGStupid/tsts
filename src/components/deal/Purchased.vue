@@ -47,11 +47,12 @@ import { toast } from '@/util/index'
 export default {
     data() {
         return {
-            availableBalance:'',
+            availableBalance: '',
             page: 1,
             rows: 10,
             PurchasedLists: [],
-            isNomoreShow: false
+            isNomoreShow: false,
+            loading: false
         }
     },
     methods: {
@@ -61,6 +62,7 @@ export default {
             })
         },
         loadPurchasedLists() {
+            this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
@@ -68,6 +70,7 @@ export default {
             deal.positions(sendData).then(data => {
                 let that = this
                 if (data.data.code == 200) {
+                    this.loading = false
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
                         this.PurchasedLists.push(element)
@@ -82,13 +85,15 @@ export default {
             })
         },
         handleScroll() {
-            let scrollTop = document.querySelector('.purchasedContentWrap').scrollTop;
-            let pageHeight = document.querySelector('.purchasedContentWrap').offsetHeight;
-            let allHeight = document.querySelector('.scrollWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
-                this.loadPurchasedLists()
+            let scrollTop = Math.round(document.querySelector('.purchasedContentWrap').scrollTop)
+            let pageHeight = Math.round(document.querySelector('.purchasedContentWrap').offsetHeight)
+            let allHeight = Math.round(document.querySelector('.scrollWrap').scrollHeight);
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
+                this.loadPurchasedLists();
             }
-        },
+        }
     },
     mounted() {
         let that = this

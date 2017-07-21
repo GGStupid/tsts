@@ -130,7 +130,8 @@ export default {
       page: 1,
       rows: 10,
       PurchasedLists: [],
-      isNomoreShow: false
+      isNomoreShow: false,
+      loading: false
     }
   },
   computed: {
@@ -148,8 +149,8 @@ export default {
     }
   },
   methods: {
-    focus(){
-      this.$store.dispatch('attorncode','')
+    focus() {
+      this.$store.dispatch('attorncode', '')
     },
     search(v) {
       console.log('search')
@@ -165,7 +166,7 @@ export default {
         if (data.data.code == 200) {
           if (!data.data.data) return this.searchLists = []
           this.searchLists = data.data.data
-          if(this.$store.state.attorncode){
+          if (this.$store.state.attorncode) {
             this.selectCode(this.searchLists[0])
           }
         } else {
@@ -346,6 +347,7 @@ export default {
       })
     },
     loadPurchasedLists() {
+      this.loading = true
       let sendData = {
         page: this.page,
         rows: this.rows
@@ -354,6 +356,7 @@ export default {
         console.log(data)
         let that = this
         if (data.data.code == 200) {
+          this.loading = false
           if (!data.data.data.rows) return
           data.data.data.rows.forEach(function (element) {
             this.PurchasedLists.push(element)
@@ -368,13 +371,15 @@ export default {
       })
     },
     handleScroll() {
-      let scrollTop = document.querySelector('.dealContentWrap').scrollTop;
-      let pageHeight = document.querySelector('.dealContentWrap').offsetHeight;
-      let allHeight = document.querySelector('.attornWrap').offsetHeight;
-      if (scrollTop + pageHeight == allHeight) {
-        this.loadPurchasedLists()
+      let scrollTop = Math.round(document.querySelector('.dealContentWrap').scrollTop)
+      let pageHeight = Math.round(document.querySelector('.dealContentWrap').offsetHeight)
+      let allHeight = Math.round(document.querySelector('.attornWrap').scrollHeight);
+      let a = allHeight - scrollTop - pageHeight
+      if (a >= 0 && a <= 50) {
+        if (this.loading) return
+        this.loadPurchasedLists();
       }
-    },
+    }
   },
   mounted() {
     let that = this
@@ -383,7 +388,7 @@ export default {
       this.loadNewsPrices()
       document.querySelector('.dealContentWrap').addEventListener('scroll', that.handleScroll)
     }
-    if(this.$store.state.attorncode){
+    if (this.$store.state.attorncode) {
       this.search(this.$store.state.attorncode)
     }
     deal.available().then(data => {
@@ -392,7 +397,7 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.timer10)
-    this.$store.dispatch('attorncode','')
+    this.$store.dispatch('attorncode', '')
   },
   components: {
     OrderConfirm,

@@ -4,14 +4,14 @@
             <div class="aboutNames">
                 <img :src="baseImgUrl+list.avatarPath" alt="">
                 <div class="name">
-                    <div>{{list.name}}</div>
+                    <div class="upname">{{list.name}}</div>
                     <div class="code">{{list.code}}</div>
                 </div>
             </div>
             <div class="aboutPrices">
                 {{list.lastPrice*3600 | toFixed}}
             </div>
-            <div class="aboutPercent" :class="{'isUP':list.growthRatio>=0}">
+            <div class="aboutPercent" :class="{'isUP':list.growthRatio>0}">
                 {{list.growthRatio<0?'-':''}}{{list.growthRatio*100}}%
             </div>
         </div>
@@ -66,6 +66,12 @@ export default {
         .name {
             line-height: 1.9;
             margin-left: 0.29333rem;
+            .upname{
+                width: 3rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
             .code {
                 font-size: 0.293333rem;
                 color: #999;

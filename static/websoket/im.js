@@ -73,7 +73,7 @@ function initWsEvent(ws, url,fn) {
         var arrayBuffer = event.data;
         var byteBuffer = ByteBuffer.wrap(arrayBuffer);
         var command = Command.valuesById[byteBuffer.readByte()];
-        console.log("收到消息", command, byteBuffer);
+        // console.log("收到消息", command, byteBuffer);
         arrayBuffer = byteBuffer.toArrayBuffer();
         byteBuffer = ByteBuffer.wrap(arrayBuffer);
         var uint8Array = new Uint8Array(arrayBuffer);

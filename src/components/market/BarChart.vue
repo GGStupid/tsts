@@ -22,7 +22,6 @@
     </div>
 </template>
 <script>
-var echarts = require('echarts');
 export default {
     data() {
         return {

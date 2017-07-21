@@ -16,13 +16,16 @@
         </div>
         <div class="perlistWrap">
             <v-ComPersonList :personLists="personLists" @toNext="toNext"></v-ComPersonList>
+            <Nomore :isNomoreShow='isNomoreShow'></Nomore>
         </div>
     </div>
 </template>
 
 <script>
 import ComPersonList from '@/components/market/ComPersonList'
+import Nomore from '@/components/Nomore'
 import market from '@/api/market/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
@@ -31,25 +34,9 @@ export default {
             isUpSrot: 'default',
             isHourUpSrot: 'default',
             byPrices: true,
-            personLists: [
-                // {
-                //     avatar: require('../../assets/quotes_actor_avatar.png'),
-                //     name: '阿道夫',
-                //     code: '54646',
-                //     price: '765',
-                //     percent: '30%',
-                //     isUP: true
-                // },
-                // {
-                //     avatar: require('../../assets/quotes_actor_avatar.png'),
-                //     name: '阿道夫',
-                //     code: '54646',
-                //     price: '765',
-                //     percent: '- 30%',
-                //     isUP: false
-                // },
-
-            ]
+            personLists: [],
+            isNomoreShow: false,
+            loading: false
 
         }
     },
@@ -90,16 +77,20 @@ export default {
             if (this.id == '热门') return
             if (this.id == '自选') {
                 market.my(sendData).then(data => {
-                    if (!data.data.data.rows) return
-                    if (data.data.data.rows.length == 0) {
-                        document.querySelector('.perlistWrap').removeEventListener('scroll', that.handleScroll)
-                        return
+                    if (data.data.code == 200) {
+                        if (!data.data.data.rows) return
+                        if (data.data.data.rows.length == 0) {
+                            document.querySelector('.perlistWrap').removeEventListener('scroll', that.handleScroll)
+                            return
+                        }
+                        data.data.data.rows.forEach(function (element) {
+                            if (!element) return
+                            that.personLists.push(element)
+                        }, this);
+                        this.page++
+                    }else{
+                        toast(data.data.message)
                     }
-                    data.data.data.rows.forEach(function (element) {
-                        if(!element)return
-                        that.personLists.push(element)
-                    }, this);
-                    this.page++
                 })
                 return
             }
@@ -135,23 +126,32 @@ export default {
                     }
                 }
             }
+            this.loading = true
             market.list(sendData).then(data => {
-                if (!data.data.data.rows) return
-                if (data.data.data.rows.length == 0) {
-                    document.querySelector('.perlistWrap').removeEventListener('scroll', that.handleScroll)
-                    return
+                if (data.data.code == 200) {
+                    this.loading = false
+                    if (!data.data.data.rows) return
+                    if (data.data.data.rows.length == 0) {
+                        document.querySelector('.perlistWrap').removeEventListener('scroll', that.handleScroll)
+                        return
+                    }
+                    data.data.data.rows.forEach(function (element) {
+                        that.personLists.push(element)
+                    }, this);
+                    this.page++
+                } else {
+                    toast(data.data.message)
                 }
-                data.data.data.rows.forEach(function (element) {
-                    that.personLists.push(element)
-                }, this);
-                this.page++
+
             })
         },
         handleScroll() {
-            let scrollTop = document.querySelector('.perlistWrap').scrollTop;
-            let pageHeight = document.querySelector('.perlistWrap').offsetHeight;
-            let allHeight = document.querySelector('.comPersonList').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
+            let scrollTop = Math.round(document.querySelector('.perlistWrap').scrollTop)
+            let pageHeight = Math.round(document.querySelector('.perlistWrap').offsetHeight)
+            let allHeight = Math.round(document.querySelector('.comPersonList').scrollHeight);
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
                 this.loadPersonLists();
             }
         },
@@ -162,7 +162,7 @@ export default {
             } else {
                 this.isUpSrot = !this.isUpSrot
             }
-            this.byPrices=true
+            this.byPrices = true
             let that = this;
             that.page = 1;
             that.personLists = []
@@ -179,7 +179,7 @@ export default {
             } else {
                 this.isHourUpSrot = !this.isHourUpSrot
             }
-            this.byPrices=false
+            this.byPrices = false
             let that = this;
             that.page = 1;
             that.personLists = []
@@ -215,7 +215,8 @@ export default {
     //     }
     // },
     components: {
-        'v-ComPersonList': ComPersonList
+        'v-ComPersonList': ComPersonList,
+        Nomore
     }
 }
 </script>
