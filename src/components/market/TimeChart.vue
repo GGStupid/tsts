@@ -18,7 +18,8 @@ export default {
             ChatRespBody: '',
             arrCurTime: [],
             line_data: [],
-            bar_data: []
+            bar_data: [],
+            ws: ''
         }
     },
     computed: {
@@ -464,6 +465,7 @@ export default {
         //群组
         // TIMED=`TIMED_${this.code}`
         let that = this
+        needconn = true
         let sendData = {
             code: '10023'
         }
@@ -474,7 +476,7 @@ export default {
             if (data.data.code == 200) {
                 this.rawData = data.data.data
                 this.loadTimeChart()
-                initWs('ws://10.0.0.245:9999/', (e) => {
+                this.ws = initWs('ws://10.0.0.245:9999/', (e) => {
                     let t = JSON.parse(e.text)
                     if (t.ts >= "11:30" && t.ts < '13:30') {
                         if (!t11) {
@@ -578,7 +580,8 @@ export default {
         });
     },
     beforeDestroy() {
-
+        needconn = false
+        this.ws.onclose()
     }
 }
 </script>

@@ -10,7 +10,7 @@
             </div>
             <div class="list">
                 <span>充值金额</span>
-                <input type="text" v-model="amount" placeholder="请输入充值金额">
+                <input type="tel" v-model="amount" placeholder="请输入充值金额">
             </div>
             <div class="list">
                 <span>手机号码</span>

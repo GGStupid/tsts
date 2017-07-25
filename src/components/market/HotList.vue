@@ -193,8 +193,8 @@ export default {
             document.querySelector('.routeWrap').addEventListener('scroll', that.handleScroll);
         }
     },
-    activated() {
-        console.log(111111)
+    beforeDestroy(){
+        clearInterval(this.timer)
     },
     filters: {
         toFixed(prices) {

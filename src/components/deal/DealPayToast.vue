@@ -58,7 +58,7 @@ export default {
             this.payPwd = ''
         },
         toPayPw() {
-            this.$router.replace('/payPwd')
+            this.$router.replace('/paypassword')
         }
     },
     watch: {

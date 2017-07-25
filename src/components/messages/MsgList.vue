@@ -7,7 +7,8 @@
         <div class="informations">
             <div class="left">
                 <h3>{{title}}</h3>
-                <span v-html="subtitle"></span>
+                <span v-if="subtitle" v-html="subtitle"></span>
+                <span v-else>暂无</span>
             </div>
             <div class="right">
                 <span>{{time | formateDate}}</span>
@@ -29,7 +30,7 @@ export default {
         },
         subtitle: {
             typs: String,
-            default:'暂无通知'
+            default: '暂无通知'
         },
         time: {
             type: String
