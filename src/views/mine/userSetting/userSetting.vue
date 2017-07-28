@@ -1,8 +1,8 @@
 <template>
     <div class="userSetting">
         <div class="headIcon">
-            <span>我的头像</span>
             <label for="avatarImg">
+                <span>我的头像</span>
                 <div class="right">
                     <span class="icon">
                         <img :src="avatarImg" alt="">
@@ -10,7 +10,7 @@
                     <img class="arrow" src="../../../assets/arrow_right.png" alt="">
                 </div>
             </label>
-            <input ref="avatarImg" id="avatarImg" type="file" accept="*.jpg,*.gif,*.png" @change="uploadHandler" >
+            <input ref="avatarImg" id="avatarImg" type="file" accept="*.jpg,*.gif,*.png" @change="uploadHandler">
         </div>
         <div class="list">
             <div class="wrap" @click="nickname">
@@ -57,7 +57,7 @@ export default {
         return {
             isPaypassword: true,
             authenticationTitle: '',
-            userIdentify:'',
+            userIdentify: '',
             avatarImg: require('../../../assets/mine_avatar_default.png')
         }
     },
@@ -68,11 +68,11 @@ export default {
         nickName() {
             return this.$store.state.userInfor.nickName ? this.$store.state.userInfor.nickName : '用户昵称'
         },
-        isAuthentication(){
-            if(this.userIdentify.realnameStatus == 2){
+        isAuthentication() {
+            if (this.userIdentify.realnameStatus == 2) {
                 return true
             }
-            if(this.userIdentify.realnameStatus == 3){
+            if (this.userIdentify.realnameStatus == 3) {
                 return true
             }
         }
@@ -84,7 +84,7 @@ export default {
             var formdata = new FormData();
             formdata.append("file", file)
             if (file) {
-                if (file.size > 1024 * 1024 *5) {
+                if (file.size > 1024 * 1024 * 5) {
                     toast("图片大小最大不能超过5M")
                 }
                 else {
@@ -132,17 +132,17 @@ export default {
         },
         authentication() {
             console.log('authentication')
-            if(this.userIdentify.realnameStatus == 2){
-                return 
+            if (this.userIdentify.realnameStatus == 2) {
+                return
             }
-            if(this.userIdentify.realnameStatus == 3){
-                return 
+            if (this.userIdentify.realnameStatus == 3) {
+                return
             }
             this.$router.push('/authentication')
         },
         logout() {
             console.log('logout')
-             localStorage.clear()
+            localStorage.clear()
             this.$router.push('/')
         }
     },
@@ -152,12 +152,12 @@ export default {
                 this.isAuthentication = false
             }
             this.$store.dispatch('userInfor', data.data.data)
-            this.userIdentify=data.data.data.userIdentify
-            if(this.userIdentify.realnameStatus == 2){
-                this.authenticationTitle='审核中'
+            this.userIdentify = data.data.data.userIdentify
+            if (this.userIdentify.realnameStatus == 2) {
+                this.authenticationTitle = '审核中'
             }
-            if(this.userIdentify.realnameStatus == 3){
-                 this.authenticationTitle=`${data.data.data.realName} (${data.data.data.idCard})`
+            if (this.userIdentify.realnameStatus == 3) {
+                this.authenticationTitle = `${data.data.data.realName} (${data.data.data.idCard})`
             }
             this.avatarImg = this.$store.state.userInfor.avatarUrl ? this.$store.state.userInfor.avatarUrl : require('../../../assets/mine_avatar_default.png')
         }),
@@ -185,12 +185,15 @@ export default {
     color: @color;
     font-size: @fontsize32;
     .headIcon {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         height: 1.86667rem;
+        line-height: 1.86667rem;
         padding: 0 @p30;
         background-color: @bgcolor;
+        label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .right {
             display: flex;
             justify-content: space-between;

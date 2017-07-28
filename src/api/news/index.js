@@ -1,4 +1,5 @@
 import instance from '../config/index'
+import axios from 'axios'
 import qs from 'qs'
 let wrapUrl='/api'
 export default {
@@ -6,12 +7,12 @@ export default {
     banners(){
         return instance.get(wrapUrl+'/informations/banners')
     },
-    //资讯分页列表
-    informations(data){
-        return instance.get(wrapUrl+'/informations/?'+qs.stringify(data))
-    },
     // 资讯详情
     informationId(data){
         return instance.get(wrapUrl+'/informations/detail?'+qs.stringify(data))
+    },
+     //资讯分页列表
+    informations(data){
+        return instance.get(wrapUrl+'/informations/?'+qs.stringify(data))
     },
 }

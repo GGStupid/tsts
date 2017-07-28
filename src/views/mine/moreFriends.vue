@@ -32,31 +32,41 @@ export default {
             rows: 22,
             friends: [],
             isNomoreShow: false,
+            loading: false
         }
     },
     methods: {
         loadFriends() {
             var that = this
+            this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
             }
             mine.inviteUser(sendData).then(data => {
-                data.data.data.rows.forEach(function (element) {
-                    that.friends.push(element)
-                }, this);
-                if (data.data.data.rows.length == 0) {
-                    this.isNomoreShow = true
-                    document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+                if (data.data.code == 200) {
+                    this.loading = false
+                    if (!data.data.data.rows) return
+                    data.data.data.rows.forEach(function (element) {
+                        that.friends.push(element)
+                    }, this);
+                    if (data.data.data.rows.length == 0) {
+                        this.isNomoreShow = true
+                        document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+                    }
+                    this.page++
+                } else {
+                    toast(data.data.message)
                 }
-                this.page++
             })
         },
         handleScroll() {
             let scrollTop = document.querySelector('#app').scrollTop;
             let pageHeight = window.innerHeight;
             let allHeight = document.querySelector('.moreFriendsWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
                 this.loadFriends();
             }
         }

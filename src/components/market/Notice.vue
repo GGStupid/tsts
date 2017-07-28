@@ -3,15 +3,15 @@
     <div class="noticeListWrap">
       <div class="noticesList" v-for="(notice,index) in noticesLists" :key="index">
         <div class="title">
-          <span>{{notice.createTime}}</span>
-          <span class="type">{{notice.typeFormatter}}</span>
+          <span>{{notice.createTime | mmddFormate}}</span>
+          <span class="type">{{notice.title}}</span>
         </div>
         <div class="body" v-html="notice.content">
         </div>
       </div>
       <div style="color:#acacac;padding: 0.4rem;
-      text-align: center;
-      font-size: 0.4rem;" v-show="noticesLists.length==0">
+          text-align: center;
+          font-size: 0.4rem;" v-show="noticesLists.length==0">
         暂无数据
       </div>
     </div>
@@ -20,52 +20,57 @@
 
 <script>
 import market from '@/api/market/index'
+import { toast } from '@/util/index'
 export default {
   data() {
     return {
       page: 1,
       rows: 10,
-      noticesLists: [
-        // {
-        //   time: '06-05',
-        //   type: '行权',
-        //   content: ' 胡灵的时间被行权7200秒，当前流通时间86400000秒！'
-        // },
-        // {
-        //   time: '06-05',
-        //   type: '行权',
-        //   content: ' 胡灵的时间被行权7200秒，当前流通时间86400000秒！胡灵的时间被行权7200秒，当前流通时间86400000秒！胡灵的时间被行权7200秒，当前流通时间86400000秒！胡灵的时间被行权7200秒，当前流通时间86400000秒！胡灵的时间被行权7200秒，当前流通时间86400000秒！胡灵的时间被行权7200秒，当前流通时间86400000秒！'
-        // }
-      ]
+      noticesLists: [],
+      loading: false
     }
   },
   methods: {
     loadNotice() {
       var that = this
+      this.loading = true
       let sendData = {
         productId: this.$store.state.productId,
         page: this.page,
         rows: this.rows
       }
-      console.log(sendData)
       market.announces(sendData).then(data => {
-        data.data.data.rows.forEach(function (element) {
-          this.noticesLists.push(element)
-        }, this);
-        if (data.data.data.rows.length == 0) {
-          document.querySelector('.noticeWrap').removeEventListener('scroll', that.handleScroll)
+        if (data.data.code == 200) {
+          this.loading = false
+          if (!data.data.data.rows) return
+          data.data.data.rows.forEach(function (element) {
+            this.noticesLists.push(element)
+          }, this);
+          if (data.data.data.rows.length == 0) {
+            document.querySelector('.noticeWrap').removeEventListener('scroll', that.handleScroll)
+          }
+          this.page++
+        } else {
+          toast(data.data.message)
         }
-        this.page++
       })
     },
     handleScroll() {
       let scrollTop = document.querySelector('.noticeWrap').scrollTop;
       let pageHeight = document.querySelector('.noticeWrap').offsetHeight;
       let allHeight = document.querySelector('.noticeListWrap').offsetHeight;
-      if (scrollTop + pageHeight == allHeight) {
+      let a = allHeight - scrollTop - pageHeight
+      if (a >= 0 && a <= 50) {
+        if (this.loading) return
         this.loadNotice();
       }
     },
+  },
+  filters: {
+    mmddFormate(v) {
+      if (!v) return
+      return v.slice(5, 10)
+    }
   },
   mounted() {
     let that = this;
@@ -96,6 +101,8 @@ export default {
     .body {
       display: inline-block;
       line-height: 1.8;
+      width: 100%;
+      word-break: break-all;
     }
   }
 }

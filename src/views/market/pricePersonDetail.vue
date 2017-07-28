@@ -1,7 +1,7 @@
 <template>
     <div class="pricePersonDetailWrap">
         <div class="content">
-            <div class="top">
+            <div class="top" :class="{'dnColor':growth<0}">
                 <div class="rule" @click="rule">
                     升值规则
                 </div>
@@ -103,11 +103,12 @@ import BriefIntroduction from '@/components/market/BriefIntroduction'
 import News from '@/components/market/News'
 import Notice from '@/components/market/Notice'
 import market from '@/api/market/index'
+import mine from '@/api/mine/index'
 import { toast } from '@/util/index'
 export default {
     data() {
         return {
-            isBarChartShow:false,
+            isBarChartShow: false,
             lastPrice: '',
             growth: '',
             growthRatio: '',
@@ -166,16 +167,16 @@ export default {
             ],
             publisherId: '',
             currentView: 'Tribune',
-            shopUrl:''
+            shopUrl: ''
         }
     },
     methods: {
         rule() {
             console.log('rule')
-            this.isBarChartShow=true
+            this.isBarChartShow = true
         },
-        cancel(){
-            this.isBarChartShow=false
+        cancel() {
+            this.isBarChartShow = false
         },
         shop() {
             console.log('shop')
@@ -219,6 +220,7 @@ export default {
         }
         market.quotation(sendData).then(data => {
             if (data.data.code == 200) {
+                console.log(3333)
                 let title = `${data.data.data.name} (${data.data.data.code})`
                 this.$store.dispatch('title', title)
                 document.querySelector('title').innerText = `${data.data.data.name} (${data.data.data.code})`
@@ -232,10 +234,21 @@ export default {
                 this.exchangeRate = data.data.data.exchangeRate
                 this.averagePrice = data.data.data.averagePrice
                 this.tradeAmount = data.data.data.tradeAmount
-                this.shopUrl=data.data.data.shopUrl
+                this.shopUrl = data.data.data.shopUrl
                 this.$store.dispatch('productId', data.data.data.productId)
                 this.$store.dispatch('code', data.data.data.code)
                 this.$store.dispatch('attorncode', data.data.data.code)
+                if (this.$store.state.isLogin) {
+                    mine.getUserInforPost().then((data) => {
+                        if (!data) return
+                        if (data.data.code == 200) {
+                            if (!data.data.data) return
+                            this.$store.dispatch('userInfor', data.data.data)
+                        } else {
+                            toast(data.data.message)
+                        }
+                    })
+                }
             } else {
                 toast(data.data.message)
             }
@@ -349,6 +362,9 @@ export default {
                     }
                 }
             }
+        }
+        .dnColor {
+            color: @down
         }
         .charts {
             width: 100%;

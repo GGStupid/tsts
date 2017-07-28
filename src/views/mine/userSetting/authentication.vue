@@ -14,24 +14,24 @@
             </div>
         </div>
         <div class="from" v-show="realNameFailCount">
-            <label for="cardOppositePic">
-                <div class="upimg">
-                    <img :src="cardOppositeUp" alt="">
-                    <br>
-                    <span>上传身份证正面（图片大小不大于5M）</span>
-                </div>
-            </label>
-            <input ref="cardOppositePic" id="cardOppositePic" type="file" accept="*.jpg,*.gif,*.png" @change="uploadcardOppositePicHandler" >
-        </div>
-        <div class="from" v-show="realNameFailCount">
             <label for="cardPositivePic">
                 <div class="upimg">
                     <img :src="cardPositiveUp" alt="">
                     <br>
+                    <span>上传身份证正面（图片大小不大于5M）</span>
+                </div>
+            </label>
+            <input ref="cardPositivePic" id="cardPositivePic" type="file" accept="*.jpg,*.gif,*.png" @change="uploadcardPositivePicHandler">
+        </div>
+        <div class="from" v-show="realNameFailCount">
+            <label for="cardOppositePic">
+                <div class="upimg">
+                    <img :src="cardOppositeUp" alt="">
+                    <br>
                     <span>上传身份证反面（图片大小不大于5M）</span>
                 </div>
             </label>
-            <input ref="cardPositivePic" id="cardPositivePic" type="file" accept="*.jpg,*.gif,*.png" @change="uploadcardPositivePicHandler" >
+            <input ref="cardOppositePic" id="cardOppositePic" type="file" accept="*.jpg,*.gif,*.png" @change="uploadcardOppositePicHandler">
         </div>
         <v-Button :title='buttonTitle' :isActive='isActive' topNum='0.6667rem' @toNext='toConfirm'></v-Button>
     </div>
@@ -64,7 +64,7 @@ export default {
     },
     computed: {
         realNameFailCount() {
-            return this.realNameFail==2
+            return this.realNameFail == 2
         },
         buttonTitle() {
             return this.realNameFailCount ? '提交审核' : '确定'
@@ -148,51 +148,49 @@ export default {
         toConfirm() {
             console.log('toConfirm')
             if (this.realNameFail >= 3) {
-                if (isRealName(this.name) && isIdCard(this.cardId) && this.cardOppositePic && this.cardPositivePic) {
-                    let senddata = {
-                        realName: this.name,
-                        idCard: this.cardId,
-                        cardOppositePic: this.cardOppositePic,
-                        cardPositivePic: this.cardPositivePic
-                    }
-                    mine.userVerified(senddata).then((data) => {
-                        if (data.data.code == 200) {
-                            this.realNameFail = data.data.data
-                            this.isShow = true
-                            this.msg = data.data.message
-                        } else {
-                            this.realNameFail = data.data.data
-                            this.isShow = true
-                            this.msg = data.data.message
-                            // toast(data.data.message)
-                        }
-                    })
-                }else{
-                    toast('请输入正确的姓名和身份证号并上传身份证照片')
+                if (!isRealName(this.name)) return toast('请输入正确的真实姓名')
+                if (!isIdCard(this.cardId)) return toast('请输入正确的身份证号')
+                if (!this.cardOppositePic) return toast('请上传身份证正面照片')
+                if (!this.cardPositivePic) return toast('请上传身份证反面照片')
+                let senddata = {
+                    realName: this.name,
+                    idCard: this.cardId,
+                    cardOppositePic: this.cardOppositePic,
+                    cardPositivePic: this.cardPositivePic
                 }
+                mine.userVerified(senddata).then((data) => {
+                    if (data.data.code == 200) {
+                        this.realNameFail = data.data.data
+                        this.isShow = true
+                        this.msg = data.data.message
+                    } else {
+                        this.realNameFail = data.data.data
+                        this.isShow = true
+                        this.msg = data.data.message
+                        // toast(data.data.message)
+                    }
+                })
             } else {
-                if (isRealName(this.name) && isIdCard(this.cardId)) {
-                    let senddata = {
-                        realName: this.name,
-                        idCard: this.cardId,
-                        cardOppositePic: this.cardOppositePic,
-                        cardPositivePic: this.cardPositivePic
-                    }
-                    mine.userVerified(senddata).then((data) => {
-                        if (data.data.code == 200) {
-                            this.realNameFail = data.data.data
-                            this.isShow = true
-                            this.msg = data.data.message
-                        } else {
-                            this.realNameFail = data.data.data
-                            this.isShow = true
-                            this.msg = data.data.message
-                            // toast(data.data.message)
-                        }
-                    })
-                }else{
-                    toast('请输入正确的姓名和身份证号')
+                if (!isRealName(this.name)) return toast('请输入正确的真实姓名')
+                if (!isIdCard(this.cardId)) return toast('请输入正确的身份证号')
+                let senddata = {
+                    realName: this.name,
+                    idCard: this.cardId,
+                    cardOppositePic: this.cardOppositePic,
+                    cardPositivePic: this.cardPositivePic
                 }
+                mine.userVerified(senddata).then((data) => {
+                    if (data.data.code == 200) {
+                        this.realNameFail = data.data.data
+                        this.isShow = true
+                        this.msg = data.data.message
+                    } else {
+                        this.realNameFail = data.data.data
+                        this.isShow = true
+                        this.msg = data.data.message
+                        // toast(data.data.message)
+                    }
+                })
             }
 
         },
@@ -210,6 +208,10 @@ export default {
         mine.getUserInforPost().then((data) => {
             this.realNameFail = data.data.data.realNameFailCount
         })
+    },
+    beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = '实名认证'
+        next()
     },
     components: {
         'v-Button': Button,

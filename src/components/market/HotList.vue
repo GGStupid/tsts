@@ -3,7 +3,7 @@
         <div class="title">
             <span>全部</span>
             <span>
-                发行价
+                {{titlename}}
                 <span class="sub">
                     元 / 小时
                 </span>
@@ -36,8 +36,8 @@
                 </div>
             </div>
             <div style="color:#acacac;padding: 0.4rem;
-          text-align: center;
-          font-size: 0.4rem;" v-show="hotlists.length==0">
+                      text-align: center;
+                      font-size: 0.4rem;" v-show="hotlists.length==0">
                 暂无数据
             </div>
         </div>
@@ -46,6 +46,7 @@
 
 <script>
 import market from '@/api/market/index'
+import { toast } from '@/util/index'
 export default {
     data() {
         return {
@@ -53,7 +54,13 @@ export default {
             page: 1,
             rows: 4,
             hotlists: [],
-            timer: ''
+            timer: '',
+            loading: false
+        }
+    },
+    computed:{
+        titlename(){
+            return this.isNews ? '申购价' :'增发价'
         }
     },
     props: {
@@ -64,57 +71,68 @@ export default {
     methods: {
         loadHotlists() {
             var that = this
+            this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
             }
             if (this.isNews) {
                 market.new(sendData).then(data => {
-                    if (!data.data.data.rows) return
-                    if (data.data.data.rows.length == 0) {
-                        document.querySelector('.routeWrap').removeEventListener('scroll', that.handleScroll)
-                        return
+                    if (data.data.code == 200) {
+                         this.loading = false
+                        if (!data.data.data.rows) return
+                        if (data.data.data.rows.length == 0) {
+                            document.querySelector('.routeWrap').removeEventListener('scroll', that.handleScroll)
+                            return
+                        }
+                        data.data.data.rows.forEach(function (element) {
+                            that.hotlists.push(element)
+                        }, this);
+                        this.timer = setInterval(() => {
+                            console.log('time-----------news')
+                            this.hotlists.forEach((ele) => {
+                                if (!ele.reTime) {
+                                    ele.reTime = ele.purchaseStart
+                                }
+                                if (ele.reTime) {
+                                    ele.purchaseStart = this.formateTime(ele.reTime)
+                                }
+                            })
+                        }, 1000)
+                        this.page++
+                    } else {
+                        toast(data.data.message)
                     }
-                    data.data.data.rows.forEach(function (element) {
-                        that.hotlists.push(element)
-                    }, this);
-                    this.timer = setInterval(() => {
-                        console.log('time-----------news')
-                        this.hotlists.forEach((ele) => {
-                            if (!ele.reTime) {
-                                ele.reTime = ele.purchaseStart
-                            }
-                            if (ele.reTime) {
-                                ele.purchaseStart = this.formateTime(ele.reTime)
-                            }
-                        })
-                    }, 1000)
-                    this.page++
                 })
                 return
             } else {
                 market.inc(sendData).then(data => {
                     // this.hotlists = data.data.data.rows
-                    if (!data.data.data.rows) return
-                    if (data.data.data.rows.length == 0) {
-                        document.querySelector('.routeWrap').removeEventListener('scroll', that.handleScroll)
-                        return
+                    if (data.data.code == 200) {
+                          this.loading = false
+                        if (!data.data.data.rows) return
+                        if (data.data.data.rows.length == 0) {
+                            document.querySelector('.routeWrap').removeEventListener('scroll', that.handleScroll)
+                            return
+                        }
+                        data.data.data.rows.forEach(function (element) {
+                            that.hotlists.push(element)
+                        }, this);
+                        this.timer = setInterval(() => {
+                            console.log('time-----------indc')
+                            this.hotlists.forEach((ele) => {
+                                if (!ele.reTime) {
+                                    ele.reTime = ele.purchaseStart
+                                }
+                                if (ele.reTime) {
+                                    ele.purchaseStart = this.formateTime(ele.reTime)
+                                }
+                            })
+                        }, 1000)
+                        this.page++
+                    } else {
+                        toast(data.data.message)
                     }
-                    data.data.data.rows.forEach(function (element) {
-                        that.hotlists.push(element)
-                    }, this);
-                    this.timer = setInterval(() => {
-                        console.log('time-----------indc')
-                        this.hotlists.forEach((ele) => {
-                            if (!ele.reTime) {
-                                ele.reTime = ele.purchaseStart
-                            }
-                            if (ele.reTime) {
-                                ele.purchaseStart = this.formateTime(ele.reTime)
-                            }
-                        })
-                    }, 1000)
-                    this.page++
                 })
                 return
             }
@@ -123,7 +141,9 @@ export default {
             let scrollTop = document.querySelector('.routeWrap').scrollTop;
             let pageHeight = document.querySelector('.routeWrap').offsetHeight;
             let allHeight = document.querySelector('.hotWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
                 this.loadHotlists();
             }
         },
@@ -166,7 +186,7 @@ export default {
             this.$router.push('/applyPurchase/' + id)
         },
         toNext(e) {
-            this.$emit('toNext',e)
+            this.$emit('toNext', e)
         }
     },
     watch: {
@@ -193,7 +213,7 @@ export default {
             document.querySelector('.routeWrap').addEventListener('scroll', that.handleScroll);
         }
     },
-    beforeDestroy(){
+    beforeDestroy() {
         clearInterval(this.timer)
     },
     filters: {

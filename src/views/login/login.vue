@@ -89,19 +89,18 @@ export default {
 				password: encrypt.encrypt(this.password),
 				token: this.$store.state.token
 			}
+			if(!isPhone(this.mobile))return toast('请输入正确的手机号')
+			if(!isPassWord(this.password))return toast('请输入正确的密码')
 			if (isPhone(this.mobile) && isPassWord(this.password)) {
 				login.userLogin(senddata).then((data) => {
 					if (data.data.code == 200) {
-						this.$store.dispatch('isLogin', data.data.data)
-						console.log(this.$route.query.redirect)
+						this.$store.dispatch('isLogin', data.data.data.TAOKE_USER_DATA)
 						let redirect = this.$route.query.redirect || '/home/news';
 						this.$router.push({ path: redirect })
 					} else {
 						toast(data.data.message)
 					}
 				})
-			} else {
-				toast('请输入正确的手机号和密码')
 			}
 		}
 	},

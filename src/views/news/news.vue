@@ -1,13 +1,18 @@
 <template>
   <div>
     <div class="newsWrap">
-      <v-Swiper swipeid="swipe" ref="swiper" :autoplay="3000" effect="slide">
+       <v-Swiper swipeid="swipe" ref="swiper" :autoplay="3000" effect="slide">
         <a :href="top.linkUrl" v-for="(top,index) in tops" :key="index" class="swiper-slide" slot="swiper-con">
           <img :src="baseImgUrl+top.picPath">
         </a>
       </v-Swiper>
       <v-NewsList v-for="list in lists" :title="list.title" :picPath="baseImgUrl+list.picPath" :id="list.id" @toNewDetail="toNewDetail(list.id)" :key="list.index"></v-NewsList>
-      <Nomore :isNomoreShow='isNomoreShow'></Nomore>
+      <Nomore :isNomoreShow='isNomoreShow'></Nomore> 
+      <div style="color:#acacac;padding: 0.4rem;
+                      text-align: center;
+                      font-size: 0.4rem;" v-show="tops.length==0 && lists.length==0">
+                暂无数据
+            </div>
     </div>
   </div>
 </template>

@@ -29,7 +29,7 @@
                     <br>
                     <span>银行卡正面（图片大小不大于5M）</span>
                 </label>
-                <input ref="upBankImg" id="upBankImg" type="file" accept="*.jpg,*.gif,*.png" @change="uploadHandler" >
+                <input ref="upBankImg" id="upBankImg" type="file" accept="*.jpg,*.gif,*.png" @change="uploadHandler">
             </div>
         </div>
         <div class="button">
@@ -122,28 +122,28 @@ export default {
             if (!isBankNumber(this.bankNo)) return toast('请输入正确的银行卡号')
             if (!isPhone(this.mobilePhone)) return toast('请输入正确的手机号')
             if (!this.bankCode) return toast('请选择银行类型')
-            if(!this.bankPicUrl)return toast('请上传银行卡照片')
+            if (!this.bankPicUrl) return toast('请上传银行卡照片')
             // if (this.bankNo.length > 16 && isPhone(this.mobilePhone) && this.bankCode && this.bankName && this.bankPicUrl) {
-                let senddata = {
-                    bankCode: this.bankCode,
-                    bankName: this.bankName,
-                    bankNo: this.bankNo,
-                    mobilePhone: this.mobilePhone,
-                    bankPicUrl:this.bankPicUrl
+            let senddata = {
+                bankCode: this.bankCode,
+                bankName: this.bankName,
+                bankNo: this.bankNo,
+                mobilePhone: this.mobilePhone,
+                bankPicUrl: this.bankPicUrl
+            }
+            mine.bank(senddata).then((data) => {
+                if (data.data.code == 200) {
+                    this.realFailCount = data.data.data
+                    this.isShow = true
+                    this.msg = data.data.message
+                } else {
+                    this.realFailCount = data.data.data
+                    this.isShow = true
+                    this.msg = data.data.message
+                    // toast(data.data.message)
                 }
-                mine.bank(senddata).then((data) => {
-                    if (data.data.code == 200) {
-                        this.realFailCount = data.data.data
-                        this.isShow = true
-                        this.msg = data.data.message
-                    } else {
-                        this.realFailCount = data.data.data
-                        this.isShow = true
-                        this.msg = data.data.message
-                        // toast(data.data.message)
-                    }
-                })
-            
+            })
+
         },
         toastConfirm() {
             console.log('toastConfirm')
@@ -224,6 +224,7 @@ export default {
                 font-size: 0.373333rem;
                 img {
                     width: 1.6rem;
+                    height: 1.6rem;
                     margin-bottom: 0.3466667rem;
                 }
             }

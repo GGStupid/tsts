@@ -16,7 +16,7 @@
             <span>名称/市值(元)</span>
             <span>持有/可转(秒)</span>
             <span>现价/成本(元)</span>
-            <span>盈亏(元)</span>
+            <span>增值(元)</span>
         </div>
         <div class="purchasedContentWrap">
             <div class="scrollWrap">
@@ -162,6 +162,9 @@ export default {
             border-bottom: solid 1px @bordercolor;
             span {
                 flex: 1 1 1.90667rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
             .up {
                 color: #eee;

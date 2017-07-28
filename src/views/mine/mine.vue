@@ -28,9 +28,9 @@ import { toast } from '@/util/index'
 export default {
   data() {
     return {
-      userIdentify:{},
-      isShow:false,
-      realnameStatus:'',
+      userIdentify: {},
+      isShow: false,
+      realnameStatus: '',
       headSetting: {
         icon: require('../../assets/mine_avatar_default.png'),
         title: '用户昵称'
@@ -43,22 +43,22 @@ export default {
       aboutUsIcon: require('../../assets/mine_icon_about.png'),
     }
   },
-  computed:{
-    avatarUrl(){
+  computed: {
+    avatarUrl() {
       return this.$store.state.userInfor.avatarUrl ? this.$store.state.userInfor.avatarUrl : require('../../assets/mine_avatar_default.png')
     },
-    nickName(){
-      return this.$store.state.userInfor.nickName ? this.$store.state.userInfor.nickName :'用户昵称'
+    nickName() {
+      return this.$store.state.userInfor.nickName ? this.$store.state.userInfor.nickName : '用户昵称'
     }
   },
   methods: {
-    toastLeft(){
+    toastLeft() {
       console.log('toastLeft')
       this.$router.push('/authentication')
     },
-    toastRight(){
+    toastRight() {
       console.log('toastRight')
-      this.isShow=false
+      this.isShow = false
     },
     userSetting() {
       console.log('userSetting')
@@ -74,13 +74,13 @@ export default {
     },
     myBack() {
       console.log('myBack')
-      if(this.userIdentify.realnameStatus==2){
+      if (this.userIdentify.realnameStatus == 2) {
         toast('您的实名认证正在审核中')
         return
       }
-      if(this.realnameStatus==1 || this.realnameStatus==4){
-       this.isShow=true
-       return
+      if (this.realnameStatus == 1 || this.realnameStatus == 4) {
+        this.isShow = true
+        return
       }
       this.$router.push('/myBack')
     },
@@ -102,16 +102,20 @@ export default {
     'v-HeadSetting': HeadSetting,
     'v-AccountInformation': AccountInformation,
     'v-IconTextArrow': IconTextArrow,
-    'v-WhiteToastButton2':WhiteToastButton2
+    'v-WhiteToastButton2': WhiteToastButton2
   },
   mounted() {
     mine.getUserInforPost().then((data) => {
-      this.$store.dispatch('userInfor',data.data.data)
-      this.userIdentify=data.data.data.userIdentify
-      this.realnameStatus=data.data.data.userIdentify.realnameStatus
-    if(data.data.data.userIdentify.realnameStatus!=3 && data.data.data.userIdentify.realnameStatus!=2){
-      this.isShow=true
-    }
+      if (data.data.code == 200) {
+        this.$store.dispatch('userInfor', data.data.data)
+        this.userIdentify = data.data.data.userIdentify
+        this.realnameStatus = data.data.data.userIdentify.realnameStatus
+        if (data.data.data.userIdentify.realnameStatus != 3 && data.data.data.userIdentify.realnameStatus != 2) {
+          this.isShow = true
+        }
+      }else{
+        toast(data.data.message)
+      }
     })
   },
   beforeRouteEnter(to, from, next) {

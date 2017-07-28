@@ -20,7 +20,7 @@ instance.interceptors.response.use(response => {
     if (response.data.code == 401) {
         app.$router.push('/')
         app.$store.dispatch('loadShow', true)
-        return
+        return  response
     }
     setTimeout(() => {
         app.$store.dispatch('loadShow', true)

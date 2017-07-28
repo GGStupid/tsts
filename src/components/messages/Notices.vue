@@ -42,9 +42,12 @@ export default {
             let month = (date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : `0${date.getMonth() + 1}`
             let day = date.getDate() >= 10 ? date.getDate() : `0${date.getDate()}`
             let today = `${date.getFullYear()}-${month}-${day}`
+            let yesterday = `${date.getFullYear()}-${month}-${day - 1}`
             let istoday = v.substring(0, 10)
             if (istoday == today) {
                 return `今天 ${v.substring(11, 16)}`
+            } else if (istoday == yesterday) {
+                return `昨天 ${v.substring(11, 16)}`
             } else {
                 return v.substring(5, 16)
             }

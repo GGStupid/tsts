@@ -35,7 +35,7 @@ export default {
     messages.message().then(data=>{
       if(data.data.code==200){
         this.notReadAnnounceNum=data.data.data.notReadAnnounceNum
-        this.announcecontent=data.data.data.announce.content
+        this.announcecontent=data.data.data.announce.title
         this.announcecreateTime=data.data.data.announce.createTime
         this.notReadNoticeLogNum=data.data.data.notReadNoticeLogNum
         this.noticeLogcontent=data.data.data.noticeLog.content

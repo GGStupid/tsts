@@ -76,6 +76,7 @@ export default {
             }
         },
         splitData(rawData) {
+            if(!rawData)return
             for (var i = 0; i < rawData.length; i++) {
                 if (this.line_data[i].name == rawData[i].ts) {
                     this.line_data[i].value = rawData[i].p
@@ -469,117 +470,119 @@ export default {
         let sendData = {
             code: '10023'
         }
-        this.initDate()
-        let time;
-        let t11
-        market.getTimes(sendData).then(data => {
-            if (data.data.code == 200) {
-                this.rawData = data.data.data
-                this.loadTimeChart()
-                this.ws = initWs('ws://10.0.0.245:9999/', (e) => {
-                    let t = JSON.parse(e.text)
-                    if (t.ts >= "11:30" && t.ts < '13:30') {
-                        if (!t11) {
-                            t11 = t
-                        }
-                        this.line_data.map((i, v) => {
-                            if (i.name == t11.ts) {
-                                i.value = t11.p
-                            }
-                        })
-                        this.bar_data.map((i, v) => {
-                            if (i.name == t11.ts) {
-                                i.value = t11.q
-                            }
-                        })
-                        that.myChart.setOption({
-                            series: [
-                                {
-                                    type: 'line',
-                                    data: that.line_data
-                                },
-                                {
-                                    type: 'bar',
-                                    data: that.bar_data
-                                },
-                                {
-                                    type: 'effectScatter',
-                                    data: [[t11.ts, t11.p]]
-                                }
-                            ]
-                        });
-                        return
-                    }
-                    if (!time) {
-                        time = t.ts
-                        this.line_data.map((i, v) => {
-                            if (i.name == t.ts) {
-                                i.value = t.p
-                                console.log(i)
-                            }
-                        })
-                        this.bar_data.map((i, v) => {
-                            if (i.name == t.ts) {
-                                i.value = t.q
-                            }
-                        })
-                        that.myChart.setOption({
-                            series: [{
-                                type: 'line',
-                                data: that.line_data
-                            },
-                            {
-                                type: 'bar',
-                                data: that.bar_data
-                            },
-                            {
-                                type: 'effectScatter',
-                                data: [[t.ts, t.p]]
-                            }
-                            ]
-                        });
-                        return
-                    } else if (time == t.ts) {
-                        return
-                    } else if (time != t.ts) {
-                        time = t.ts
-                        that.line_data.map((i, v) => {
-                            if (i.name == t.ts) {
-                                i.value = t.p
-                                console.log(i)
-                            }
-                        })
-                        that.bar_data.map((i, v) => {
-                            if (i.name == t.ts) {
-                                i.value = t.q
-                            }
-                        })
-                        that.myChart.setOption({
-                            series: [{
-                                type: 'line',
-                                data: that.line_data
-                            },
-                            {
-                                type: 'bar',
-                                data: that.bar_data
-                            },
-                            {
-                                type: 'effectScatter',
-                                data: [[t.ts, t.p]]
-                            }
-                            ]
-                        });
-                        return
-                    }
-                });
-            } else {
-                toast(data.data.message)
-            }
-        }).catch(error => {
-            console.log(error)
-        });
+        // this.initDate()
+        // let time;
+        // let t11
+        // market.getTimes(sendData).then(data => {
+        //     if (data.data.code == 200) {
+        //         if(!data.data.data)return
+        //         this.rawData = data.data.data
+        //         this.loadTimeChart()
+        //         this.ws = initWs('ws://10.0.0.245:9999/', (e) => {
+        //             let t = JSON.parse(e.text)
+        //             if (t.ts >= "11:30" && t.ts < '13:30') {
+        //                 if (!t11) {
+        //                     t11 = t
+        //                 }
+        //                 this.line_data.map((i, v) => {
+        //                     if (i.name == t11.ts) {
+        //                         i.value = t11.p
+        //                     }
+        //                 })
+        //                 this.bar_data.map((i, v) => {
+        //                     if (i.name == t11.ts) {
+        //                         i.value = t11.q
+        //                     }
+        //                 })
+        //                 that.myChart.setOption({
+        //                     series: [
+        //                         {
+        //                             type: 'line',
+        //                             data: that.line_data
+        //                         },
+        //                         {
+        //                             type: 'bar',
+        //                             data: that.bar_data
+        //                         },
+        //                         {
+        //                             type: 'effectScatter',
+        //                             data: [[t11.ts, t11.p]]
+        //                         }
+        //                     ]
+        //                 });
+        //                 return
+        //             }
+        //             if (!time) {
+        //                 time = t.ts
+        //                 this.line_data.map((i, v) => {
+        //                     if (i.name == t.ts) {
+        //                         i.value = t.p
+        //                         console.log(i)
+        //                     }
+        //                 })
+        //                 this.bar_data.map((i, v) => {
+        //                     if (i.name == t.ts) {
+        //                         i.value = t.q
+        //                     }
+        //                 })
+        //                 that.myChart.setOption({
+        //                     series: [{
+        //                         type: 'line',
+        //                         data: that.line_data
+        //                     },
+        //                     {
+        //                         type: 'bar',
+        //                         data: that.bar_data
+        //                     },
+        //                     {
+        //                         type: 'effectScatter',
+        //                         data: [[t.ts, t.p]]
+        //                     }
+        //                     ]
+        //                 });
+        //                 return
+        //             } else if (time == t.ts) {
+        //                 return
+        //             } else if (time != t.ts) {
+        //                 time = t.ts
+        //                 that.line_data.map((i, v) => {
+        //                     if (i.name == t.ts) {
+        //                         i.value = t.p
+        //                         console.log(i)
+        //                     }
+        //                 })
+        //                 that.bar_data.map((i, v) => {
+        //                     if (i.name == t.ts) {
+        //                         i.value = t.q
+        //                     }
+        //                 })
+        //                 that.myChart.setOption({
+        //                     series: [{
+        //                         type: 'line',
+        //                         data: that.line_data
+        //                     },
+        //                     {
+        //                         type: 'bar',
+        //                         data: that.bar_data
+        //                     },
+        //                     {
+        //                         type: 'effectScatter',
+        //                         data: [[t.ts, t.p]]
+        //                     }
+        //                     ]
+        //                 });
+        //                 return
+        //             }
+        //         });
+        //     } else {
+        //         toast(data.data.message)
+        //     }
+        // }).catch(error => {
+        //     console.log(error)
+        // });
     },
     beforeDestroy() {
+        if (!this.ws) return
         needconn = false
         this.ws.onclose()
     }

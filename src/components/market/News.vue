@@ -22,40 +22,49 @@
 
 <script>
 import market from '@/api/market/index'
+import { toast } from '@/util/index'
 export default {
   data() {
     return {
       baseImgUrl: this.$store.state.baseImgUrl,
       page: 1,
       rows: 10,
-      newsList: [
-      ]
+      newsList: [],
+      loading:false
     }
   },
   methods: {
     loadNews() {
       var that = this
+      this.loading=true
       let sendData = {
         productId: this.$store.state.productId,
         page: this.page,
         rows: this.rows
       }
-      console.log(sendData)
       market.news(sendData).then(data => {
-        data.data.data.rows.forEach(function (element) {
+        if(data.data.code==200){
+          this.loading=false
+          if (!data.data.data.rows) return
+          data.data.data.rows.forEach(function (element) {
           this.newsList.push(element)
         }, this);
         if (data.data.data.rows.length == 0) {
           document.querySelector('.newsWrap').removeEventListener('scroll', that.handleScroll)
         }
         this.page++
+        }else{
+          toast(data.data.message)
+        }
       })
     },
     handleScroll() {
       let scrollTop = document.querySelector('.newsWrap').scrollTop;
       let pageHeight = document.querySelector('.newsWrap').offsetHeight;
       let allHeight = document.querySelector('.newListWrap').offsetHeight;
-      if (scrollTop + pageHeight == allHeight) {
+      let a=allHeight-scrollTop-pageHeight
+      if (a>=0 && a<=50){
+        if(this.loading)return
         this.loadNews();
       }
     },

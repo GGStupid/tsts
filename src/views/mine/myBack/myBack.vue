@@ -18,7 +18,10 @@
                     </div>
                 </div>
                 <div class="bankState">
-                    <span class="stateButton" :class="{'review':bank.status!=2}" @click="deleteBank(bank)">{{bank.status==2?'删除':'审核中'}}</span>
+                    <!-- <span class="stateButton" :class="{'review':bank.status!=2}" @click="deleteBank(bank)">{{bank.status==2?'删除':'审核中'}}</span> -->
+                    <span v-if="bank.status==1" class="stateButton" :class="{'review':bank.status==1}" @click="deleteBank(bank)">审核中</span>
+                    <span v-if="bank.status==2" class="stateButton" @click="deleteBank(bank)">删除</span>
+                    <span v-if="bank.status==3" class="stateButton" :class="{'review':bank.status==3}" @click="deleteBank(bank)">未通过</span>
                 </div>
             </div>
         </div>
@@ -42,31 +45,14 @@ export default {
             add: '',
             bankFailCount: '',
             auto: '',
-            bankLists: [
-                // {
-                //     bankSrc:require('../../../assets/bank card_logo_CCB.png'),
-                //     name:'中国建设银行',
-                //     type:'储蓄卡',
-                //     start:'6222',
-                //     end:'3278',
-                //     state:true
-                // },
-                //  {
-                //     bankSrc:require('../../../assets/bank card_logo_MB.png'),
-                //     name:'招商银行',
-                //     type:'储蓄卡',
-                //     start:'6222',
-                //     end:'3278',
-                //     state:false
-                // },  
-            ]
+            bankLists: []
         }
     },
     methods: {
         deleteBank(bank) {
             console.log('deleteBank')
             console.log(bank)
-            if (bank.status == 2) {
+            if (bank.status == 2 || bank.status==3) {
                 console.log('删除')
                 let sendData = {
                     id: bank.id
@@ -181,6 +167,12 @@ export default {
                     background-color: #f8cc00;
                     border: none;
                     color: #a98b10;
+                }
+                .unreview{
+                    background-color: #f8cc00;
+                    border: none;
+                    color: #a98b10;
+                    width: 2.5rem;
                 }
             }
         }

@@ -17,12 +17,14 @@ export default {
             page: 1,
             rows: 10,
             noticeLoglists: [],
-            isNomoreShow: false
+            isNomoreShow: false,
+            loading: false
         }
     },
     methods: {
         loadnoticeLog() {
             console.log('noticeLoglists')
+             this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
@@ -31,6 +33,7 @@ export default {
                 console.log(data)
                 let that = this
                 if (data.data.code == 200) {
+                    this.loading = false
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
                         this.noticeLoglists.push(element)
@@ -47,12 +50,12 @@ export default {
         },
         handleScrollsy() {
             let scrollTop = document.querySelector('#app').scrollTop;
-            //246
-            let pageHeight = document.querySelector('#app').offsetHeight; //1334
-            //1540
+            let pageHeight = document.querySelector('#app').offsetHeight;
             let allHeight = document.querySelector('.systemNoticesWrap').offsetHeight+20;
-            if (scrollTop + pageHeight == allHeight) {
-                this.loadnoticeLog()
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
+                this.loadnoticeLog();
             }
         },
         toNext() {

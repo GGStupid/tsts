@@ -56,7 +56,7 @@ export default {
         }
         login.resetPwdMsg(sendData).then(data => {
           if (data.data.code == 200) {
-            toast('手机验证码已发送请注意查收')
+            toast('验证码已发送至您的手机，请注意查收')
             let timer = setInterval(() => {
               this.count--
               this.phoneCodetitle = `${this.count}秒`
@@ -75,6 +75,8 @@ export default {
       }
     },
     toNext() {
+      if(!isPhone(this.phone))return toast('请输入正确的手机号')
+      if(this.phoneCode.length<6)return toast('请输入正确的验证码')
       if (isPhone(this.phone) && this.phoneCode.length == 6) {
         console.log('tonext')
         let sendData = {
@@ -90,8 +92,6 @@ export default {
             toast(data.data.message)
           }
         })
-      }else{
-         toast('请输入手机号和短信验证码')
       }
     }
   }

@@ -12,10 +12,15 @@
                 {{list.lastPrice*3600 | toFixed}}
             </div>
             <div class="aboutPercent" :class="{'isUP':list.growthRatio>0}">
-                {{list.growthRatio<0?'-':''}}{{list.growthRatio*100}}%
+                {{list.growthRatio
+                <0? '': ''}}{{list.growthRatio*100}}% </div>
+            </div>
+            <div style="color:#acacac;padding: 0.4rem;
+                      text-align: center;
+                      font-size: 0.4rem;" v-show="personLists.length==0">
+                暂无数据
             </div>
         </div>
-    </div>
 </template>
 
 <script>
@@ -62,11 +67,12 @@ export default {
         font-size: 0.4rem;
         img {
             width: 1.04rem;
+            height: 1.04rem;
         }
         .name {
             line-height: 1.9;
             margin-left: 0.29333rem;
-            .upname{
+            .upname {
                 width: 3rem;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -88,6 +94,9 @@ export default {
         text-align: right;
         font-size: 0.426667rem;
         color: #4affa5;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .isUP {
         color: #f20642;

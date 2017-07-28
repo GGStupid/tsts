@@ -20,6 +20,9 @@ export default {
     //   this.$store.dispatch('saveToken', data.data.data)
     // })
   },
+  beforeDestroy(){
+   
+  },
   components: {
     Loading
   }

@@ -61,7 +61,6 @@
 
 <script>
 import market from '@/api/market/index'
-import mine from '@/api/mine/index'
 import { toast } from '@/util/index'
 
 export default {
@@ -69,14 +68,14 @@ export default {
     return {
       baseImgUrl: this.$store.state.baseImgUrl,
       title: this.$store.state.title,
-      userId: this.$store.state.userInfor.id,
+      userId: this.$store.state.userInfor? this.$store.state.userInfor.id :'',
       commentLists: [],
     }
   },
   computed: {
     filterData() {
+      if (!this.$store.state.isLogin) return this.commentLists
       if (this.commentLists.length == 0) return
-      if (!this.$store.state.isLogin) return this.commentLists  
       this.commentLists.map(i => {
         if (i.userId == this.userId) {
           i.nickName = '我'
@@ -203,18 +202,13 @@ export default {
       rows: 5
     }
     market.getforums(sendData).then(data => {
-      if(data.data.code==200){
-        if(data.data.data.rows.length==0)return ;
-         this.commentLists = data.data.data.rows
-      }else{
+      if (data.data.code == 200) {
+        if (data.data.data.rows.length == 0) return
+        this.commentLists = data.data.data.rows
+      } else {
         toast(data.data.message)
       }
     })
-    if (this.$store.state.isLogin) {
-      mine.getUserInforPost().then((data) => {
-        this.$store.dispatch('userInfor', data.data.data)
-      })
-    }
   }
 }
 </script>
@@ -314,7 +308,7 @@ export default {
           }
           .answer {
             color: #2379bd;
-            word-wrap:break-word;
+            word-wrap: break-word;
           }
           .zans {
             margin-bottom: 0.2rem;

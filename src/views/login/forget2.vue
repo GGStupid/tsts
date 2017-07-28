@@ -109,7 +109,7 @@ export default {
                     }
                 })
             } else if(this.password1 != this.password2){
-                toast('2次密码输入不一致')
+                toast('确认密码与新登录密码不一致!')
             }else{
                 toast('请输入正确的密码格式')
             }

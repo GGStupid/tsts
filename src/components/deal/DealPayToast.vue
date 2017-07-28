@@ -48,9 +48,9 @@ export default {
         isShow: {
             type: Boolean
         },
-        number:'',
-        price:'',
-        productId:''
+        number: '',
+        price: '',
+        productId: ''
     },
     methods: {
         cancelToast() {
@@ -75,17 +75,18 @@ export default {
                 let sendData = {
                     number: this.number,
                     price: this.price,
-                    productId:this.productId,
+                    productId: this.productId,
                     payPwd: encrypt.encrypt(this.payPwd),
                 }
                 deal.buy(sendData).then(data => {
                     if (data.data.code == 200) {
                         toast(data.data.message)
-                        this.payPwd=''
-                        this.$emit('isPayToastHide',false)
+                        this.payPwd = ''
+                        this.$emit('isPayToastHide', false)
                     } else {
+                        this.payPwd = ''
                         toast(data.data.message)
-                        this.$emit('isPayToastHide',false)
+                        this.$emit('isPayToastHide', false)
                     }
                 })
             }

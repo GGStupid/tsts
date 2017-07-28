@@ -5,9 +5,14 @@
                 {{list.title}}
             </div>
             <div class="details" v-html="list.content">
-                
+    
             </div>
         </div>
+         <div style="color:#acacac;padding: 0.4rem;
+                          text-align: center;
+                          font-size: 0.4rem;" v-show="aboutList.length==0">
+                暂无记录
+            </div>
     </div>
 </template>
 <script>
@@ -15,7 +20,7 @@ import mine from '@/api/mine/index'
 export default {
     data() {
         return {
-            aboutList:[]
+            aboutList: []
         }
     },
     mounted() {
@@ -25,7 +30,7 @@ export default {
             classId: id
         }
         mine.contents(sendData).then(data => {
-            this.aboutList=data.data.data
+            this.aboutList = data.data.data
         })
     },
 }

@@ -16,12 +16,14 @@ export default {
             page: 1,
             rows: 10,
             announceslists: [],
-            isNomoreShow: false
+            isNomoreShow: false,
+            loading: false
         }
     },
     methods: {
         loadannounces() {
             console.log('announceslists')
+            this.loading = true
             let sendData = {
                 page: this.page,
                 rows: this.rows
@@ -30,6 +32,7 @@ export default {
                 console.log(data)
                 let that = this
                 if (data.data.code == 200) {
+                    this.loading = false
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
                         this.announceslists.push(element)
@@ -45,12 +48,13 @@ export default {
             })
         },
         handleScroll() {
-            console.log(2222222)
             let scrollTop = document.querySelector('#app').scrollTop;
             let pageHeight = document.querySelector('#app').offsetHeight;
             let allHeight = document.querySelector('.noticesWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
-                this.loadannounces()
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
+                this.loadannounces();
             }
         },
         toNext() {
@@ -64,8 +68,8 @@ export default {
             document.querySelector('#app').addEventListener('scroll', that.handleScroll)
         }
     },
-    beforeDestroy(){
-      document.querySelector('#app').removeEventListener('scroll', this.handleScroll)
+    beforeDestroy() {
+        document.querySelector('#app').removeEventListener('scroll', this.handleScroll)
     },
     beforeRouteEnter(to, from, next) {
         document.querySelector('title').innerText = '通知';

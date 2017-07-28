@@ -19,8 +19,8 @@
           <span class="button" @click="addPrices">+</span>
         </div>
         <div class="bottomTips">
-          <span class="tipleft" v-html="topStopPrice"></span>
           <span class="tipleft" v-html="bottomStopPrice"></span>
+          <span class="tipleft" v-html="topStopPrice"></span>
         </div>
         <div class="aboutBox">
           <span class="button" @click="reduceTimes">-</span>
@@ -61,7 +61,7 @@
         <span>名称/代码</span>
         <span>持有/可转(秒)</span>
         <span>现价/成本(元)</span>
-        <span style="text-align:right;flex:0 0 1.92rem;">盈亏(元)</span>
+        <span style="text-align:right;flex:0 0 1.92rem;">增值(元)</span>
       </div>
       <div class="historyList" v-for="(purchased,index) in PurchasedLists" :key="index">
         <div class="up">
@@ -136,21 +136,27 @@ export default {
   },
   computed: {
     topStopPrice() {
-      return this.topPrice ? `跌停<span style="color:#4affa5">${this.topPrice}</span>` : '--'
+      return this.topPrice ? `涨停<span style="color:#f20624">${this.topPrice}</span>` : '涨停 0.00 '
     },
     bottomStopPrice() {
-      return this.bottomPrice ? `跌停<span style="color:#f20624">${this.bottomPrice}</span>` : '--'
+      return this.bottomPrice ? `跌停<span style="color:#4affa5">${this.bottomPrice}</span>` : '跌停 0.00'
     },
     availableCountFormat() {
-      return this.availableCount ? `可买 <span style="color:#F8CC00">${this.availableCount.toFixed(0)}</span> 秒` : '--'
+      return this.availableCount ? `可转 <span style="color:#F8CC00">${this.availableCount.toFixed(0)}</span> 秒` : '可转 0 秒'
     },
     availableBalanceFormat() {
-      return this.availableBalance ? `余额 <span style="color:#F8CC00">${this.availableBalance.toFixed(0)}</span> 元` : '--'
+      return this.availableBalance ? `余额 <span style="color:#F8CC00">${this.availableBalance.toFixed(2)}</span> 元` : '余额 0.00 元'
     }
   },
   methods: {
     focus() {
       this.$store.dispatch('attorncode', '')
+      this.$store.dispatch('code', '')
+      clearInterval(this.timer10)
+      this.topPrice = 0
+      this.bottomPrice = 0
+      this.availableCount = 0
+      this.searchName = ''
     },
     search(v) {
       console.log('search')
@@ -269,39 +275,41 @@ export default {
         if (this.timeNum == '') {
           this.timeNum = 0
         } else {
-          this.timeNum = parseFloat(this.timeNum)
+          this.timeNum = Math.floor(this.timeNum)
         }
       }
       this.timeNum -= this.baseNum
     },
     enterTime() {
       if (this.timeNum > this.availableCount) {
-        this.timeNum = this.availableCount
-        return toast('超过当前可买时间,请先充值再进行购买')
+        this.timeNum = this.availableCount.toFixed(0)
+        return toast('购买数量不能超过可买数量')
       }
     },
     addTimes() {
       console.log('addTimes')
-      console.log('addTimes')
-      if (!this.availableCount) return
+      if (!this.availableBalance) {
+        toast('当前账户余额为0，请先进行充值')
+        return
+      }
       if (this.timeNum >= this.availableCount) {
         this.timeNum = this.availableCount
-        return toast('超过当前可买时间,请先充值再进行购买')
+        return toast('转让数量不能超过可转数量')
       }
       if ((typeof this.timeNum) == 'string') {
         if (this.timeNum == '') {
           this.timeNum = 0
         } else {
-          this.timeNum = parseFloat(this.timeNum)
+          this.timeNum = Math.floor(this.timeNum)
         }
       }
       this.timeNum += this.baseNum
     },
     attornOder() {
       console.log('attornOder')
-      // if(!this.pricesNum)return toast('请搜索并选择购买产品')
-      if (!this.productId) return toast('请搜索并选择购买产品')
-      if (!this.timeNum) return toast('请输入购买时间')
+      if (!this.availableBalance) return toast('当前账户余额为0，请先进行充值')
+      if (!this.productId) return toast('请搜索并选择转让产品')
+      if (!this.timeNum) return toast('请输入转让时间')
       let sendData = {
         number: this.timeNum,
         orderType: 2,
@@ -327,6 +335,7 @@ export default {
     },
     toastLeft() {
       console.log('toastLeft')
+      if (!this.agree) return toast('请勾选协议')
       this.isOrderConfirm = false
       this.isPayToast = true
     },
@@ -383,6 +392,9 @@ export default {
   },
   mounted() {
     let that = this
+    deal.available().then(data => {
+      this.availableBalance = data.data.data.available
+    })
     if (this.page == 1) {
       this.loadPurchasedLists()
       this.loadNewsPrices()
@@ -391,9 +403,6 @@ export default {
     if (this.$store.state.attorncode) {
       this.search(this.$store.state.attorncode)
     }
-    deal.available().then(data => {
-      this.availableBalance = data.data.data.available
-    })
   },
   beforeDestroy() {
     clearInterval(this.timer10)
@@ -570,6 +579,9 @@ export default {
       border-bottom: solid 1px @bordercolor;
       span {
         flex: 1 1 2rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .up {
         color: #eee;

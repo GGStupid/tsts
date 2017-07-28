@@ -18,7 +18,7 @@
                     <span>{{price}}元/秒</span>
                 </div>
                 <div class="orderInfor">
-                    <span class="orderType">购买时间：</span>
+                    <span class="orderType">转让时间：</span>
                     <span>{{number}}秒</span>
                 </div>
                 <div class="orderInfor">
@@ -53,18 +53,18 @@ export default {
         rightText: {
             type: String
         },
-        payType:{
-            type:String,
-            default:'支付金额'
+        payType: {
+            type: String,
+            default: '支付金额'
         },
-        orderType:'',
+        orderType: '',
         msg: '',
-        price:'',
-        number:'',
-        sum:'',
-        agree:{
-            type:Boolean,
-            default:true
+        price: '',
+        number: '',
+        sum: '',
+        agree: {
+            type: Boolean,
+            default: true
         }
     },
     computed: {
@@ -77,7 +77,7 @@ export default {
     },
     methods: {
         isAgree() {
-            this.$emit('isAgree')
+            this.$emit('isAgree', this.agree)
         },
         toastLeft() {
             this.$emit('toastLeft')
@@ -136,9 +136,12 @@ export default {
             height: 0.84444rem;
             line-height: 0.84444rem;
             font-size: 0.37333rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             .orderType {
                 display: inline-block;
-                width:1.86667rem;
+                width: 1.86667rem;
                 color: #999;
             }
             .agree {

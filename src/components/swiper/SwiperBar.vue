@@ -45,7 +45,7 @@ export default {
             this.dom = new Swiper('.' + That.swipeid, {
                 effect: 'coverflow',
                 //循环
-                loop: true,
+                loop: false,
                 grabCursor: true,
                 centeredSlides: true,
                 slidesPerView: 'auto',

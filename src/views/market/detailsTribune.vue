@@ -51,6 +51,11 @@
                     </div>
                 </div>
             </div>
+            <div style="color:#acacac;padding: 0.4rem;
+                          text-align: center;
+                          font-size: 0.4rem;" v-show="commentLists.length==0">
+                    暂无数据
+                </div>
         </div>
         <div class="footer">
             <span @click="releaseComments">我也来说一句...</span>
@@ -98,31 +103,41 @@ export default {
                 //     answerContent: '买水电费阿斯蒂芬啊速达阿斯蒂芬阿萨德发送到啊速达发射点发苏打撒旦法地方a卖',
                 // }
             ],
+            loading: false
         }
     },
     methods: {
         loadCommentLists() {
             var that = this
+            this.loading = true
             let sendData = {
                 productId: this.productId,
                 page: this.page,
                 rows: this.rows
             }
             market.getforums(sendData).then(data => {
-                data.data.data.rows.forEach(function (element) {
-                    that.commentLists.push(element)
-                }, this);
-                if (data.data.data.rows.length == 0) {
-                    document.querySelector('.detailsTribuneContent').removeEventListener('scroll', that.handleScroll)
+                if (data.data.code == 200) {
+                    this.loading = false
+                    if (!data.data.data.rows) return
+                    data.data.data.rows.forEach(function (element) {
+                        that.commentLists.push(element)
+                    }, this);
+                    if (data.data.data.rows.length == 0) {
+                        document.querySelector('.detailsTribuneContent').removeEventListener('scroll', that.handleScroll)
+                    }
+                    this.page++
+                } else {
+                    toast(data.data.message)
                 }
-                this.page++
             })
         },
         handleScroll() {
             let scrollTop = document.querySelector('.detailsTribuneContent').scrollTop;
             let pageHeight = document.querySelector('.detailsTribuneContent').offsetHeight;
             let allHeight = document.querySelector('.listWrap').offsetHeight;
-            if (scrollTop + pageHeight == allHeight) {
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
                 this.loadCommentLists();
             }
         },
@@ -214,7 +229,7 @@ export default {
         }
     },
     mounted() {
-        let that=this
+        let that = this
         if (that.page === 1) {
             that.loadCommentLists();
             document.querySelector('.detailsTribuneContent').addEventListener('scroll', that.handleScroll);

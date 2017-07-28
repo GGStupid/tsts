@@ -56,21 +56,21 @@
         </div>
       </div>
     </div>
-    <div class="mainExperience" v-show="informationObj.experience">
+    <div class="mainExperience" >
       <div class="title">
         <img src="../../assets/quotes_intro_line.png" alt=""> 主要经历
       </div>
       <div class="content" v-html="replacePx(informationObj.experience)">
       </div>
     </div>
-    <div class="mainExperience" v-show="informationObj.achievement">
+    <div class="mainExperience" >
       <div class="title">
         <img src="../../assets/quotes_intro_line.png" alt=""> 主要成就
       </div>
       <div class="content" v-html="replacePx(informationObj.achievement)">
       </div>
     </div>
-    <div class="mainExperience" v-show="informationObj.useArea">
+    <div class="mainExperience" >
       <div class="title">
         <img src="../../assets/quotes_intro_line.png" alt=""> 时间使用范围
       </div>

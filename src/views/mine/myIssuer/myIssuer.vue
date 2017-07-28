@@ -19,10 +19,10 @@
                     <span>{{issuer.availableQuantity}}秒</span>
                 </div>
                 <div class="right">
-                    <span class="delivery" v-show="issuer.availableQuantity>issuer.deliveryLimit" @click="delivery(issuer)">
+                    <span class="delivery" v-if="issuer.availableQuantity>issuer.deliveryLimit" @click="delivery(issuer)">
                         交割
                     </span>
-                    <span v-show="!issuer.isDone">
+                    <span v-else>
                         - -
                     </span>
                 </div>
@@ -40,73 +40,73 @@ import { toast } from '@/util/index'
 export default {
     data() {
         return {
-             page: 1,
-             rows: 12,
+            page: 1,
+            rows: 12,
             transactionRecordIcon: require('../../../assets/issuer_icon_record.png'),
             issuersLists: [],
             isNomoreShow: false,
-            loading:false
+            loading: false
         }
     },
     methods: {
         loadPositions() {
-      var that = this
-      this.loading=true
-      let sendData = {
-        page: this.page,
-        rows: this.rows
-      }
-      mine.positions(sendData).then(data => {
-        if (data.data.code == 200) {
-          this.loading=false
-          if (!data.data.data.rows) return
-          data.data.data.rows.forEach(function (element) {
-            that.issuersLists.push(element)
-          }, this);
-          if (data.data.data.rows.length == 0) {
-            this.isNomoreShow = true
-            document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
-          }
-          this.page++
-        } else {
-          toast(data.data.message)
-        }
-      })
-    },
-     handleScroll() {
-      let scrollTop = Math.round(document.querySelector('#app').scrollTop)
-      let pageHeight = Math.round(document.querySelector('#app').offsetHeight)
-      let allHeight = Math.round(document.querySelector('.myIssuerWrap').scrollHeight);
-      let a=allHeight-scrollTop-pageHeight
-      if (a>=0 && a<=50){
-        if(this.loading)return
-        this.loadPositions();
-      }
-    },
+            var that = this
+            this.loading = true
+            let sendData = {
+                page: this.page,
+                rows: this.rows
+            }
+            mine.positions(sendData).then(data => {
+                if (data.data.code == 200) {
+                    this.loading = false
+                    if (!data.data.data.rows) return
+                    data.data.data.rows.forEach(function (element) {
+                        that.issuersLists.push(element)
+                    }, this);
+                    if (data.data.data.rows.length == 0) {
+                        this.isNomoreShow = true
+                        document.querySelector('#app').removeEventListener('scroll', that.handleScroll)
+                    }
+                    this.page++
+                } else {
+                    toast(data.data.message)
+                }
+            })
+        },
+        handleScroll() {
+            let scrollTop = Math.round(document.querySelector('#app').scrollTop)
+            let pageHeight = Math.round(document.querySelector('#app').offsetHeight)
+            let allHeight = Math.round(document.querySelector('.myIssuerWrap').scrollHeight);
+            let a = allHeight - scrollTop - pageHeight
+            if (a >= 0 && a <= 50) {
+                if (this.loading) return
+                this.loadPositions();
+            }
+        },
         toTransactionRecord() {
             console.log('toTransactionRecord')
             this.$router.push('/transactionRecord')
         },
-        delivery(issuer){
+        delivery(issuer) {
             console.log('delivery')
             console.log(issuer)
-            this.$router.push('/delivery/'+issuer.id)
+            this.$router.push('/delivery/' + issuer.id)
         }
     },
-    mounted(){
-        let that=this
+    mounted() {
+        let that = this
         if (that.page === 1) {
-      that.loadPositions();
-      document.querySelector('#app').addEventListener('scroll', that.handleScroll);
-    }
+            that.loadPositions();
+            document.querySelector('#app').addEventListener('scroll', that.handleScroll);
+        }
     },
-    beforeRouteEnter(to,from,next){
-        document.querySelector('title').innerText='我投资的发行人'
+    beforeRouteEnter(to, from, next) {
+        document.querySelector('title').innerText = '我投资的发行人'
         next()
     },
     components: {
         'v-IconTextArrow': IconTextArrow,
-         Nomore
+        Nomore
     }
 }
 </script>
@@ -131,6 +131,9 @@ export default {
                 span {
                     display: inline-block;
                     width: 2rem;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
             }
             .right {
@@ -152,17 +155,20 @@ export default {
                 span {
                     display: inline-block;
                     width: 2rem;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
             }
             .right {
                 flex: 0 0 1.86667rem;
                 text-align: center;
-                .delivery{
+                .delivery {
                     display: inline-block;
                     width: 1.86667rem;
                     height: 0.72rem;
-                    line-height:0.72rem;
-                    border-radius:0.08rem;
+                    line-height: 0.72rem;
+                    border-radius: 0.08rem;
                     color: #000;
                     background-color: @yellow;
                 }

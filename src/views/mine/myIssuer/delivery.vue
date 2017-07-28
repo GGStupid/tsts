@@ -6,7 +6,7 @@
             <span class="button" @click="add">+</span>
         </div>
         <div class="tips">
-            注:交割数量为<span>{{baseNum}}</span>秒或其正数倍
+            注:交割数量为<span>{{baseNum}}</span>秒或其正整数倍
         </div>
         <div class="confirButton" @click="confirmDelivery">
             确定交割
