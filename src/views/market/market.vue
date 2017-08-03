@@ -70,7 +70,7 @@ export default {
     })
   },
   beforeRouteEnter(to, from, next) {
-    document.querySelector('title').innerText = '买卖'
+    document.querySelector('title').innerText = '行情'
     next()
   },
   components: {

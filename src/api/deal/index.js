@@ -11,12 +11,20 @@ export default {
         return instance.get(wrapUrl + '/member/positions?' + qs.stringify(data))
     },
     //买卖---已购---最新价
-    latestPrice(data) {
-        return instance.get(wrapUrl + '/member/positions/latestPrice?' + qs.stringify(data))
+    latestPrice(data,config) {
+        return instance.get(wrapUrl + '/member/positions/latestPrice?' + qs.stringify(data),config)
+    },
+    //买卖--已购--头部
+    head(data) {
+        return instance.get(wrapUrl + '/member/positions/head?' + qs.stringify(data))
     },
     //查询用户余额
     available(data) {
         return instance.get(wrapUrl + '/member/account/available?' + qs.stringify(data))
+    },
+    //可转时间POST /api/member/entrusts/sellNumber
+    sellNumber(data) {
+        return instance.post(wrapUrl + '/member/entrusts/sellNumber', qs.stringify(data))
     },
     //订单-列表//当日委托
     entrusts(data) {
@@ -52,6 +60,6 @@ export default {
     },
     //行情-买/卖-十档行情
     tend(data,config) {
-        return instance.post(wrapUrl + '/member/entrusts/tend', qs.stringify(data),config)
-    }
+        return instance.post(wrapUrl + '/quotation/tend', qs.stringify(data),config)
+    },
 }

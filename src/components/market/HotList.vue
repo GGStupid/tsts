@@ -35,11 +35,9 @@
                     </div>
                 </div>
             </div>
-            <div style="color:#acacac;padding: 0.4rem;
-                      text-align: center;
-                      font-size: 0.4rem;" v-show="hotlists.length==0">
-                暂无数据
-            </div>
+        </div>
+        <div class="nodata" v-show="hotlists.length==0">
+            <img src="../../assets/noTrailer.png" alt="">
         </div>
     </div>
 </template>
@@ -58,9 +56,9 @@ export default {
             loading: false
         }
     },
-    computed:{
-        titlename(){
-            return this.isNews ? '申购价' :'增发价'
+    computed: {
+        titlename() {
+            return this.isNews ? '申购价' : '增发价'
         }
     },
     props: {
@@ -79,7 +77,7 @@ export default {
             if (this.isNews) {
                 market.new(sendData).then(data => {
                     if (data.data.code == 200) {
-                         this.loading = false
+                        this.loading = false
                         if (!data.data.data.rows) return
                         if (data.data.data.rows.length == 0) {
                             document.querySelector('.routeWrap').removeEventListener('scroll', that.handleScroll)
@@ -109,7 +107,7 @@ export default {
                 market.inc(sendData).then(data => {
                     // this.hotlists = data.data.data.rows
                     if (data.data.code == 200) {
-                          this.loading = false
+                        this.loading = false
                         if (!data.data.data.rows) return
                         if (data.data.data.rows.length == 0) {
                             document.querySelector('.routeWrap').removeEventListener('scroll', that.handleScroll)
@@ -228,7 +226,6 @@ export default {
 <style lang="less" scoped>
 @import '../../less/config.less';
 .HotListWrap {
-    background-color: @bgcolor;
     .title {
         display: flex;
         justify-content: space-between;
@@ -241,81 +238,93 @@ export default {
             font-size: 0.29333rem;
         }
     }
-    .details {
-        padding: 0 @p30;
-        height: 2.586667rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: @p30;
-        color: @color;
-        .avatar {
-            position: relative;
-            img {
-                width: 1.6rem;
-                height: 1.6rem;
+    .contentWrap {
+        background-color: @bgcolor;
+        .details {
+            padding: 0 @p30;
+            height: 2.586667rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: @p30;
+            color: @color;
+            .avatar {
+                position: relative;
+                img {
+                    width: 1.6rem;
+                    height: 1.6rem;
+                }
+                .icon {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 0.8rem;
+                    height: 0.8rem;
+                }
             }
-            .icon {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 0.8rem;
-                height: 0.8rem;
+            .informations {
+                flex: 0 0 7.06667rem;
+                position: relative;
+                .nametitle {
+                    width: 4rem;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                .nameCode {
+                    font-size: 0.32rem;
+                    color: #999;
+                    margin: 0.1rem 0 0.26rem;
+                }
+                .times {
+                    font-size: 0.346667rem;
+                    .timeNumber {
+                        color: @yellow;
+                    }
+                    .sale {
+                        color: #999;
+                    }
+                }
+                .aboutPrices {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    .prices {
+                        width: 1.86667rem;
+                        text-align: end;
+                    }
+                    .button {
+                        width: 1.86667rem;
+                        height: 0.7733rem;
+                        margin-top: 0.32rem;
+                        background-color: @yellow;
+                        border-radius: 0.08rem;
+                        color: #191a22;
+                        font-size: 0.37333rem;
+                        text-align: center;
+                        line-height: 0.7733rem;
+                    }
+                    .nobutton {
+                        width: 1.86667rem;
+                        height: 0.7733rem;
+                        margin-top: 0.32rem; // background-color: @yellow;
+                        border-radius: 0.08rem;
+                        color: #eee;
+                        font-size: 0.37333rem;
+                        text-align: center;
+                        line-height: 0.7733rem;
+                    }
+                }
             }
         }
-        .informations {
-            flex: 0 0 7.06667rem;
-            position: relative;
-            .nametitle {
-                width: 4rem;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .nameCode {
-                font-size: 0.32rem;
-                color: #999;
-                margin: 0.1rem 0 0.26rem;
-            }
-            .times {
-                font-size: 0.346667rem;
-                .timeNumber {
-                    color: @yellow;
-                }
-                .sale {
-                    color: #999;
-                }
-            }
-            .aboutPrices {
-                position: absolute;
-                top: 0;
-                right: 0;
-                .prices {
-                    width: 1.86667rem;
-                    text-align: end;
-                }
-                .button {
-                    width: 1.86667rem;
-                    height: 0.7733rem;
-                    margin-top: 0.32rem;
-                    background-color: @yellow;
-                    border-radius: 0.08rem;
-                    color: #191a22;
-                    font-size: 0.37333rem;
-                    text-align: center;
-                    line-height: 0.7733rem;
-                }
-                .nobutton {
-                    width: 1.86667rem;
-                    height: 0.7733rem;
-                    margin-top: 0.32rem; // background-color: @yellow;
-                    border-radius: 0.08rem;
-                    color: #eee;
-                    font-size: 0.37333rem;
-                    text-align: center;
-                    line-height: 0.7733rem;
-                }
-            }
+    }
+    .nodata {
+        text-align: center;
+        margin-top:2.133333rem;
+        padding-bottom: 2.133333rem;
+        img {
+            width: 5.706667rem;
+            height: 4.76rem;
         }
     }
 }

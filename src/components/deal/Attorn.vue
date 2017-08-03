@@ -63,17 +63,17 @@
         <span>现价/成本(元)</span>
         <span style="text-align:right;flex:0 0 1.92rem;">增值(元)</span>
       </div>
-      <div class="historyList" v-for="(purchased,index) in PurchasedLists" :key="index">
+      <div class="historyList" v-for="(purchased,index) in PurchasedLists" :key="index" @click="toselectandattorn(purchased)">
         <div class="up">
           <span>{{purchased.publisherName}}</span>
           <span>{{purchased.quantity}}</span>
-          <span>5.3</span>
-          <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
+          <span>{{purchased.lastPrice.toFixed(2)}}</span>
+          <span class="red" style="text-align:right;flex:0 0 1.1733rem;" :class="{'green':purchased.lastPrice-purchased.costPrice<0}">{{((purchased.lastPrice-purchased.costPrice)*purchased.quantity).toFixed(2)}}</span>
         </div>
         <div class="down">
-          <span>{{purchased.publisherCode}}</span>
+          <span>{{(purchased.lastPrice*purchased.quantity).toFixed(2)}}</span>
           <span>{{purchased.availableQuantity}}</span>
-          <span>{{purchased.costPrice}}</span>
+          <span>{{purchased.costPrice.toFixed(2)}}</span>
           <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
         </div>
       </div>
@@ -131,7 +131,8 @@ export default {
       rows: 10,
       PurchasedLists: [],
       isNomoreShow: false,
-      loading: false
+      loading: false,
+      timer: ''
     }
   },
   computed: {
@@ -194,17 +195,25 @@ export default {
       this.code = i.code
       this.topPrice = i.topStopPrice
       this.bottomPrice = i.bottomStopPrice
-      this.availableCount = this.availableBalance / this.pricesNum
       this.searchLists = []
       let sendData = {
-        code: 10023
+        code: this.code
       }
       let config = {
         loading: false
       }
+      deal.sellNumber(sendData).then(data => {
+        console.log(data)
+        if(data.data.code==200){
+           this.availableCount = data.data.data
+        }else{
+          toast(data.data.message)
+        }
+      })
       this.timer10 = setInterval(() => {
         deal.tend(sendData, config).then(data => {
           if (data.data.code == 200) {
+            if (!data.data.data) return
             let sArry = data.data.data.slist
             let bArry = data.data.data.blist
             this.slist = [
@@ -268,22 +277,26 @@ export default {
     reduceTimes() {
       console.log('reduceTimes')
       if (!this.availableCount) return
-      if (this.timeNum == 0) {
-        return this.timeNum = 0
-      }
       if ((typeof this.timeNum) == 'string') {
         if (this.timeNum == '') {
           this.timeNum = 0
         } else {
-          this.timeNum = Math.floor(this.timeNum)
+          this.timeNum = Math.floor(Number(this.timeNum))
         }
       }
       this.timeNum -= this.baseNum
+      if (this.timeNum <= 0) {
+        return this.timeNum = 0
+      }
     },
     enterTime() {
+      if (this.availableCount <= 0) {
+        this.timeNum = 0
+        return toast('转让数量不能超过可转数量')
+      }
       if (this.timeNum > this.availableCount) {
         this.timeNum = this.availableCount.toFixed(0)
-        return toast('购买数量不能超过可买数量')
+        return toast('转让数量不能超过可转数量')
       }
     },
     addTimes() {
@@ -291,10 +304,6 @@ export default {
       if (!this.availableBalance) {
         toast('当前账户余额为0，请先进行充值')
         return
-      }
-      if (this.timeNum >= this.availableCount) {
-        this.timeNum = this.availableCount
-        return toast('转让数量不能超过可转数量')
       }
       if ((typeof this.timeNum) == 'string') {
         if (this.timeNum == '') {
@@ -304,6 +313,10 @@ export default {
         }
       }
       this.timeNum += this.baseNum
+      if (this.timeNum >= this.availableCount) {
+        this.timeNum = this.availableCount
+        return toast('转让数量不能超过可转数量')
+      }
     },
     attornOder() {
       console.log('attornOder')
@@ -311,7 +324,7 @@ export default {
       if (!this.productId) return toast('请搜索并选择转让产品')
       if (!this.timeNum) return toast('请输入转让时间')
       let sendData = {
-        number: this.timeNum,
+        number: Number(this.timeNum),
         orderType: 2,
         price: this.pricesNum,
         productId: this.productId
@@ -324,11 +337,11 @@ export default {
           this.price = data.data.data.price
           this.number = data.data.data.number
           this.sum = data.data.data.fee
+          this.isOrderConfirm = true
         } else {
           toast(data.data.message)
         }
       })
-      this.isOrderConfirm = true
     },
     isAgree() {
       this.agree = !this.agree
@@ -350,9 +363,32 @@ export default {
       console.log(a)
       this.isPayToast = a
     },
+    toselectandattorn(s) {
+      clearInterval(this.timer10)
+      this.$store.dispatch('attorncode', s.publisherCode)
+      this.search(s.publisherCode)
+    },
     loadNewsPrices() {
-      deal.latestPrice().then(data => {
-        console.log(data)
+      let config = {
+        loading: false
+      }
+      let sendData = {
+
+      }
+      deal.latestPrice(sendData, config).then(data => {
+        if (data.data.code == 200) {
+          if (!data.data.data) return
+          data.data.data.map(v => {
+            this.PurchasedLists.map(p => {
+              if (p.publisherCode == v.code) {
+                p.lastPrice = v.lastPrice
+              }
+              return p
+            })
+          })
+        } else {
+          toast(data.data.message)
+        }
       })
     },
     loadPurchasedLists() {
@@ -368,12 +404,18 @@ export default {
           this.loading = false
           if (!data.data.data.rows) return
           data.data.data.rows.forEach(function (element) {
+            element.lastPrice = 0
             this.PurchasedLists.push(element)
           }, this);
           if (data.data.data.rows.length == 0) {
+            this.isNomoreShow = true
             document.querySelector('.dealContentWrap').removeEventListener('scroll', that.handleScroll)
           }
           this.page++
+          this.loadNewsPrices()
+          this.timer = setInterval(() => {
+            this.loadNewsPrices()
+          }, 60000)
         } else {
           toast(data.data.message)
         }
@@ -397,7 +439,6 @@ export default {
     })
     if (this.page == 1) {
       this.loadPurchasedLists()
-      this.loadNewsPrices()
       document.querySelector('.dealContentWrap').addEventListener('scroll', that.handleScroll)
     }
     if (this.$store.state.attorncode) {
@@ -405,8 +446,13 @@ export default {
     }
   },
   beforeDestroy() {
+    let that=this
     clearInterval(this.timer10)
-    this.$store.dispatch('attorncode', '')
+    clearInterval(this.timer)
+    // this.$store.dispatch('attorncode', '')
+    if (document.querySelector('.dealContentWrap')) {
+      document.querySelector('.dealContentWrap').removeEventListener('scroll', that.handleScroll)
+    }
   },
   components: {
     OrderConfirm,
@@ -592,6 +638,9 @@ export default {
         margin-bottom: 0.2rem;
         .red {
           color: #f20624;
+        }
+        .green {
+          color: #4affa5;
         }
       }
       .down {

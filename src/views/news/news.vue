@@ -1,18 +1,16 @@
 <template>
   <div>
     <div class="newsWrap">
-       <v-Swiper swipeid="swipe" ref="swiper" :autoplay="3000" effect="slide">
+      <v-Swiper swipeid="swipe" ref="swiper" :autoplay="3000" effect="slide">
         <a :href="top.linkUrl" v-for="(top,index) in tops" :key="index" class="swiper-slide" slot="swiper-con">
           <img :src="baseImgUrl+top.picPath">
         </a>
       </v-Swiper>
       <v-NewsList v-for="list in lists" :title="list.title" :picPath="baseImgUrl+list.picPath" :id="list.id" @toNewDetail="toNewDetail(list.id)" :key="list.index"></v-NewsList>
-      <Nomore :isNomoreShow='isNomoreShow'></Nomore> 
-      <div style="color:#acacac;padding: 0.4rem;
-                      text-align: center;
-                      font-size: 0.4rem;" v-show="tops.length==0 && lists.length==0">
-                暂无数据
-            </div>
+      <Nomore :isNomoreShow='isNomoreShow'></Nomore>
+      <div class="nodata" v-show="tops.length==0 && lists.length==0">
+        <img  src="../../assets/nonews.png" alt="">
+      </div>
     </div>
   </div>
 </template>
@@ -35,20 +33,20 @@ export default {
       tops: [],
       lists: [],
       isNomoreShow: false,
-      loading:false
+      loading: false
     }
   },
   methods: {
     loadNews() {
       var that = this
-      this.loading=true
+      this.loading = true
       let sendData = {
         page: this.page,
         rows: this.rows
       }
       news.informations(sendData).then(data => {
         if (data.data.code == 200) {
-          this.loading=false
+          this.loading = false
           if (!data.data.data.rows) return
           data.data.data.rows.forEach(function (element) {
             that.lists.push(element)
@@ -67,9 +65,9 @@ export default {
       let scrollTop = Math.round(document.querySelector('.homeWrap').scrollTop)
       let pageHeight = Math.round(document.querySelector('.homeWrap').offsetHeight)
       let allHeight = Math.round(document.querySelector('.newsWrap').scrollHeight);
-      let a=allHeight-scrollTop-pageHeight
-      if (a>=0 && a<=50){
-        if(this.loading)return
+      let a = allHeight - scrollTop - pageHeight
+      if (a >= 0 && a <= 50) {
+        if (this.loading) return
         this.loadNews();
       }
     },
@@ -114,5 +112,13 @@ export default {
 .swiper-slide img {
   width: 100%;
   height: 5.0667rem;
+}
+.nodata{
+  text-align: center;
+  margin-top: 2.133333rem;
+  img{
+    width: 5.706667rem;
+    height: 4.76rem;
+  }
 }
 </style>

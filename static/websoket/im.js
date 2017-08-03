@@ -81,7 +81,7 @@ function initWsEvent(ws, url,fn) {
         lastInteractionTime = new Date().getTime();
     };
     ws.onclose = function (event) {
-        // var ws = event.srcElement;
+        //  var ws = event.srcElement;
         reconn(url, event, null);
     };
     ws.onerror = function (event) {
@@ -180,7 +180,7 @@ function ping() {
     }
 }
 
-setInterval("ping()", heartbeatSendInterval);
+// setInterval("ping()", heartbeatSendInterval);
 
 
 /**

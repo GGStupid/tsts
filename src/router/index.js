@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import { getCookie } from '@/util/index'
 // login
 import login from '@/views/login/login'
 const register1 = resolve => require(['@/views/login/register1'], resolve)
@@ -459,7 +459,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  let token = localStorage.getItem("isLogin")
+  let token = localStorage.getItem("isLogin") || getCookie('TAOKE_USER_DATA')
   if (to.meta.requireAuth) {
     if (token) {
       next()

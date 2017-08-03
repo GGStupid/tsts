@@ -51,11 +51,9 @@
                     </div>
                 </div>
             </div>
-            <div style="color:#acacac;padding: 0.4rem;
-                          text-align: center;
-                          font-size: 0.4rem;" v-show="commentLists.length==0">
-                    暂无数据
-                </div>
+            <div class="nodata" v-show="commentLists.length==0">
+                <img src="../../assets/notribune.png" alt="">
+            </div>
         </div>
         <div class="footer">
             <span @click="releaseComments">我也来说一句...</span>
@@ -365,6 +363,14 @@ export default {
                         }
                     }
                 }
+            }
+        }
+        .nodata {
+            text-align: center;
+            margin-top: 2.133333rem;
+            img {
+                width: 5.706667rem;
+                height: 4.76rem;
             }
         }
     }

@@ -9,10 +9,8 @@
         <div class="body" v-html="notice.content">
         </div>
       </div>
-      <div style="color:#acacac;padding: 0.4rem;
-          text-align: center;
-          font-size: 0.4rem;" v-show="noticesLists.length==0">
-        暂无数据
+      <div class="nodata" v-show="noticesLists.length==0">
+        <img src="../../assets/nonotice.png" alt="">
       </div>
     </div>
   </div>
@@ -103,6 +101,14 @@ export default {
       line-height: 1.8;
       width: 100%;
       word-break: break-all;
+    }
+  }
+  .nodata {
+    text-align: center;
+    margin-top: 2.133333rem;
+    img {
+      width: 5.706667rem;
+      height: 4.76rem;
     }
   }
 }

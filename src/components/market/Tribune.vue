@@ -53,8 +53,8 @@
     <div class="moreComments" v-show="commentLists.length>5" @click="moreComments">
       查看更多
     </div>
-    <div class="moreComments" style="color:#acacac" v-show="commentLists.length==0">
-      暂无数据
+    <div class="nodata" v-show="commentLists.length==0">
+      <img src="../../assets/notribune.png" alt="">
     </div>
   </div>
 </template>
@@ -68,7 +68,7 @@ export default {
     return {
       baseImgUrl: this.$store.state.baseImgUrl,
       title: this.$store.state.title,
-      userId: this.$store.state.userInfor? this.$store.state.userInfor.id :'',
+      userId: this.$store.state.userInfor ? this.$store.state.userInfor.id : '',
       commentLists: [],
     }
   },
@@ -331,6 +331,14 @@ export default {
     text-align: center;
     font-size: 0.4rem;
     color: #eee;
+  }
+  .nodata {
+    text-align: center;
+    margin-top: 2.133333rem;
+    img {
+      width: 5.706667rem;
+      height: 4.76rem;
+    }
   }
 }
 </style>

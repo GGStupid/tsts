@@ -10,6 +10,9 @@
       </div>
     </div>
     <Nomore :isNomoreShow='isNomoreShow'></Nomore>
+    <div class="nodata" v-show="transactionRecordLists.length==0">
+      <img src="../../../assets/norecord.png" alt="">
+    </div>
   </div>
 </template>
 
@@ -65,10 +68,10 @@ export default {
   },
   mounted() {
     let that = this
-    if (that.page === 1) {
-      that.loadPositions();
-      document.querySelector('#app').addEventListener('scroll', that.handleScroll);
-    }
+    // if (that.page === 1) {
+    //   that.loadPositions();
+    //   document.querySelector('#app').addEventListener('scroll', that.handleScroll);
+    // }
   },
   beforeRouteEnter(to, from, next) {
     document.querySelector('title').innerText = '交割记录'
@@ -102,6 +105,14 @@ export default {
     }
     .right {
       color: #4AFFA5;
+    }
+  }
+  .nodata {
+    text-align: center;
+    margin-top: 2.133333rem;
+    img {
+      width: 5.706667rem;
+      height: 4.76rem;
     }
   }
 }

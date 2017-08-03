@@ -31,26 +31,33 @@ export default {
         { title: '已购', component: 'Purchased' },
         { title: '明细', component: 'Detailed' }
       ],
-      currentView:'Buy'
+    }
+  },
+  computed:{
+    currentView(){
+      return this.$store.state.currentView
     }
   },
   methods: {
     toNext(data) {
       console.log(data)
-      this.currentView=data.component
+       this.$store.dispatch('currentView', data.component)
     },
     toastConfirm() {
       this.$router.push('/home/news')
     }
   },
-  beforeRouteEnter(to,from,next){
-    document.querySelector('title').innerText='买卖'
-    next()
-  },
-  mounted(){
-    if(this.$store.state.currentView){
-      this.currentView=this.$store.state.currentView
+  beforeRouteEnter(to, from, next) {
+    document.querySelector('title').innerText = '买卖'
+    next(vm=>{
+       let rge = /pricePersonDetail/
+    if (rge.test(from.path)) {
+      console.log(rge.test(from.path))
+    } else {
+      vm.$store.dispatch('code', '')
+      vm.$store.dispatch('attorncode', '')
     }
+    })
   },
   components: {
     'v-Content': Content,

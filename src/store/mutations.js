@@ -71,4 +71,16 @@ export default {
         state.attorncode = payload
         localStorage.setItem('attorncode', JSON.stringify(payload))
     },
+    //topPrice
+    topPrice(state, payload) {
+        state.topPrice = payload
+    },
+    //openPrice
+    openPrice(state, payload) {
+        state.openPrice = payload
+    },
+    //bottomPrice
+    bottomPrice(state, payload) {
+        state.bottomPrice = payload
+    },
 }

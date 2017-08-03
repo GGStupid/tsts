@@ -83,6 +83,7 @@ export default {
                         toast(data.data.message)
                         this.payPwd = ''
                         this.$emit('isPayToastHide', false)
+                        this.$store.dispatch('currentView', 'Order')
                     } else {
                         this.payPwd = ''
                         toast(data.data.message)

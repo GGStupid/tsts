@@ -35,11 +35,11 @@ export default {
     messages.message().then(data=>{
       if(data.data.code==200){
         this.notReadAnnounceNum=data.data.data.notReadAnnounceNum
-        this.announcecontent=data.data.data.announce.title
-        this.announcecreateTime=data.data.data.announce.createTime
+        this.announcecontent=data.data.data.announce ? data.data.data.announce.title :''
+        this.announcecreateTime=data.data.data.announce ? data.data.data.announce.createTime :''
         this.notReadNoticeLogNum=data.data.data.notReadNoticeLogNum
-        this.noticeLogcontent=data.data.data.noticeLog.content
-        this.noticeLogcreateTime=data.data.data.noticeLog.createTime
+        this.noticeLogcontent=data.data.data.noticeLog ? data.data.data.noticeLog.content :''
+        this.noticeLogcreateTime=data.data.data.noticeLog ? data.data.data.noticeLog.createTime :''
       }else{
         toast(data.data.message)
       }

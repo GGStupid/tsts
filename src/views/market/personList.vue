@@ -10,13 +10,16 @@
                 </span>
             </span>
             <span class="percentSort" @click="sortByHour" style="text-align: right;">
-                涨跌幅
+                涨幅
                 <img :src="hourImg" alt="">
             </span>
         </div>
         <div class="perlistWrap">
             <v-ComPersonList :personLists="personLists" @toNext="toNext"></v-ComPersonList>
             <Nomore :isNomoreShow='isNomoreShow'></Nomore>
+            <div class="nodata" v-show="personLists.length==0">
+                <img src="../../assets/nodata.png" alt="">
+            </div>
         </div>
     </div>
 </template>
@@ -80,6 +83,7 @@ export default {
                     if (data.data.code == 200) {
                         if (!data.data.data.rows) return
                         if (data.data.data.rows.length == 0) {
+                            this.isNomoreShow=true
                             document.querySelector('.perlistWrap').removeEventListener('scroll', that.handleScroll)
                             return
                         }
@@ -88,7 +92,7 @@ export default {
                             that.personLists.push(element)
                         }, this);
                         this.page++
-                    }else{
+                    } else {
                         toast(data.data.message)
                     }
                 })
@@ -132,6 +136,7 @@ export default {
                     this.loading = false
                     if (!data.data.data.rows) return
                     if (data.data.data.rows.length == 0) {
+                         this.isNomoreShow=true
                         document.querySelector('.perlistWrap').removeEventListener('scroll', that.handleScroll)
                         return
                     }
@@ -192,6 +197,7 @@ export default {
         toNext(payload) {
             console.log('topricePersonDetail')
             console.log(payload)
+            this.$store.dispatch('code', payload.code)
             this.$router.push('/pricePersonDetail/' + payload.productId)
         }
     },
@@ -264,6 +270,14 @@ export default {
         bottom: 0;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
+        .nodata {
+            text-align: center;
+            margin-top: 2.133333rem;
+            img {
+                width: 5.706667rem;
+                height: 4.76rem;
+            }
+        }
     }
 }
 </style>

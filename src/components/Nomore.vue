@@ -1,6 +1,6 @@
 <template>
   <div class="nomoreWrap" v-show="isNomoreShow">
-      暂无数据
+      没有更多数据
   </div>
 </template>
 <script>

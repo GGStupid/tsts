@@ -98,6 +98,8 @@ export default {
                 if (data.data.code == 200) {
                     toast(data.data.message)
                     this.isShow2Button = false
+                    this.orderLists=[]
+                     this.loadOrderLists();
                 } else {
                     toast(data.data.message)
                     this.isShow2Button = false

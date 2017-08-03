@@ -1,7 +1,10 @@
 <template>
     <div class="systemNoticesWrap">
         <v-SytemNotices v-for="list in noticeLoglists" :title="list.title" :content="list.content" :createTime="list.createTime" :key="list.index"></v-SytemNotices>
-        <Nomore v-show="noticeLoglists.length>10 || noticeLoglists.length==0" :isNomoreShow='isNomoreShow'></Nomore>
+        <Nomore v-show="noticeLoglists.length>10" :isNomoreShow='isNomoreShow'></Nomore>
+        <div class="nodata" v-show="noticeLoglists.length==0">
+            <img src="../../assets/nomessages.png" alt="">
+        </div>
     </div>
 </template>
 
@@ -34,7 +37,7 @@ export default {
                 let that = this
                 if (data.data.code == 200) {
                     this.loading = false
-                    if (!data.data.data.rows) return
+                    if (data.data.data.rows.length==0) return
                     data.data.data.rows.forEach(function (element) {
                         this.noticeLoglists.push(element)
                     }, this);
@@ -82,6 +85,17 @@ export default {
     },
 }
 </script>
+<style lang="less" scoped>
+.nodata {
+    text-align: center;
+    margin-top: 2.133333rem;
+    img {
+        width: 5.706667rem;
+        height: 4.76rem;
+    }
+}
+</style>
+
 
 
 

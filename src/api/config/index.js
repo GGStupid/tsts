@@ -27,6 +27,11 @@ instance.interceptors.response.use(response => {
     }, 300)
     return response
 }, err => {
+    console.log('error')
+    console.log(err)
+    setTimeout(() => {
+        app.$store.dispatch('loadShow', true)
+    }, 300)
     return Promise.reject(err)
 })
 

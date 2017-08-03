@@ -63,16 +63,20 @@ export default {
         return instance.get(wrapUrl + '/publisher/detail?' + qs.stringify(data))
     },
     //分时图
-    getTimes (data) {
-        return instance.get(wrapUrl + '/getTimes?'+ qs.stringify(data))
+    getTimes(data) {
+        return instance.get(wrapUrl + '/getTimes?' + qs.stringify(data))
+    },
+    //历史：api/quotation/history 
+    history(data) {
+        return instance.post(wrapUrl + '/quotation/history', qs.stringify(data))
     },
     //前台新闻列表
     news(data) {
         return instance.get(wrapUrl + '/news?' + qs.stringify(data))
     },
     //新闻详情
-    newsId(data,config) {
-        return instance.get(wrapUrl + '/news/detail?' + qs.stringify(data),config)
+    newsId(data, config) {
+        return instance.get(wrapUrl + '/news/detail?' + qs.stringify(data), config)
     },
     //艺人公告
     announces(data) {
@@ -85,5 +89,13 @@ export default {
     //买卖-申购-下单
     purchase(data) {
         return instance.post(wrapUrl + '/member/purchase', qs.stringify(data))
+    },
+    //行情-买/卖-十档行情
+    tend(data, config) {
+        return instance.post(wrapUrl + '/quotation/tend', qs.stringify(data), config)
+    },
+    //行情-明细
+    deals(data, config) {
+        return instance.post(wrapUrl + '/quotation/deals', qs.stringify(data), config)
     },
 }

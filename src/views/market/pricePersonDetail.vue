@@ -5,7 +5,7 @@
                 <div class="rule" @click="rule">
                     升值规则
                 </div>
-                <BarChart :isBarChartShow="isBarChartShow" @cancel="cancel"></BarChart>
+                <BarChart :readcount="readcount" :regcount='regcount' :buycount='buycount' :isBarChartShow="isBarChartShow" @cancel="cancel"></BarChart>
                 <div class="shop" @click="shop">
                     <img src="../../assets/icon_mall.png" alt=""> 商城
                 </div>
@@ -17,17 +17,17 @@
                 <span>{{growthRatio*100 | toFiexed}}%</span>
                 <div class="count">
                     <div class="scount">
-                        <span>0</span>
+                        <span>{{readcount}}</span>
                         <br>
                         <span class="sign">阅读量</span>
                     </div>
                     <div class="scount">
-                        <span>0</span>
+                        <span>{{regcount}}</span>
                         <br>
                         <span class="sign">注册量</span>
                     </div>
                     <div class="scount">
-                        <span>0</span>
+                        <span>{{buycount}}</span>
                         <br>
                         <span class="sign">贡献量</span>
                     </div>
@@ -40,15 +40,15 @@
                     <div class="chartstop">
                         <div class="box">
                             <span style="margin-right: 0.1rem;">最&nbsp;&nbsp;高</span>
-                            <span class="num">{{topPrice | toFiexed}}</span>
+                            <span class="num">{{topPrice}}</span>
                         </div>
                         <div class="box" style="text-align:right">
                             <span style="margin-right: 0.1rem;">今&nbsp;&nbsp;开</span>
-                            <span class="num">{{openPrice | toFiexed}}</span>
+                            <span class="num">{{openPrice}}</span>
                         </div>
                         <div class="box">
                             <span style="margin-right: 0.1rem;">最&nbsp;&nbsp;低</span>
-                            <span class="num">{{bottomPrice | toFiexed}}</span>
+                            <span class="num">{{bottomPrice}}</span>
                         </div>
                         <div class="box" style="text-align:right">
                             <span style="margin-right: 0.1rem;">换&nbsp;&nbsp;手</span>
@@ -109,6 +109,9 @@ export default {
     data() {
         return {
             isBarChartShow: false,
+            readcount: 0,
+            regcount: 0,
+            buycount: 0,
             lastPrice: '',
             growth: '',
             growthRatio: '',
@@ -220,17 +223,22 @@ export default {
         }
         market.quotation(sendData).then(data => {
             if (data.data.code == 200) {
-                console.log(3333)
                 let title = `${data.data.data.name} (${data.data.data.code})`
                 this.$store.dispatch('title', title)
                 document.querySelector('title').innerText = `${data.data.data.name} (${data.data.data.code})`
+                this.readcount = data.data.data.readcount
+                this.regcount = data.data.data.regcount
+                this.buycount = data.data.data.buycount
                 this.optional = data.data.data.optional
                 this.lastPrice = data.data.data.lastPrice
                 this.growth = data.data.data.growth
                 this.growthRatio = data.data.data.growthRatio
-                this.topPrice = data.data.data.topPrice
-                this.openPrice = data.data.data.openPrice
-                this.bottomPrice = data.data.data.bottomPrice
+                this.topPrice = data.data.data.topPrice.toFixed(2)
+                this.$store.dispatch('topPrice', this.topPrice)
+                this.openPrice = data.data.data.openPrice.toFixed(2)
+                this.$store.dispatch('openPrice', this.openPrice)
+                this.bottomPrice = data.data.data.bottomPrice.toFixed(2)
+                this.$store.dispatch('bottomPrice', this.bottomPrice)
                 this.exchangeRate = data.data.data.exchangeRate
                 this.averagePrice = data.data.data.averagePrice
                 this.tradeAmount = data.data.data.tradeAmount

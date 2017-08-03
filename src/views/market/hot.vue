@@ -33,7 +33,8 @@ export default {
     toDetails(data) {
       console.log('toDetails')
       console.log(data)
-      this.$store.dispatch('productId',data.productId)
+      this.$store.dispatch('code',data.code)
+      this.$store.dispatch('productId', data.productId)
       this.$router.push('/pricePersonDetail/' + data.productId)
     },
     toCheckTab(e) {
@@ -47,7 +48,7 @@ export default {
     },
     toNext(e) {
       console.log('toNextlit')
-      this.$router.push('/BriefIntroduction/'+e.productId)
+      this.$router.push('/BriefIntroduction/' + e.productId)
     }
   },
   components: {

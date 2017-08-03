@@ -63,4 +63,16 @@ export default {
     attorncode({commit},payload){
         commit('attorncode', payload)
     },
+    //topPrice
+    topPrice({commit},payload){
+        commit('topPrice', payload)
+    },
+    //openPrice
+    openPrice({commit},payload){
+        commit('openPrice', payload)
+    },
+    //bottomPrice
+    bottomPrice({commit},payload){
+        commit('bottomPrice', payload)
+    },
 }

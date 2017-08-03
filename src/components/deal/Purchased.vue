@@ -4,12 +4,12 @@
             <div class="up">
                 <span>持仓市值（元）</span>
                 <span>可用余额（元）</span>
-                <span>亏盈总额（元）</span>
+                <span>增值总额（元）</span>
             </div>
             <div class="down">
-                <span>53.00</span>
+                <span>{{amount.toFixed(2)}}</span>
                 <span>{{availableBalance?availableBalance.toFixed(2):'0.00'}}</span>
-                <span class="red">+100</span>
+                <span class="red" :class="{'green':profit<0}">{{profit.toFixed(2)}}</span>
             </div>
         </div>
         <div class="listTitle">
@@ -24,13 +24,13 @@
                     <div class="up">
                         <span>{{purchased.publisherName}}</span>
                         <span>{{purchased.quantity}}</span>
-                        <span>5.3</span>
-                        <span class="red" style="text-align:right;flex:0 0 1.1733rem;">+1</span>
+                        <span>{{purchased.lastPrice.toFixed(2)}}</span>
+                        <span class="red" style="text-align:right;flex:0 0 1.1733rem;" :class="{'green':purchased.lastPrice-purchased.costPrice<0}">{{((purchased.lastPrice-purchased.costPrice)*purchased.quantity).toFixed(2)}}</span>
                     </div>
                     <div class="down">
-                        <span>{{purchased.publisherCode}}</span>
+                        <span>{{(purchased.lastPrice*purchased.quantity).toFixed(2)}}</span>
                         <span>{{purchased.availableQuantity}}</span>
-                        <span>{{purchased.costPrice}}</span>
+                        <span>{{purchased.costPrice.toFixed(2)}}</span>
                         <span class="buyTypes" style="text-align:right;flex:0 0 1.1733rem;"></span>
                     </div>
                 </div>
@@ -47,18 +47,39 @@ import { toast } from '@/util/index'
 export default {
     data() {
         return {
-            availableBalance: '',
+            amount: 0,
+            availableBalance: 0,
+            profit: 0,
             page: 1,
             rows: 10,
             PurchasedLists: [],
             isNomoreShow: false,
-            loading: false
+            loading: false,
+            timer: ''
         }
     },
     methods: {
         loadNewsPrices() {
-            deal.latestPrice().then(data => {
-                console.log(data)
+            let config = {
+                loading: false
+            }
+            let sendData = {
+
+            }
+            deal.latestPrice(sendData, config).then(data => {
+                if (data.data.code == 200) {
+                    if (!data.data.data) return
+                    data.data.data.map(v => {
+                        this.PurchasedLists.map(p => {
+                            if (p.publisherCode == v.code) {
+                                p.lastPrice = v.lastPrice
+                            }
+                            return p
+                        })
+                    })
+                } else {
+                    toast(data.data.message)
+                }
             })
         },
         loadPurchasedLists() {
@@ -73,12 +94,18 @@ export default {
                     this.loading = false
                     if (!data.data.data.rows) return
                     data.data.data.rows.forEach(function (element) {
+                        element.lastPrice = 0
                         this.PurchasedLists.push(element)
                     }, this);
                     if (data.data.data.rows.length == 0) {
+                        this.isNomoreShow = true
                         document.querySelector('.purchasedContentWrap').removeEventListener('scroll', that.handleScroll)
                     }
                     this.page++
+                    this.loadNewsPrices()
+                    this.timer = setInterval(() => {
+                        this.loadNewsPrices()
+                    }, 60000)
                 } else {
                     toast(data.data.message)
                 }
@@ -97,14 +124,28 @@ export default {
     },
     mounted() {
         let that = this
+        deal.head().then(data => {
+            if (data.data.code == 200) {
+                if (!data.data.data) {
+                    this.amount = 0
+                    this.availableBalance = 0
+                    this.profit = 0
+                    return
+                }
+                this.amount = data.data.data.amount
+                this.availableBalance = data.data.data.left
+                this.profit = data.data.data.profit
+            } else {
+                toast(data.data.message)
+            }
+        })
         if (this.page == 1) {
             this.loadPurchasedLists()
-            this.loadNewsPrices()
             document.querySelector('.purchasedContentWrap').addEventListener('scroll', that.handleScroll)
         }
-        deal.available().then(data => {
-            this.availableBalance = data.data.data.available
-        })
+    },
+    beforeDestroy() {
+        clearInterval(this.timer)
     },
     components: {
         Nomore
@@ -132,6 +173,9 @@ export default {
             justify-content: space-around;
             .red {
                 color: #f20624;
+            }
+            .green {
+                color: #4affa5;
             }
         }
     }
@@ -175,6 +219,9 @@ export default {
                 margin-bottom: 0.3rem;
                 .red {
                     color: #f20624;
+                }
+                .green {
+                    color: #4affa5;
                 }
             }
             .down {

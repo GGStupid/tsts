@@ -28,7 +28,7 @@
 <script>
 import login from '@/api/login/index'
 import Button from '@/components/buttons/Button690'
-import { toast, isPhone, isPassWord } from '@/util/index'
+import { toast, isPhone, isPassWord,setCookie } from '@/util/index'
 export default {
 	data() {
 		return {
@@ -95,6 +95,7 @@ export default {
 				login.userLogin(senddata).then((data) => {
 					if (data.data.code == 200) {
 						this.$store.dispatch('isLogin', data.data.data.TAOKE_USER_DATA)
+						setCookie('TAOKE_USER_DATA',data.data.data.TAOKE_USER_DATA,31)
 						let redirect = this.$route.query.redirect || '/home/news';
 						this.$router.push({ path: redirect })
 					} else {

@@ -64,6 +64,18 @@ export default {
         isBarChartShow: {
             type: Boolean,
             default: true
+        },
+        readcount:{
+            type:Number,
+            default:0
+        },
+        regcount:{
+            type:Number,
+            default:0
+        },
+        buycount:{
+            type:Number,
+            default:0
         }
     },
     methods: {
@@ -124,7 +136,7 @@ export default {
                     type: 'bar',
                     barWidth: this.barWidth,
                     data: [{
-                        value: 0,
+                        value: this.readcount,
                         label: {
                             normal: {
                                 show: true,
@@ -141,7 +153,7 @@ export default {
                             }
                         }
                     }, {
-                        value: 0,
+                        value:this.regcount,
                         label: {
                             normal: {
                                 show: true,
@@ -158,7 +170,7 @@ export default {
                             }
                         }
                     }, {
-                        value: 0,
+                        value:this.buycount,
                         label: {
                             normal: {
                                 show: true,

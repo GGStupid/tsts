@@ -28,6 +28,9 @@
                 </div>
             </div>
             <Nomore :isNomoreShow='isNomoreShow'></Nomore>
+            <div class="nodata" v-show="issuersLists.length==0">
+                <img src="../../../assets/nodata.png" alt="">
+            </div>
         </div>
     </div>
 </template>
@@ -59,7 +62,7 @@ export default {
             mine.positions(sendData).then(data => {
                 if (data.data.code == 200) {
                     this.loading = false
-                    if (!data.data.data.rows) return
+                    if (data.data.data.rows==0) return
                     data.data.data.rows.forEach(function (element) {
                         that.issuersLists.push(element)
                     }, this);
@@ -172,6 +175,14 @@ export default {
                     color: #000;
                     background-color: @yellow;
                 }
+            }
+        }
+        .nodata {
+            text-align: center;
+            margin-top: 2.133333rem;
+            img {
+                width: 5.706667rem;
+                height: 4.76rem;
             }
         }
     }

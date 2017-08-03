@@ -11,10 +11,8 @@
           </div>
         </div>
       </div>
-      <div style="color:#acacac;padding: 0.4rem;
-      text-align: center;
-      font-size: 0.4rem;" v-show="newsList.length==0">
-        暂无数据
+      <div class="nodata" v-show="newsList.length==0">
+        <img src="../../assets/nodata.png" alt="">
       </div>
     </div>
   </div>
@@ -30,30 +28,30 @@ export default {
       page: 1,
       rows: 10,
       newsList: [],
-      loading:false
+      loading: false
     }
   },
   methods: {
     loadNews() {
       var that = this
-      this.loading=true
+      this.loading = true
       let sendData = {
         productId: this.$store.state.productId,
         page: this.page,
         rows: this.rows
       }
       market.news(sendData).then(data => {
-        if(data.data.code==200){
-          this.loading=false
+        if (data.data.code == 200) {
+          this.loading = false
           if (!data.data.data.rows) return
           data.data.data.rows.forEach(function (element) {
-          this.newsList.push(element)
-        }, this);
-        if (data.data.data.rows.length == 0) {
-          document.querySelector('.newsWrap').removeEventListener('scroll', that.handleScroll)
-        }
-        this.page++
-        }else{
+            this.newsList.push(element)
+          }, this);
+          if (data.data.data.rows.length == 0) {
+            document.querySelector('.newsWrap').removeEventListener('scroll', that.handleScroll)
+          }
+          this.page++
+        } else {
           toast(data.data.message)
         }
       })
@@ -62,9 +60,9 @@ export default {
       let scrollTop = document.querySelector('.newsWrap').scrollTop;
       let pageHeight = document.querySelector('.newsWrap').offsetHeight;
       let allHeight = document.querySelector('.newListWrap').offsetHeight;
-      let a=allHeight-scrollTop-pageHeight
-      if (a>=0 && a<=50){
-        if(this.loading)return
+      let a = allHeight - scrollTop - pageHeight
+      if (a >= 0 && a <= 50) {
+        if (this.loading) return
         this.loadNews();
       }
     },
@@ -121,6 +119,14 @@ export default {
         color: #999;
         font-size: 0.346667rem;
       }
+    }
+  }
+  .nodata {
+    text-align: center;
+    margin-top: 2.133333rem;
+    img {
+      width: 5.706667rem;
+      height: 4.76rem;
     }
   }
 }
